@@ -1,0 +1,31 @@
+<svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 优雅的渐变色 -->
+    <linearGradient id="elegantGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 轻微发光效果 -->
+    <filter id="subtleGlow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 主文字 - 使用罗马花体字 -->
+  <text x="60" y="22" 
+        font-family="'Times New Roman', 'Georgia', 'Playfair Display', serif" 
+        font-size="22" 
+        font-weight="400" 
+        font-style="italic"
+        text-anchor="middle" 
+        fill="url(#elegantGradient)"
+        filter="url(#subtleGlow)">
+    Nate·Y
+  </text>
+</svg>
