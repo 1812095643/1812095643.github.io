@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" style="color-scheme: dark;">
 
 <head>
     <meta charset="UTF-8">
@@ -7,259 +7,238 @@
     <title>Asorn - Product Designer</title>
     <link rel="stylesheet" href="./css/style.min.css">
     <link rel="shortcut icon" href="./assets/public/favicon.svg" />
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?f65882c2c20bc920cff590ff3d2098b8";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
 </head>
 
 <body>
     <canvas class="fireworks"></canvas>
-    <div class="head" id="headscrollbg">
+    <div class="head">
         <div class="main">
-            <div class="main-left">
-                <a href="./index.html" class="logo"><img src="./assets/public/logo_graph.svg"></a>
-                <div class="tag tag-cooperate"
-                    onclick="window.open('https://www.xiaohongshu.com/goods-detail/6887372186c0df0001e0e0c9?xsec_token=XBVjc4lVke4qkgAvLmJPHQoQ2aQiZof4ZB4emR_QCMdHo=&xsec_source=app_share&instation_link=xhsdiscover%3A%2F%2Fgoods_detail%2F6887372186c0df0001e0e0c9%3Ftrade_ext%3DeyJjaGFubmVsSW5mbyI6bnVsbCwiZHNUb2tlbkluZm8iOm51bGwsInNoYXJlTGluayI6Imh0dHBzOi8vd3d3LnhpYW9ob25nc2h1LmNvbS9nb29kcy1kZXRhaWwvNjg4NzM3MjE4NmMwZGYwMDAxZTBlMGM5P2FwcHVpZD01OGZlYmRhYjUwYzRiNDUyN2VmMGRjMDkiLCJsaXZlSW5mbyI6bnVsbCwic2hvcEluZm8iOm51bGwsImdvb2RzTm90ZUluZm8iOm51bGwsImNoYXRJbmZvIjpudWxsLCJzZWFyY2hJbmZvIjpudWxsLCJwcmVmZXIiOm51bGx9%26rate_limit_meta%3DitemId%253D6887372186c0df0001e0e0c8%26rn%3Dtrue&xhsshare=CopyLink&appuid=58febdab50c4b4527ef0dc09&apptime=1753760946&share_id=069c919f07314dd4b978c8b9d4e00625', '_blank')">
-                    <div class="breath-dot"></div>源码出售
-                </div>
-            </div>
-            <div class="menu" id="main-menu">
-                <li class="magical btn nav" onclick="window.location.href='./index.html'">首页</li>
-                <li class="magical btn" onclick="window.location.href='./work.html'">项目</li>
-                <li class="magical btn" onclick="window.location.href='./tool.html'">工具</li>
-                <li class="magical btn" onclick="window.location.href='./blog.html'">知识</li>
-                <li class="magical btn" onclick="window.location.href='./book.html'">书籍</li>
-                <li class="magical btn" onclick="window.location.href='./about.html'">关于</li>
+            <a href="./index.html" class="logo"><img src="./assets/public/logo_text.svg"></a>
+            <div class="menu">
+                <li class="magical btn nav" onclick="window.location.href='./index.html'">Home</li>
+                <li class="magical btn" onclick="window.location.href='./work.html'">Work</li>
+                <li class="magical btn" onclick="window.location.href='./blog.html'">Blog</li>
+                <li class="magical btn" onclick="window.location.href='./about.html'">About</li>
             </div>
             <div class="menu" id="menu-expand">
-                <li class="magical btn menu-expand-btn" id="menu-expand-child"><i class="icon menu-icon"></i></li>
+                <li class="magical btn skin" id="menu-expand-child"><i class="icon menu-icon"></i></li>
             </div>
             <div id="menu-panel">
-                <div class="menu-panel-content" id="menu-panel-content"></div>
-                <div class="menu-close-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M10.5858 12L4.29291 18.2929L5.70712 19.7071L12 13.4142L18.2929 19.7071L19.7071 18.2929L13.4142 12L19.7071 5.70712L18.2929 4.29291L12 10.5858L5.70712 4.29291L4.29291 5.70712L10.5858 12Z"
-                            fill="#E8E8F6" />
-                    </svg>
+                <div class="menu-panel-content">
+                    <li class="magical btn nav" onclick="window.location.href='./index.html'">Home</li>
+                    <li class="magical btn" onclick="window.location.href='./work.html'">Work</li>
+                    <li class="magical btn" onclick="window.location.href='./blog.html'">Blog</li>
+                    <li class="magical btn" onclick="window.location.href='./about.html'">About</li>
                 </div>
             </div>
         </div>
+        <blockquote><img src="./assets/public/logo.svg"></blockquote>
     </div>
     <div class="index">
         <div class="hello">
-            <div class="hello-left">
-                <div class="title">
-                    <div class="title-hi">Hi, I'm</div>
-                    <a class="title-name text-effect">Asorn</a>
-                </div>
-                <!-- <div class="loader"></div> -->
-                <div class="hello-introduce">
-                    8 年老设计师，资深<span> B 端产品设计 </span>专家，深耕设计系统、无障碍设计与设计工程化，还会点儿代码。<br>热衷于<span> 技术的无限可能性</span>，也专注于探索
-                    <span>产品设计的价值观</span>，在极致的设计、交互与技术包容、业务理解之间寻求平衡以解决问题。
-                </div>
-                <div class="hello-actions">
-                    <div class="magical primary-btn"><a
-                            href="https://asorn-resume.oss-cn-beijing.aliyuncs.com/cjl-resume.pdf"
-                            target="_blank">下载简历</a></div>
-                    <div class="magical btn normal-btn">
-                        <a href='https://bento.me/asorn' target="_blank">🎉 Bento ME →</a>
-                        <div class="glowing-border"></div>
-                    </div>
-                </div>
+            <div class="title">
+                <div class="title-hi">Hi, I'm</div>
+                <a class="title-name" href="https://asorn.cn">Asorn</a>
             </div>
-            <div class="hello-right">
-                <div class="eyes-container">
-                    <div class="eye eye-pic-one">
-                        <div class="pupil"></div>
-                    </div>
-                    <div class="eye eye-pic-two">
-                        <div class="pupil"></div>
-                    </div>
-                </div>
-            </div>
+            <div class="hello-desc" id="typed"></div>
         </div>
-        <div class="main-content">
-            <div class="power-list-container load-pro">
-                <div class="power-list">
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/tob.svg')"></div>
-                            <div class="title">B 端设计</div>
-                        </div>
-                        <span class="power-separator"></span>
+        <div class="content-divider"></div>
+        <div class="quickly-link">
+            <div class="title-hi">What did I do</div>
+            <div class="loader"></div>
+            <div class="link-card">
+                <div class="link-card-list">
+                    <div class="magical link-card-item">
+                        <a href="https://larkmap.com" target="_blank">
+                            <img src="./assets/index/larkmap.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Larkmap</div>
+                                <div class="info-desc">Designer website navigation</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/app.svg')"></div>
-                            <div class="title">移动端设计</div>
-                        </div>
-                        <span class="power-separator"></span>
+                    <div class="magical link-card-item">
+                        <a href="https://qingicon.com" target="_blank">
+                            <img src="./assets/index/qingicon.png" alt="">
+                            <div class="info">
+                                <div class="info-title">QingIcon</div>
+                                <div class="info-desc">2200+ fill, dual color icon</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/web.svg')"></div>
-                            <div class="title">网站设计</div>
-                        </div>
-                        <span class="power-separator"></span>
+                    <div class="magical link-card-item">
+                        <a href="https://www.figma.com/community/plugin/1111565622161029659" target="_blank">
+                            <img src="./assets/index/figicon.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Figicon</div>
+                                <div class="info-desc">Figma icon library plugin</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/interactive.svg')"></div>
-                            <div class="title">交互设计</div>
-                        </div>
-                        <span class="power-separator"></span>
+                    <div class="magical link-card-item">
+                        <a href="https://www.figma.com/community/plugin/1286263811056993042" target="_blank">
+                            <img src="./assets/index/rpb.png" alt="">
+                            <div class="info">
+                                <div class="info-title">RPB</div>
+                                <div class="info-desc">Replace the Figma page background</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/assets.svg')"></div>
-                            <div class="title">规范定义</div>
-                        </div>
-                        <span class="power-separator"></span>
+                    <div class="magical link-card-item">
+                        <a href="https://adapter.biliui.com" target="_blank">
+                            <img src="./assets/index/adapter.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Q-Adapter</div>
+                                <div class="info-desc">B-end product layout adaptation</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/ai.svg')"></div>
-                            <div class="title">AI 赋能</div>
-                        </div>
-                        <span class="power-separator"></span>
+                    <div class="magical link-card-item">
+                        <a href="https://biliui.com" target="_blank">
+                            <img src="./assets/index/biliui.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Biliui</div>
+                                <div class="info-desc">First generation blog</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
-                    <div class="power-card load-item">
-                        <div class="power-container">
-                            <div class="card-img" style="background-image: url('./assets/index/code.svg')"></div>
-                            <div class="title">开发助力</div>
-                        </div>
-                    </div>
-                    <div class="power-card sticky-item" id="sticky-item">
-                        <div class="loader"></div>
+                    <div class="magical link-card-item">
+                        <a href="https://nav.dippermap.com/" target="_blank">
+                            <img src="./assets/index/dippermap.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Dippermap</div>
+                                <div class="info-desc">Open source GIS navigation tools</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="link-list load-pro">
-                <div class="magical link-card">
-                    <a href="https://www.yuque.com/asorn" target="_blank">
-                        <img src="./assets/index/yuque.png" alt="">
-                        <div class="info">
-                            <div class="info-title">语雀</div>
-                            <div class="info-desc">15w+ 字经验分享</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
-                </div>
-                <div class="magical link-card">
-                    <a href="https://github.com/asorn" target="_blank">
-                        <img src="./assets/index/github.png" alt="">
-                        <div class="info">
-                            <div class="info-title">Github</div>
-                            <div class="info-desc">日常研究贡献的代码</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
-                </div>
-                <div class="magical link-card">
-                    <a href="https://www.figma.com/@asorn" target="_blank">
-                        <img src="./assets/index/figma.png" alt="">
-                        <div class="info">
-                            <div class="info-title">Figma 社区</div>
-                            <div class="info-desc">无私奉献的设计资源</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
-                </div>
-                <div class="magical link-card">
-                    <a href="https://www.xiaohongshu.com/user/profile/58febdab50c4b4527ef0dc09" target="_blank">
-                        <img src="./assets/index/xiaohongshu.png" alt="">
-                        <div class="info">
-                            <div class="info-title">小红书</div>
-                            <div class="info-desc">生活笔记与店铺</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
-                </div>
-                <div class="magical link-card">
-                    <a href="javascript:void(0)">
-                        <img src="./assets/index/gongzhonghao.png" alt="">
-                        <div class="info">
-                            <div class="info-title">公众号</div>
-                            <div class="info-desc">搜索“一只小盒”或“biliux”</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
-                </div>
-                <div class="magical link-card">
-                    <a href="https://dribbble.com/Asorn" target="_blank">
-                        <img src="./assets/index/dribbble.png" alt="">
-                        <div class="info">
-                            <div class="info-title">Dribbble</div>
-                            <div class="info-desc">我的设计社区</div>
-                        </div>
-                        <div class="icon icon-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
-                                fill="none">
-                                <path
-                                    d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
-                                    fill="#B3B3C1"></path>
-                            </svg>
-                        </div>
-                    </a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 8V0H4.5V8H3.5Z" fill="#62616F"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4.5H0V3.5H8V4.5Z" fill="#62616F"></path>
+                </svg>
+                <div class="link-card-list">
+                    <div class="magical link-card-item">
+                        <a href="https://www.yuque.com/asorn" target="_blank">
+                            <img src="./assets/index/yuque.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Yu Que</div>
+                                <div class="info-desc">My knowledge garden</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="magical link-card-item">
+                        <a href="https://github.com/asorn" target="_blank">
+                            <img src="./assets/index/github.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Github</div>
+                                <div class="info-desc">My code garden</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="magical link-card-item">
+                        <a href="https://www.figma.com/@asorn" target="_blank">
+                            <img src="./assets/index/figma.png" alt="">
+                            <div class="info">
+                                <div class="info-title">Figma</div>
+                                <div class="info-desc">My design garden</div>
+                            </div>
+                            <div class="icon icon-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                                    fill="none">
+                                    <path
+                                        d="M10.55 7.58332H1.16663V6.41665H10.55L7.75415 3.62082L8.5791 2.79587L12.1645 6.3813C12.5062 6.72299 12.5062 7.27701 12.1645 7.61873L8.5791 11.2042L7.75415 10.3792L10.55 7.58332Z"
+                                        fill="#B3B3C1"></path>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="footer">
-        <div class="footer-content">
-            <div class="copyright">
-                <div>© 2023 Design by <a href="https://asorn.cn/" target="_blank">Asorn</a></div>
-                <span>|</span>
-                <div class="fillings">
-                    <a href="http://beian.miit.gov.cn/" target="_blank">津ICP备18006139号-5</a>
-                </div>
+        <div class="copyright">
+            <div>© 2023 Design by <a href="https://asorn.cn/" target="_blank">Asorn</a></div>
+            <span>|</span>
+            <div class="fillings">
+                <a href="https://asorn.cn/" target="_blank">Asorn</a>
             </div>
+            <span>|</span>
             <div class="friends">
                 <a href="https://zdo.fun/" target="_blank">ZDO</a>
-                <a href="https://larkmap.com/" target="_blank">Larkmap</a>
-                <a href="https://qingicon.com/" target="_blank">QingIcon</a>
             </div>
         </div>
     </div>
@@ -274,51 +253,21 @@
         </div>
         <div class="shape-earth"></div>
     </div>
-    <div class="widget-top"></div>
 </body>
-
 <script>
-    // 首页能力板块滚动指示器
-
-    const stickyItem = document.querySelector('#sticky-item');
-    const powerList = document.querySelector('.power-list');
-
-    // 检测容器是否可以滚动
-    function checkScroll() {
-        // 判断是否滚动到最右侧
-        const isAtRight = powerList.scrollLeft + powerList.clientWidth >= powerList.scrollWidth;
-        if (isAtRight) {
-            // 滚动到最右侧时隐藏 sticky 元素
-            stickyItem.style.opacity = 0;
-        } else {
-            // 向左滚动时显示 sticky 元素
-            stickyItem.style.opacity = 1;
-        }
-    }
-
-    // 检测是否需要显示 sticky 元素
-    function checkVisibility() {
-        if (powerList.scrollWidth > powerList.clientWidth) {
-            // 有滚动条时，显示 sticky 元素
-            stickyItem.style.opacity = 1;
-        } else {
-            // 没有滚动条时，隐藏 sticky 元素
-            stickyItem.style.opacity = 0;
-        }
-    }
-
-    // 监听滚动事件
-    powerList.addEventListener('scroll', checkScroll);
-
-    // 监听窗口大小变化事件
-    window.addEventListener('resize', () => {
-        checkVisibility(); // 检查是否显示 sticky 元素
-        checkScroll();     // 检查是否滚动到最右侧
-    });
-
-    // 初始检查
-    checkVisibility();
-    checkScroll();
+    // 打字效果，感谢 typed.js: https://mattboldt.github.io/typed.js/docs/
+    const options = {
+        strings: [
+            ">_ welcome to my secret garden ^1000",
+            ">_ and let's explore it now ^1000",
+        ],
+        typeSpeed: 50, // 打印速度
+        backSpeed: 20, // 回退速度
+        startDelay: 300, // 开始之前的延迟300毫秒
+        loop: true, // 是否循环
+        showCursor: false, // 不显示光标
+    };
+    const typed = new Typed('#typed', options);
 </script>
 <script src="./js/main.min.js"></script>
 <script src='./js/anime.js'></script>
