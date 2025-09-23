@@ -69,34 +69,54 @@
       {{ teaserText }}
     </div>
 
-    <!-- 贴靠宠物正下方的聊天气泡（含打字机/流式效果） -->
-    <div class="speech-bubble bottom" v-if="chatActive" @click.stop>
-      <div class="bubble-header">
-        <span>AI Pet</span>
-        <button class="bubble-close" @click="toggleChat">×</button>
-      </div>
-      <div class="bubble-messages" ref="chatMessages">
+    <!-- 贴靠宠物正下方的聊天气泡（Teleport 到 body，含打字机/流式效果） -->
+    <teleport to="body">
+      <div
+        class="speech-bubble bottom"
+        v-if="chatActive"
+        @click.stop
+        ref="chatBubble"
+        :style="bubbleStyle"
+      >
         <div
-          v-for="(msg, index) in messages"
-          :key="index"
-          :class="['msg', msg.sender === 'user' ? 'me' : 'pet']"
+          class="bubble-header"
+          @mousedown="startDrag"
+          @touchstart="startDrag"
+          @click.stop
         >
-          {{ msg.text }}
+          <span>AI Pet</span>
+          <button
+            class="bubble-close"
+            @click="toggleChat"
+            @mousedown.stop
+            @touchstart.stop
+          >
+            ×
+          </button>
         </div>
-        <div v-if="isStreaming" class="typing-dots">
-          <span></span><span></span><span></span>
+        <div class="bubble-messages" ref="chatMessages">
+          <div
+            v-for="(msg, index) in messages"
+            :key="index"
+            :class="['msg', msg.sender === 'user' ? 'me' : 'pet']"
+          >
+            {{ msg.text }}
+          </div>
+          <div v-if="isStreaming" class="typing-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="bubble-input">
+          <input
+            type="text"
+            v-model="userInput"
+            @keyup.enter="sendMessage"
+            placeholder="和我说点什么..."
+          />
+          <button @click="sendMessage">发送</button>
         </div>
       </div>
-      <div class="bubble-input">
-        <input
-          type="text"
-          v-model="userInput"
-          @keyup.enter="sendMessage"
-          placeholder="和我说点什么..."
-        />
-        <button @click="sendMessage">发送</button>
-      </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
@@ -201,6 +221,7 @@ const {
   sendMessage: performSendMessage,
 } = useChat();
 const chatMessages = ref<HTMLElement | null>(null);
+const chatBubble = ref<HTMLElement | null>(null);
 
 // 思考状态联动
 watch(isStreaming, (val) => {
@@ -236,15 +257,22 @@ const onDblclick = () => {
 const openBubbleWithIntro = () => {
   chatActive.value = true;
   showTeaser.value = false;
-  playLocalIntro();
+  nextTick(() => {
+    anchorBubbleToPet();
+    playLocalIntro();
+  });
 };
 
 const toggleChat = () => {
+  // 避免拖拽时误触关闭
+  if (isDragging.value) return;
+
   chatActive.value = !chatActive.value;
   if (chatActive.value) {
     showTeaser.value = false;
-    // 确保任何方式打开聊天都会显示欢迎消息
+    // 定位到宠物下方并显示欢迎语
     nextTick(() => {
+      anchorBubbleToPet();
       playLocalIntro();
     });
   }
@@ -272,6 +300,164 @@ const sendMessage = async () => {
 const scrollToBottom = () => {
   if (!chatMessages.value) return;
   chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
+};
+
+// 拖拽功能
+const isDragging = ref(false);
+const bubblePosition = ref({ x: 0, y: 0, isFixed: false });
+const bubbleStyle = computed(() => {
+  if (bubblePosition.value.isFixed) {
+    return {
+      position: "fixed",
+      left: `${bubblePosition.value.x}px`,
+      top: `${bubblePosition.value.y}px`,
+      transform: "none",
+      zIndex: 999,
+    };
+  }
+  return {};
+});
+
+let dragStartPos = { x: 0, y: 0 };
+let dragOffset = { x: 0, y: 0 };
+
+const startDrag = (event: MouseEvent | TouchEvent) => {
+  if (!chatBubble.value) return;
+
+  isDragging.value = true;
+
+  // 获取触摸或鼠标位置
+  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+
+  dragStartPos = { x: clientX, y: clientY };
+
+  // 如果当前不是fixed定位，先获取当前位置并切换到fixed
+  if (!bubblePosition.value.isFixed) {
+    const rect = chatBubble.value.getBoundingClientRect();
+    bubblePosition.value = {
+      x: rect.left,
+      y: rect.top,
+      isFixed: true,
+    };
+  }
+
+  dragOffset = {
+    x: clientX - bubblePosition.value.x,
+    y: clientY - bubblePosition.value.y,
+  };
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  // 禁止文本选择和页面滚动
+  document.body.style.userSelect = "none";
+  document.body.style.webkitUserSelect = "none";
+  document.body.style.overflow = "hidden";
+
+  // 添加事件监听，使用更高优先级
+  document.addEventListener("mousemove", handleDrag, {
+    passive: false,
+    capture: true,
+  });
+  document.addEventListener("mouseup", endDrag, {
+    passive: false,
+    capture: true,
+  });
+  document.addEventListener("touchmove", handleDrag, {
+    passive: false,
+    capture: true,
+  });
+  document.addEventListener("touchend", endDrag, {
+    passive: false,
+    capture: true,
+  });
+};
+
+const handleDrag = (event: MouseEvent | TouchEvent) => {
+  if (!isDragging.value || !chatBubble.value) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  // 获取触摸或鼠标位置
+  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+
+  // 计算新位置
+  const newX = clientX - dragOffset.x;
+  const newY = clientY - dragOffset.y;
+
+  // 边界限制，增加一些边距
+  const margin = 10;
+  const maxX = window.innerWidth - chatBubble.value.offsetWidth - margin;
+  const maxY = window.innerHeight - chatBubble.value.offsetHeight - margin;
+
+  const constrainedX = Math.max(margin, Math.min(newX, maxX));
+  const constrainedY = Math.max(margin, Math.min(newY, maxY));
+
+  // 更新位置
+  bubblePosition.value = {
+    x: constrainedX,
+    y: constrainedY,
+    isFixed: true,
+  };
+};
+
+const endDrag = (event: MouseEvent | TouchEvent) => {
+  if (!isDragging.value) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  // 恢复文本选择和页面滚动
+  document.body.style.userSelect = "";
+  document.body.style.webkitUserSelect = "";
+  document.body.style.overflow = "";
+
+  // 移除事件监听，注意要使用相同的参数
+  document.removeEventListener("mousemove", handleDrag, {
+    capture: true,
+  } as any);
+  document.removeEventListener("mouseup", endDrag, { capture: true } as any);
+  document.removeEventListener("touchmove", handleDrag, {
+    capture: true,
+  } as any);
+  document.removeEventListener("touchend", endDrag, { capture: true } as any);
+
+  // 延迟重置拖拽状态，避免点击事件误触
+  setTimeout(() => {
+    isDragging.value = false;
+  }, 150);
+};
+
+const resetBubblePosition = () => {
+  bubblePosition.value = { x: 0, y: 0, isFixed: false };
+};
+
+// 计算并将弹窗锚定到宠物下方（fixed 坐标，避免父级 stacking context 影响）
+const anchorBubbleToPet = () => {
+  if (!petContainer.value) return;
+  const petRect = petContainer.value.getBoundingClientRect();
+  const margin = 10;
+  const bubbleWidth = chatBubble.value?.offsetWidth ?? 320;
+  const bubbleHeight = chatBubble.value?.offsetHeight ?? 260;
+
+  const centerX = petRect.left + petRect.width / 2;
+  let left = centerX - bubbleWidth / 2;
+  let top = petRect.bottom + 10; // 贴在宠物正下方稍微留白
+
+  // 视口边界限制
+  const maxLeft = window.innerWidth - bubbleWidth - margin;
+  const maxTop = window.innerHeight - bubbleHeight - margin;
+  left = Math.max(margin, Math.min(left, maxLeft));
+  top = Math.max(margin, Math.min(top, maxTop));
+
+  bubblePosition.value = {
+    x: Math.round(left),
+    y: Math.round(top),
+    isFixed: true,
+  };
 };
 
 // 眼睛跟随（每只眼睛独立）+ 轻微倾斜
@@ -357,6 +543,8 @@ onMounted(() => {
   window.addEventListener("mousemove", handleMouseMove);
   requestAnimationFrame(updateEyes);
   startTeaserCycle();
+  // 窗口尺寸变化时，若气泡打开且未拖拽，重新锚定
+  window.addEventListener("resize", handleResize);
 
   // 偶发表情（更灵动）
   setInterval(() => {
@@ -385,7 +573,25 @@ onUnmounted(() => {
   window.removeEventListener("mousemove", handleMouseMove);
   clearTimeout(expressionTimeout);
   clearInterval(teaserTimer);
+  window.removeEventListener("resize", handleResize);
+
+  // 清理拖拽事件监听
+  document.removeEventListener("mousemove", handleDrag, {
+    capture: true,
+  } as any);
+  document.removeEventListener("mouseup", endDrag, { capture: true } as any);
+  document.removeEventListener("touchmove", handleDrag, {
+    capture: true,
+  } as any);
+  document.removeEventListener("touchend", endDrag, { capture: true } as any);
 });
+
+// 仅在气泡处于 fixed 且未正在拖拽时重算位置
+function handleResize() {
+  if (chatActive.value && bubblePosition.value.isFixed && !isDragging.value) {
+    anchorBubbleToPet();
+  }
+}
 </script>
 
 <style scoped>
@@ -643,7 +849,7 @@ onUnmounted(() => {
 .expression-excited .pupil {
   width: 16px;
   height: 16px;
-  animation: bounce 0.6s ease-in-out infinite;
+  animation: pupilBounce 0.6s ease-in-out infinite;
 }
 .expression-excited .mouth {
   background: transparent;
@@ -796,7 +1002,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 10;
+  z-index: 999;
+  cursor: default;
 }
 .speech-bubble.bottom::before {
   content: "";
@@ -819,6 +1026,8 @@ onUnmounted(() => {
   color: #e5e7eb;
   background: rgba(31, 41, 55, 0.6);
   font-weight: 600;
+  cursor: move;
+  user-select: none;
 }
 .bubble-close {
   background: transparent;
@@ -884,8 +1093,8 @@ onUnmounted(() => {
   }
 }
 
-/* 为 excited 表情的 bounce 动画重新定义 */
-@keyframes bounce {
+/* 为 excited 表情的瞳孔跳动动画 */
+@keyframes pupilBounce {
   0%,
   100% {
     transform: translate(-50%, -50%) scale(1);
