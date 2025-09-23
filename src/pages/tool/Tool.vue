@@ -16,7 +16,9 @@
                 <div class="desc">
                   {{ t.tool.hoppscotch.desc }}
                 </div>
-                <div class="time">2024-12-01 · {{ t.tool.hoppscotch.category }}</div>
+                <div class="time">
+                  2024-12-01 · {{ t.tool.hoppscotch.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -34,7 +36,9 @@
                 <div class="desc">
                   {{ t.tool.jsonformatter.desc }}
                 </div>
-                <div class="time">2024-11-28 · {{ t.tool.jsonformatter.category }}</div>
+                <div class="time">
+                  2024-11-28 · {{ t.tool.jsonformatter.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -52,7 +56,9 @@
                 <div class="desc">
                   {{ t.tool.regexr.desc }}
                 </div>
-                <div class="time">2024-11-25 · {{ t.tool.regexr.category }}</div>
+                <div class="time">
+                  2024-11-25 · {{ t.tool.regexr.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -70,7 +76,9 @@
                 <div class="desc">
                   {{ t.tool.base64encoder.desc }}
                 </div>
-                <div class="time">2024-11-22 · {{ t.tool.base64encoder.category }}</div>
+                <div class="time">
+                  2024-11-22 · {{ t.tool.base64encoder.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -88,7 +96,9 @@
                 <div class="desc">
                   {{ t.tool.caniuse.desc }}
                 </div>
-                <div class="time">2024-11-20 · {{ t.tool.caniuse.category }}</div>
+                <div class="time">
+                  2024-11-20 · {{ t.tool.caniuse.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -106,7 +116,9 @@
                 <div class="desc">
                   {{ t.tool.bundlephobia.desc }}
                 </div>
-                <div class="time">2024-11-18 · {{ t.tool.bundlephobia.category }}</div>
+                <div class="time">
+                  2024-11-18 · {{ t.tool.bundlephobia.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -124,7 +136,9 @@
                 <div class="desc">
                   {{ t.tool.lighthouse.desc }}
                 </div>
-                <div class="time">2024-11-15 · {{ t.tool.lighthouse.category }}</div>
+                <div class="time">
+                  2024-11-15 · {{ t.tool.lighthouse.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -142,7 +156,9 @@
                 <div class="desc">
                   {{ t.tool.transformtools.desc }}
                 </div>
-                <div class="time">2024-11-12 · {{ t.tool.transformtools.category }}</div>
+                <div class="time">
+                  2024-11-12 · {{ t.tool.transformtools.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -163,7 +179,9 @@
                 <div class="desc">
                   {{ t.tool.responsively.desc }}
                 </div>
-                <div class="time">2024-11-10 · {{ t.tool.responsively.category }}</div>
+                <div class="time">
+                  2024-11-10 · {{ t.tool.responsively.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -181,7 +199,9 @@
                 <div class="desc">
                   {{ t.tool.httpie.desc }}
                 </div>
-                <div class="time">2024-11-08 · {{ t.tool.httpie.category }}</div>
+                <div class="time">
+                  2024-11-08 · {{ t.tool.httpie.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -202,7 +222,9 @@
                 <div class="desc">
                   {{ t.tool.mcpservers.desc }}
                 </div>
-                <div class="time">2024-12-15 · {{ t.tool.mcpservers.category }}</div>
+                <div class="time">
+                  2024-12-15 · {{ t.tool.mcpservers.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -220,7 +242,9 @@
                 <div class="desc">
                   {{ t.tool.langchain.desc }}
                 </div>
-                <div class="time">2024-12-12 · {{ t.tool.langchain.category }}</div>
+                <div class="time">
+                  2024-12-12 · {{ t.tool.langchain.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -238,7 +262,9 @@
                 <div class="desc">
                   {{ t.tool.autogen.desc }}
                 </div>
-                <div class="time">2024-12-10 · {{ t.tool.autogen.category }}</div>
+                <div class="time">
+                  2024-12-10 · {{ t.tool.autogen.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -259,7 +285,9 @@
                 <div class="desc">
                   {{ t.tool.autogpt.desc }}
                 </div>
-                <div class="time">2024-12-08 · {{ t.tool.autogpt.category }}</div>
+                <div class="time">
+                  2024-12-08 · {{ t.tool.autogpt.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -277,7 +305,9 @@
                 <div class="desc">
                   {{ t.tool.llamaindex.desc }}
                 </div>
-                <div class="time">2024-12-05 · {{ t.tool.llamaindex.category }}</div>
+                <div class="time">
+                  2024-12-05 · {{ t.tool.llamaindex.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -298,7 +328,9 @@
                 <div class="desc">
                   {{ t.tool.anthropicsdk.desc }}
                 </div>
-                <div class="time">2024-12-03 · {{ t.tool.anthropicsdk.category }}</div>
+                <div class="time">
+                  2024-12-03 · {{ t.tool.anthropicsdk.category }}
+                </div>
               </div>
             </div>
           </a>
@@ -316,7 +348,9 @@
                 <div class="desc">
                   {{ t.tool.openaisdk.desc }}
                 </div>
-                <div class="time">2024-12-01 · {{ t.tool.openaisdk.category }}</div>
+                <div class="time">
+                  2024-12-01 · {{ t.tool.openaisdk.category }}
+                </div>
               </div>
             </div>
           </a>
