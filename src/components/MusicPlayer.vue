@@ -1,7 +1,7 @@
 <template>
   <div
     class="music-player"
-    :class="{ expanded: isExpanded }"
+    :class="{ expanded: isExpanded, animating: isAnimating }"
     ref="musicPlayerRef"
   >
     <!-- 旋转胶片 -->
@@ -36,7 +36,13 @@
     </div>
 
     <!-- 展开的播放器面板 -->
-    <Transition name="player-expand">
+    <Transition
+      name="player-expand"
+      @before-leave="onBeforeLeave"
+      @after-leave="onAfterLeave"
+      @before-enter="onBeforeEnter"
+      @after-enter="onAfterEnter"
+    >
       <div v-if="isExpanded" class="player-panel">
         <!-- 当前播放信息和控制按钮 -->
         <div class="now-playing">
@@ -150,6 +156,7 @@ const { t } = useI18n();
 // 响应式状态
 const isPlaying = ref(false);
 const isExpanded = ref(false);
+const isAnimating = ref(false); // 控制胶片动画状态
 const currentTime = ref(0);
 const duration = ref(0);
 const volume = ref(0.02); // 默认音量2%
@@ -284,6 +291,23 @@ const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${minutes}:${secs.toString().padStart(2, "0")}`;
+};
+
+// 动画钩子函数
+const onBeforeEnter = () => {
+  isAnimating.value = true;
+};
+
+const onAfterEnter = () => {
+  isAnimating.value = false;
+};
+
+const onBeforeLeave = () => {
+  isAnimating.value = true;
+};
+
+const onAfterLeave = () => {
+  isAnimating.value = false;
 };
 
 // 点击外部关闭弹窗
@@ -815,11 +839,22 @@ onBeforeUnmount(() => {
 
 /* 胶片容器的动画优化 */
 .music-player .vinyl-container {
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* 展开状态下的胶片位置和大小 */
 .music-player.expanded .vinyl-container {
-  transform: translateY(0) scale(1);
+  width: 100px;
+  height: 100px;
+  margin: 16px auto 0;
+}
+
+/* 关键：在弹窗消失动画开始时，胶片立即开始回到原位 */
+.music-player.animating:not(.expanded) .vinyl-container {
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 !important;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 /* 移动端适配 */
