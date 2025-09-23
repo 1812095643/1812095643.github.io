@@ -10,13 +10,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Hoppscotch</div>
+                  <div class="name">{{ t.tool.hoppscotch.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  开源的API测试客户端，Postman的完美替代品。支持REST、GraphQL、WebSocket等多种协议，界面简洁，功能强大。
+                  {{ t.tool.hoppscotch.desc }}
                 </div>
-                <div class="time">2024-12-01 · API测试工具</div>
+                <div class="time">2024-12-01 · {{ t.tool.hoppscotch.category }}</div>
               </div>
             </div>
           </a>
@@ -28,13 +28,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">JSON Formatter</div>
+                  <div class="name">{{ t.tool.jsonformatter.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  在线JSON格式化、验证和美化工具。支持JSON压缩、语法高亮、错误检测，是开发者处理JSON数据的必备工具。
+                  {{ t.tool.jsonformatter.desc }}
                 </div>
-                <div class="time">2024-11-28 · 格式化工具</div>
+                <div class="time">2024-11-28 · {{ t.tool.jsonformatter.category }}</div>
               </div>
             </div>
           </a>
@@ -46,13 +46,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">RegExr</div>
+                  <div class="name">{{ t.tool.regexr.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  强大的正则表达式学习、构建和测试工具。提供实时匹配、详细解释和丰富的示例，帮助开发者掌握正则表达式。
+                  {{ t.tool.regexr.desc }}
                 </div>
-                <div class="time">2024-11-25 · 正则工具</div>
+                <div class="time">2024-11-25 · {{ t.tool.regexr.category }}</div>
               </div>
             </div>
           </a>
@@ -64,13 +64,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Base64 Encoder</div>
+                  <div class="name">{{ t.tool.base64encoder.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  在线Base64编码解码工具，支持文本、文件的Base64转换。界面简洁，操作便捷，是Web开发中常用的编码工具。
+                  {{ t.tool.base64encoder.desc }}
                 </div>
-                <div class="time">2024-11-22 · 编码工具</div>
+                <div class="time">2024-11-22 · {{ t.tool.base64encoder.category }}</div>
               </div>
             </div>
           </a>
@@ -82,13 +82,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Can I Use</div>
+                  <div class="name">{{ t.tool.caniuse.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  浏览器兼容性查询工具，帮助开发者检查HTML、CSS、JavaScript特性在各浏览器中的支持情况。
+                  {{ t.tool.caniuse.desc }}
                 </div>
-                <div class="time">2024-11-20 · 兼容性工具</div>
+                <div class="time">2024-11-20 · {{ t.tool.caniuse.category }}</div>
               </div>
             </div>
           </a>
@@ -100,13 +100,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Bundle Phobia</div>
+                  <div class="name">{{ t.tool.bundlephobia.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  分析npm包大小的工具，帮助开发者了解包的体积、依赖关系和加载时间，优化项目性能。
+                  {{ t.tool.bundlephobia.desc }}
                 </div>
-                <div class="time">2024-11-18 · 性能分析</div>
+                <div class="time">2024-11-18 · {{ t.tool.bundlephobia.category }}</div>
               </div>
             </div>
           </a>
@@ -118,13 +118,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Lighthouse</div>
+                  <div class="name">{{ t.tool.lighthouse.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  Google开源的网站质量审计工具，从性能、可访问性、SEO等多个维度评估网页质量，提供优化建议。
+                  {{ t.tool.lighthouse.desc }}
                 </div>
-                <div class="time">2024-11-15 · 性能工具</div>
+                <div class="time">2024-11-15 · {{ t.tool.lighthouse.category }}</div>
               </div>
             </div>
           </a>
@@ -136,13 +136,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Transform Tools</div>
+                  <div class="name">{{ t.tool.transformtools.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  多功能在线转换工具集合，支持JSON、TypeScript、GraphQL等多种格式之间的相互转换，提高开发效率。
+                  {{ t.tool.transformtools.desc }}
                 </div>
-                <div class="time">2024-11-12 · 转换工具</div>
+                <div class="time">2024-11-12 · {{ t.tool.transformtools.category }}</div>
               </div>
             </div>
           </a>
@@ -157,13 +157,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Responsively App</div>
+                  <div class="name">{{ t.tool.responsively.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  专为响应式开发设计的浏览器，可以同时预览网页在多种设备尺寸下的显示效果，提高响应式开发效率。
+                  {{ t.tool.responsively.desc }}
                 </div>
-                <div class="time">2024-11-10 · 响应式工具</div>
+                <div class="time">2024-11-10 · {{ t.tool.responsively.category }}</div>
               </div>
             </div>
           </a>
@@ -175,13 +175,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">HTTPie</div>
+                  <div class="name">{{ t.tool.httpie.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  现代化的命令行HTTP客户端，支持JSON、语法高亮、会话管理等功能，为开发者提供便捷的HTTP请求方式。
+                  {{ t.tool.httpie.desc }}
                 </div>
-                <div class="time">2024-11-08 · HTTP工具</div>
+                <div class="time">2024-11-08 · {{ t.tool.httpie.category }}</div>
               </div>
             </div>
           </a>
@@ -196,14 +196,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">MCP Servers</div>
+                  <div class="name">{{ t.tool.mcpservers.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  Model Context
-                  Protocol服务器集合，为AI模型提供标准化的上下文访问接口，支持文件系统、数据库、API等多种数据源。
+                  {{ t.tool.mcpservers.desc }}
                 </div>
-                <div class="time">2024-12-15 · MCP工具</div>
+                <div class="time">2024-12-15 · {{ t.tool.mcpservers.category }}</div>
               </div>
             </div>
           </a>
@@ -215,13 +214,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">LangChain</div>
+                  <div class="name">{{ t.tool.langchain.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  构建LLM应用的开源框架，提供链式调用、记忆管理、Agent代理等功能，是开发AI应用的强大工具链。
+                  {{ t.tool.langchain.desc }}
                 </div>
-                <div class="time">2024-12-12 · AI框架</div>
+                <div class="time">2024-12-12 · {{ t.tool.langchain.category }}</div>
               </div>
             </div>
           </a>
@@ -233,13 +232,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">AutoGen</div>
+                  <div class="name">{{ t.tool.autogen.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  微软开源的多Agent对话框架，支持多个AI代理之间的协作和对话，可构建复杂的AI工作流。
+                  {{ t.tool.autogen.desc }}
                 </div>
-                <div class="time">2024-12-10 · Agent框架</div>
+                <div class="time">2024-12-10 · {{ t.tool.autogen.category }}</div>
               </div>
             </div>
           </a>
@@ -254,13 +253,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">AutoGPT</div>
+                  <div class="name">{{ t.tool.autogpt.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  自主AI代理工具，能够自动执行复杂任务，具备自我改进和目标导向的能力，是AGI探索的重要项目。
+                  {{ t.tool.autogpt.desc }}
                 </div>
-                <div class="time">2024-12-08 · 自主Agent</div>
+                <div class="time">2024-12-08 · {{ t.tool.autogpt.category }}</div>
               </div>
             </div>
           </a>
@@ -272,13 +271,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">LlamaIndex</div>
+                  <div class="name">{{ t.tool.llamaindex.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  数据框架，专门为LLM应用提供数据连接和索引服务，支持RAG（检索增强生成）等高级AI应用模式。
+                  {{ t.tool.llamaindex.desc }}
                 </div>
-                <div class="time">2024-12-05 · 数据框架</div>
+                <div class="time">2024-12-05 · {{ t.tool.llamaindex.category }}</div>
               </div>
             </div>
           </a>
@@ -293,14 +292,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Anthropic SDK</div>
+                  <div class="name">{{ t.tool.anthropicsdk.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  Anthropic官方SDK，提供Claude
-                  AI模型的完整访问接口，支持对话、工具调用、MCP协议等功能。
+                  {{ t.tool.anthropicsdk.desc }}
                 </div>
-                <div class="time">2024-12-03 · AI SDK</div>
+                <div class="time">2024-12-03 · {{ t.tool.anthropicsdk.category }}</div>
               </div>
             </div>
           </a>
@@ -312,14 +310,13 @@
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">OpenAI Python SDK</div>
+                  <div class="name">{{ t.tool.openaisdk.name }}</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  OpenAI官方Python
-                  SDK，提供GPT、DALL-E、Whisper等模型的完整API访问，是AI开发的基础工具。
+                  {{ t.tool.openaisdk.desc }}
                 </div>
-                <div class="time">2024-12-01 · AI SDK</div>
+                <div class="time">2024-12-01 · {{ t.tool.openaisdk.category }}</div>
               </div>
             </div>
           </a>
@@ -333,10 +330,12 @@
 import { onMounted, onBeforeUnmount, nextTick } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useScrollProgress } from "../../composables/useScrollProgress";
+import { useI18n } from "../../composables/useI18n";
 
-// 使用页面动画和滚动进度
+// 使用页面动画、滚动进度和国际化
 usePageAnimations();
 const { scrollProgress } = useScrollProgress();
+const { t } = useI18n();
 
 let scrollHandler: (() => void) | null = null;
 

@@ -257,65 +257,90 @@ const translations = {
 
         // Tool Section
         tool: {
-            devtools: {
-                name: 'Browser DevTools',
-                desc: '浏览器内置开发者工具，用于调试网页、检查元素、监控性能和网络请求。',
-                category: '调试工具'
-            },
-            postman: {
-                name: 'Postman',
-                desc: 'API开发和测试平台，支持REST、GraphQL等API的测试、文档生成和团队协作。',
-                category: 'API工具'
-            },
-            figma: {
-                name: 'Figma',
-                desc: '基于云的界面设计工具，支持实时协作、原型设计和设计系统管理。',
-                category: '设计工具'
-            },
-            lighthouse: {
-                name: 'Lighthouse',
-                desc: 'Google开源的网页质量审计工具，检测性能、可访问性、SEO等指标。',
-                category: '性能工具'
+            hoppscotch: {
+                name: 'Hoppscotch',
+                desc: '开源的API测试客户端，Postman的完美替代品。支持REST、GraphQL、WebSocket等多种协议，界面简洁，功能强大。',
+                category: 'API测试工具'
             },
             jsonformatter: {
                 name: 'JSON Formatter',
-                desc: '在线JSON格式化和验证工具，支持JSON美化、压缩和语法检查。',
+                desc: '在线JSON格式化、验证和美化工具。支持JSON压缩、语法高亮、错误检测，是开发者处理JSON数据的必备工具。',
                 category: '格式化工具'
             },
             regexr: {
                 name: 'RegExr',
-                desc: '正则表达式学习、构建和测试工具，提供实时匹配和详细解释。',
+                desc: '强大的正则表达式学习、构建和测试工具。提供实时匹配、详细解释和丰富的示例，帮助开发者掌握正则表达式。',
                 category: '正则工具'
+            },
+            base64encoder: {
+                name: 'Base64 Encoder',
+                desc: '在线Base64编码解码工具，支持文本、文件的Base64转换。界面简洁，操作便捷，是Web开发中常用的编码工具。',
+                category: '编码工具'
             },
             caniuse: {
                 name: 'Can I Use',
-                desc: '浏览器兼容性查询工具，检查HTML、CSS、JavaScript特性的浏览器支持情况。',
+                desc: '浏览器兼容性查询工具，帮助开发者检查HTML、CSS、JavaScript特性在各浏览器中的支持情况。',
                 category: '兼容性工具'
             },
             bundlephobia: {
                 name: 'Bundle Phobia',
-                desc: 'npm包大小分析工具，查看包的下载大小、解压后大小和依赖关系。',
-                category: '分析工具'
+                desc: '分析npm包大小的工具，帮助开发者了解包的体积、依赖关系和加载时间，优化项目性能。',
+                category: '性能分析'
             },
-            colorhunt: {
-                name: 'Color Hunt',
-                desc: '色彩搭配灵感平台，提供精美的调色板和颜色组合方案。',
-                category: '设计工具'
+            lighthouse: {
+                name: 'Lighthouse',
+                desc: 'Google开源的网站质量审计工具，从性能、可访问性、SEO等多个维度评估网页质量，提供优化建议。',
+                category: '性能工具'
             },
-            tinypng: {
-                name: 'TinyPNG',
-                desc: '在线图片压缩工具，支持PNG和JPEG格式，保持质量的同时大幅减小文件大小。',
-                category: '优化工具'
-            },
-            gitignore: {
-                name: 'gitignore.io',
-                desc: '生成.gitignore文件的在线工具，支持各种编程语言、框架和开发环境。',
-                category: '开发工具'
+            transformtools: {
+                name: 'Transform Tools',
+                desc: '多功能在线转换工具集合，支持JSON、TypeScript、GraphQL等多种格式之间的相互转换，提高开发效率。',
+                category: '转换工具'
             },
             responsively: {
                 name: 'Responsively App',
-                desc: '响应式网页设计测试工具，同时在多个设备尺寸上预览网页效果。',
-                category: '测试工具'
+                desc: '专为响应式开发设计的浏览器，可以同时预览网页在多种设备尺寸下的显示效果，提高响应式开发效率。',
+                category: '响应式工具'
+            },
+            httpie: {
+                name: 'HTTPie',
+                desc: '现代化的命令行HTTP客户端，支持JSON、语法高亮、会话管理等功能，为开发者提供便捷的HTTP请求方式。',
+                category: 'HTTP工具'
+            },
+            mcpservers: {
+                name: 'MCP Servers',
+                desc: 'Model Context Protocol服务器集合，为AI模型提供标准化的上下文访问接口，支持文件系统、数据库、API等多种数据源。',
+                category: 'MCP工具'
+            },
+            langchain: {
+                name: 'LangChain',
+                desc: '构建LLM应用的开源框架，提供链式调用、记忆管理、Agent代理等功能，是开发AI应用的强大工具链。',
+                category: 'AI框架'
+            },
+            autogen: {
+                name: 'AutoGen',
+                desc: '微软开源的多Agent对话框架，支持多个AI代理之间的协作和对话，可构建复杂的AI工作流。',
+                category: 'Agent框架'
+            },
+            autogpt: {
+                name: 'AutoGPT',
+                desc: '自主AI代理工具，能够自动执行复杂任务，具备自我改进和目标导向的能力，是AGI探索的重要项目。',
+                category: '自主Agent'
+            },
+            llamaindex: {
+                name: 'LlamaIndex',
+                desc: '数据框架，专门为LLM应用提供数据连接和索引服务，支持RAG（检索增强生成）等高级AI应用模式。',
+                category: '数据框架'
+            },
+            anthropicsdk: {
+                name: 'Anthropic SDK',
+                desc: 'Anthropic官方SDK，提供Claude AI模型的完整访问接口，支持对话、工具调用、MCP协议等功能。',
+                category: 'AI SDK'
+            },
+            openaisdk: {
+                name: 'OpenAI Python SDK',
+                desc: 'OpenAI官方Python SDK，提供GPT、DALL-E、Whisper等模型的完整API访问，是AI开发的基础工具。',
+                category: 'AI SDK'
             }
         },
 
@@ -760,11 +785,6 @@ const translations = {
                 name: 'gitignore.io',
                 desc: 'Online tool for generating .gitignore files supporting various programming languages, frameworks and development environments.',
                 category: 'Development Tools'
-            },
-            responsively: {
-                name: 'Responsively App',
-                desc: 'Responsive web design testing tool for previewing web pages across multiple device sizes simultaneously.',
-                category: 'Testing Tools'
             }
         },
 
