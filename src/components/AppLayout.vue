@@ -6,6 +6,7 @@
     <slot />
     <AppFooter />
     <AppWidget />
+    <BackToTop />
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import AppFooter from "./AppFooter.vue";
 import AppWidget from "./AppWidget.vue";
 import FireworksCanvas from "./FireworksCanvas.vue";
 import MusicPlayer from "./MusicPlayer.vue";
+import BackToTop from "./BackToTop.vue";
 import { loadScriptsInOrder } from "../utils/scriptLoader";
 
 const props = defineProps<{
