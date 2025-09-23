@@ -250,6 +250,53 @@
           </a>
         </div>
       </div>
+      <div class="tech-stack-section">
+        <h3 class="tech-stack-title">{{ t.techStack.title }}</h3>
+        <div class="tech-stack-grid">
+          <div class="tech-item">
+            <div class="tech-icon">⚡</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.vue3 }}</div>
+              <div class="tech-desc">{{ t.techStack.vue3Desc }}</div>
+            </div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">📱</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.responsive }}</div>
+              <div class="tech-desc">{{ t.techStack.responsiveDesc }}</div>
+            </div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🔧</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.typescript }}</div>
+              <div class="tech-desc">{{ t.techStack.typescriptDesc }}</div>
+            </div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🏪</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.pinia }}</div>
+              <div class="tech-desc">{{ t.techStack.piniaDesc }}</div>
+            </div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">⚡</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.vite }}</div>
+              <div class="tech-desc">{{ t.techStack.viteDesc }}</div>
+            </div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🌐</div>
+            <div class="tech-content">
+              <div class="tech-name">{{ t.techStack.i18n }}</div>
+              <div class="tech-desc">{{ t.techStack.i18nDesc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -312,5 +359,134 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* All styles removed as they are related to the old animation */
+/* Tech Stack Section Styles */
+.tech-stack-section {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 968px;
+}
+
+.tech-stack-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e8e8f6;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tech-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.tech-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.tech-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.tech-icon {
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tech-content {
+  flex: 1;
+}
+
+.tech-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8e8f6;
+  margin-bottom: 3px;
+}
+
+.tech-desc {
+  font-size: 12px;
+  color: #b3b3c1;
+  line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .tech-stack-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .tech-item {
+    padding: 10px;
+  }
+
+  .tech-stack-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .tech-name {
+    font-size: 13px;
+  }
+
+  .tech-desc {
+    font-size: 11px;
+  }
+
+  .tech-icon {
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-stack-section {
+    margin-top: 32px;
+  }
+
+  .tech-stack-grid {
+    gap: 8px;
+  }
+
+  .tech-item {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .tech-icon {
+    font-size: 16px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .tech-stack-title {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+
+  .tech-name {
+    font-size: 12px;
+  }
+
+  .tech-desc {
+    font-size: 10px;
+  }
+}
 </style>

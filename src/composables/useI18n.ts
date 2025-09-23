@@ -76,6 +76,23 @@ const translations = {
             subtitle3: '构建扎实技术基础'
         },
 
+        // Tech Stack Section
+        techStack: {
+            title: '本博客的技术栈与特色',
+            vue3: 'Vue 3.0',
+            vue3Desc: '基于最新的 Vue 3.0 Composition API 构建，享受更好的性能和开发体验',
+            responsive: '响应式设计',
+            responsiveDesc: '完全适配桌面端、平板端和移动端，提供一致的用户体验',
+            typescript: 'TypeScript',
+            typescriptDesc: '全面采用 TypeScript 开发，提供更好的类型安全和开发效率',
+            pinia: '状态管理',
+            piniaDesc: '使用 Pinia 进行状态管理，轻量级且易于维护',
+            vite: '现代构建',
+            viteDesc: '基于 Vite 构建工具，享受极速的热重载和构建体验',
+            i18n: '国际化',
+            i18nDesc: '内置中英文双语支持，轻松切换语言环境'
+        },
+
         // Language Toggle
         switchToEnglish: 'English',
         switchToChinese: '中文',
@@ -494,6 +511,23 @@ const translations = {
             subtitle1: 'Selected Classic Frontend Development Books',
             subtitle2: 'Sharing Technical Growth Insights',
             subtitle3: 'Building Solid Technical Foundation'
+        },
+
+        // Tech Stack Section
+        techStack: {
+            title: 'Tech Stack & Features of This Blog',
+            vue3: 'Vue 3.0',
+            vue3Desc: 'Built with the latest Vue 3.0 Composition API for better performance and development experience',
+            responsive: 'Responsive Design',
+            responsiveDesc: 'Fully adapted for desktop, tablet and mobile devices, providing consistent user experience',
+            typescript: 'TypeScript',
+            typescriptDesc: 'Fully developed with TypeScript for better type safety and development efficiency',
+            pinia: 'State Management',
+            piniaDesc: 'Using Pinia for state management, lightweight and easy to maintain',
+            vite: 'Modern Build',
+            viteDesc: 'Based on Vite build tool for lightning-fast hot reload and build experience',
+            i18n: 'Internationalization',
+            i18nDesc: 'Built-in Chinese and English bilingual support, easy language switching'
         },
 
         // Language Toggle
