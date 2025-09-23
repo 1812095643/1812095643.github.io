@@ -6,22 +6,23 @@
       </Transition>
     </router-view>
   </AppLayout>
-  
+
   <!-- Mounts common layout with router-based pages -->
-  
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import AppLayout from './components/AppLayout.vue'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import AppLayout from "./components/AppLayout.vue";
 
-const route = useRoute()
+const route = useRoute();
 const active = computed(() => {
-  const name = route.name as string | undefined
-  const tabs = ['home','work','tool','blog','book','about'] as const
-  return (tabs as readonly string[]).includes(name || '') ? (name as typeof tabs[number]) : 'home'
-})
+  const name = route.name as string | undefined;
+  const tabs = ["home", "work", "tool", "blog", "book", "about"] as const;
+  return (tabs as readonly string[]).includes(name || "")
+    ? (name as (typeof tabs)[number])
+    : "home";
+});
 </script>
 
 <style scoped>

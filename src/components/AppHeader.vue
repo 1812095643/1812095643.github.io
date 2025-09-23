@@ -1,5 +1,5 @@
 <template>
-  <header class="app-header" :class="{ 'scrolled': isScrolled }">
+  <header class="app-header" :class="{ scrolled: isScrolled }">
     <div class="header-container">
       <!-- Logo区域 -->
       <div class="logo-section">
@@ -14,17 +14,15 @@
       <!-- 主导航菜单 -->
       <nav class="main-nav" role="navigation">
         <ul class="nav-list">
-          <li 
-            v-for="item in menuItems" 
-            :key="item.name"
-            class="nav-item"
-          >
-            <button 
-              :class="['nav-button', { 'active': isActive(item.name) }]"
+          <li v-for="item in menuItems" :key="item.name" class="nav-item">
+            <button
+              :class="['nav-button', { active: isActive(item.name) }]"
               @click="go(item.name, $event)"
               :aria-current="isActive(item.name) ? 'page' : undefined"
             >
-              <span class="nav-text">{{ isEnglish ? item.labelEn : item.labelZh }}</span>
+              <span class="nav-text">{{
+                isEnglish ? item.labelEn : item.labelZh
+              }}</span>
               <div class="nav-indicator"></div>
             </button>
           </li>
@@ -34,40 +32,59 @@
       <!-- 功能按钮区域 -->
       <div class="actions-section">
         <!-- 语言切换 -->
-        <button 
+        <button
           class="action-btn language-toggle"
           @click="toggleLanguage($event)"
           :title="isEnglish ? '切换到中文' : 'Switch to English'"
         >
           <div class="btn-content">
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
-              <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/>
+              <path
+                d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+                fill="currentColor"
+              />
             </svg>
-            <span class="btn-label">{{ isEnglish ? 'CN' : 'EN' }}</span>
+            <span class="btn-label">{{ isEnglish ? "CN" : "EN" }}</span>
           </div>
           <div class="btn-ripple"></div>
         </button>
 
         <!-- 全屏切换 -->
-        <button 
+        <button
           class="action-btn fullscreen-toggle"
           @click="toggleFullscreen($event)"
-          :title="isFullscreen ? (isEnglish ? 'Exit Fullscreen' : '退出全屏') : (isEnglish ? 'Enter Fullscreen' : '进入全屏')"
+          :title="
+            isFullscreen
+              ? isEnglish
+                ? 'Exit Fullscreen'
+                : '退出全屏'
+              : isEnglish
+              ? 'Enter Fullscreen'
+              : '进入全屏'
+          "
         >
           <div class="btn-content">
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
-              <path v-if="!isFullscreen" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/>
-              <path v-else d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="currentColor"/>
+              <path
+                v-if="!isFullscreen"
+                d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+                fill="currentColor"
+              />
+              <path
+                v-else
+                d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+                fill="currentColor"
+              />
             </svg>
           </div>
           <div class="btn-ripple"></div>
         </button>
 
         <!-- 移动端菜单按钮 -->
-        <button 
+        <button
           class="mobile-menu-btn"
           @click="toggleMobileMenu($event)"
-          :class="{ 'active': isMobileMenuOpen }"
+          :class="{ active: isMobileMenuOpen }"
           aria-label="Toggle menu"
         >
           <div class="hamburger">
@@ -82,7 +99,11 @@
 
     <!-- 移动端菜单 -->
     <Transition name="mobile-menu">
-      <div v-if="isMobileMenuOpen" class="mobile-menu-overlay" @click="closeMobileMenu">
+      <div
+        v-if="isMobileMenuOpen"
+        class="mobile-menu-overlay"
+        @click="closeMobileMenu"
+      >
         <div class="mobile-menu-container">
           <!-- 背景装饰 -->
           <div class="menu-bg-decoration">
@@ -91,7 +112,7 @@
             <div class="bg-circle bg-circle-3"></div>
             <div class="bg-gradient"></div>
           </div>
-          
+
           <nav class="mobile-menu" @click.stop role="navigation">
             <!-- 菜单头部 -->
             <div class="mobile-menu-header">
@@ -102,16 +123,28 @@
                   </div>
                   <span class="mobile-logo-text">YGQ的个人博客</span>
                 </div>
-                <button class="close-btn" @click="closeMobileMenu($event)" aria-label="Close menu">
+                <button
+                  class="close-btn"
+                  @click="closeMobileMenu($event)"
+                  aria-label="Close menu"
+                >
                   <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path
+                      d="M18 6L6 18M6 6l12 12"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
                   </svg>
                 </button>
               </div>
             </div>
-            
+
             <!-- 精简的时间和天气信息 -->
-            <div class="mobile-info-section" :style="{ '--theme-gradient': currentTheme.gradient }">
+            <div
+              class="mobile-info-section"
+              :style="{ '--theme-gradient': currentTheme.gradient }"
+            >
               <div class="info-row">
                 <div class="time-info">
                   <div class="greeting-time">
@@ -128,7 +161,9 @@
                       <span class="desc">{{ weatherData.description }}</span>
                     </div>
                   </div>
-                  <div class="location">{{ locationData?.city || weatherData.city }}</div>
+                  <div class="location">
+                    {{ locationData?.city || weatherData.city }}
+                  </div>
                 </div>
                 <div class="weather-loading" v-else>
                   <div class="loading-dot"></div>
@@ -136,26 +171,37 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- 导航菜单 -->
             <div class="mobile-nav-section">
               <ul class="mobile-nav-list">
-                <li 
-                  v-for="(item, index) in menuItems" 
+                <li
+                  v-for="(item, index) in menuItems"
                   :key="item.name"
                   class="mobile-nav-item"
                   :style="{ '--delay': `${index * 0.08}s` }"
                 >
-                  <button 
-                    :class="['mobile-nav-button', { 'active': isActive(item.name) }]"
+                  <button
+                    :class="[
+                      'mobile-nav-button',
+                      { active: isActive(item.name) },
+                    ]"
                     @click="goMobile(item.name, $event)"
                   >
                     <div class="nav-btn-content">
                       <div class="nav-icon">{{ getNavIcon(item.name) }}</div>
-                      <span class="mobile-nav-text">{{ isEnglish ? item.labelEn : item.labelZh }}</span>
+                      <span class="mobile-nav-text">{{
+                        isEnglish ? item.labelEn : item.labelZh
+                      }}</span>
                       <div class="nav-arrow">
                         <svg viewBox="0 0 24 24" fill="none">
-                          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path
+                            d="M9 18l6-6-6-6"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -168,22 +214,43 @@
             <!-- 底部操作区域 -->
             <div class="mobile-actions">
               <div class="action-grid">
-                <button class="mobile-action-btn" @click="toggleLanguage($event)">
+                <button
+                  class="mobile-action-btn"
+                  @click="toggleLanguage($event)"
+                >
                   <div class="action-btn-content">
                     <svg class="action-icon" viewBox="0 0 24 24" fill="none">
-                      <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/>
+                      <path
+                        d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+                        fill="currentColor"
+                      />
                     </svg>
-                    <span class="action-label">{{ isEnglish ? '中文' : 'English' }}</span>
+                    <span class="action-label">{{
+                      isEnglish ? "中文" : "English"
+                    }}</span>
                   </div>
                   <div class="btn-ripple"></div>
                 </button>
-                <button class="mobile-action-btn" @click="toggleFullscreen($event)">
+                <button
+                  class="mobile-action-btn"
+                  @click="toggleFullscreen($event)"
+                >
                   <div class="action-btn-content">
                     <svg class="action-icon" viewBox="0 0 24 24" fill="none">
-                      <path v-if="!isFullscreen" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/>
-                      <path v-else d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="currentColor"/>
+                      <path
+                        v-if="!isFullscreen"
+                        d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+                        fill="currentColor"
+                      />
+                      <path
+                        v-else
+                        d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+                        fill="currentColor"
+                      />
                     </svg>
-                    <span class="action-label">{{ isFullscreen ? '退出全屏' : '全屏' }}</span>
+                    <span class="action-label">{{
+                      isFullscreen ? "退出全屏" : "全屏"
+                    }}</span>
                   </div>
                   <div class="btn-ripple"></div>
                 </button>
@@ -197,233 +264,259 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter, useRoute, RouterLink } from 'vue-router'
-import { weatherService, type WeatherData, type LocationData } from '../utils/weatherService'
-import { timeUtils, type TimeInfo } from '../utils/timeUtils'
-import { useRippleEffect } from '../utils/rippleEffect'
-import { useI18n } from '../composables/useI18n'
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter, useRoute, RouterLink } from "vue-router";
+import {
+  weatherService,
+  type WeatherData,
+  type LocationData,
+} from "../utils/weatherService";
+import { timeUtils, type TimeInfo } from "../utils/timeUtils";
+import { useRippleEffect } from "../utils/rippleEffect";
+import { useI18n } from "../composables/useI18n";
 
-const props = defineProps<{ active: 'home'|'work'|'tool'|'blog'|'book'|'about', logoSrc?: string }>()
+const props = defineProps<{
+  active: "home" | "work" | "tool" | "blog" | "book" | "about";
+  logoSrc?: string;
+}>();
 
-const route = useRoute()
-const router = useRouter()
-const { createColorfulRipple, createMultiLayerRipple } = useRippleEffect()
+const route = useRoute();
+const router = useRouter();
+const { createColorfulRipple, createMultiLayerRipple } = useRippleEffect();
 
 // 使用国际化
-const { t, currentLanguage, toggleLanguage: toggleLang, initLanguage } = useI18n()
+const {
+  t,
+  currentLanguage,
+  toggleLanguage: toggleLang,
+  initLanguage,
+} = useI18n();
 
 // 响应式状态
-const isScrolled = ref(false)
-const isEnglish = computed(() => currentLanguage.value === 'en')
-const isFullscreen = ref(false)
-const isMobileMenuOpen = ref(false)
-const weatherData = ref<WeatherData | null>(null)
-const locationData = ref<LocationData | null>(null)
+const isScrolled = ref(false);
+const isEnglish = computed(() => currentLanguage.value === "en");
+const isFullscreen = ref(false);
+const isMobileMenuOpen = ref(false);
+const weatherData = ref<WeatherData | null>(null);
+const locationData = ref<LocationData | null>(null);
 const timeInfo = ref<TimeInfo>({
-  date: '',
-  time: '',
-  weekday: '',
-  period: '',
-  greeting: '',
-  timeZone: ''
-})
+  date: "",
+  time: "",
+  weekday: "",
+  period: "",
+  greeting: "",
+  timeZone: "",
+});
 
 // 菜单项配置
 const menuItems = [
-  { name: 'home' as const, labelZh: '首页', labelEn: 'Home' },
-  { name: 'work' as const, labelZh: '项目', labelEn: 'Work' },
-  { name: 'tool' as const, labelZh: '工具', labelEn: 'Tools' },
-  { name: 'blog' as const, labelZh: '知识', labelEn: 'Blog' },
-  { name: 'book' as const, labelZh: '书籍', labelEn: 'Books' },
-  { name: 'about' as const, labelZh: '关于', labelEn: 'About' }
-]
+  { name: "home" as const, labelZh: "首页", labelEn: "Home" },
+  { name: "work" as const, labelZh: "项目", labelEn: "Work" },
+  { name: "tool" as const, labelZh: "工具", labelEn: "Tools" },
+  { name: "blog" as const, labelZh: "知识", labelEn: "Blog" },
+  { name: "book" as const, labelZh: "书籍", labelEn: "Books" },
+  { name: "about" as const, labelZh: "关于", labelEn: "About" },
+];
 
 // 计算属性
-const logoSrc = computed(() => props.logoSrc || '/assets/public/logo_graph.svg')
+const logoSrc = computed(
+  () => props.logoSrc || "/assets/public/logo_graph.svg"
+);
 
 const weatherEmoji = computed(() => {
-  if (!weatherData.value) return '🌤️'
-  return weatherService.getWeatherEmoji(weatherData.value.description)
-})
+  if (!weatherData.value) return "🌤️";
+  return weatherService.getWeatherEmoji(weatherData.value.description);
+});
 
 const currentTheme = computed(() => {
-  const hour = new Date().getHours()
-  return timeUtils.getTimeBasedTheme(hour)
-})
+  const hour = new Date().getHours();
+  return timeUtils.getTimeBasedTheme(hour);
+});
 
 // 获取导航图标
 function getNavIcon(name: string): string {
   const icons: Record<string, string> = {
-    home: '🏠',
-    work: '💼',
-    tool: '🛠️',
-    blog: '📚',
-    book: '📖',
-    about: '👋'
-  }
-  return icons[name] || '📄'
+    home: "🏠",
+    work: "💼",
+    tool: "🛠️",
+    blog: "📚",
+    book: "📖",
+    about: "👋",
+  };
+  return icons[name] || "📄";
 }
 
 // 判断当前路由是否激活
-function isActive(name: 'home'|'work'|'tool'|'blog'|'book'|'about') {
-  return route.name === name
+function isActive(name: "home" | "work" | "tool" | "blog" | "book" | "about") {
+  return route.name === name;
 }
 
 // 导航跳转（带绽放效果）
-function go(name: 'home'|'work'|'tool'|'blog'|'book'|'about', event?: MouseEvent) {
+function go(
+  name: "home" | "work" | "tool" | "blog" | "book" | "about",
+  event?: MouseEvent
+) {
   if (event) {
-    createColorfulRipple(event.currentTarget as HTMLElement, event)
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
   }
-  router.push({ name })
+  router.push({ name });
 }
 
 // 移动端导航跳转（带绽放效果）
-function goMobile(name: 'home'|'work'|'tool'|'blog'|'book'|'about', event?: MouseEvent) {
+function goMobile(
+  name: "home" | "work" | "tool" | "blog" | "book" | "about",
+  event?: MouseEvent
+) {
   if (event) {
-    createMultiLayerRipple(event.currentTarget as HTMLElement, event)
+    createMultiLayerRipple(event.currentTarget as HTMLElement, event);
   }
-  router.push({ name })
-  closeMobileMenu()
+  router.push({ name });
+  closeMobileMenu();
 }
 
 // 切换语言（带绽放效果）
 function toggleLanguage(event?: MouseEvent) {
   if (event) {
-    createColorfulRipple(event.currentTarget as HTMLElement, event)
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
   }
-  toggleLang()
+  toggleLang();
 }
 
 // 切换全屏（带绽放效果）
 function toggleFullscreen(event?: MouseEvent) {
   if (event) {
-    createColorfulRipple(event.currentTarget as HTMLElement, event)
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
   }
-  
+
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().then(() => {
-      isFullscreen.value = true
-    }).catch(err => {
-      console.warn('Failed to enter fullscreen:', err)
-    })
+    document.documentElement
+      .requestFullscreen()
+      .then(() => {
+        isFullscreen.value = true;
+      })
+      .catch((err) => {
+        console.warn("Failed to enter fullscreen:", err);
+      });
   } else {
-    document.exitFullscreen().then(() => {
-      isFullscreen.value = false
-    }).catch(err => {
-      console.warn('Failed to exit fullscreen:', err)
-    })
+    document
+      .exitFullscreen()
+      .then(() => {
+        isFullscreen.value = false;
+      })
+      .catch((err) => {
+        console.warn("Failed to exit fullscreen:", err);
+      });
   }
 }
 
 // 切换移动端菜单（带绽放效果）
 function toggleMobileMenu(event?: MouseEvent) {
   if (event) {
-    createMultiLayerRipple(event.currentTarget as HTMLElement, event)
+    createMultiLayerRipple(event.currentTarget as HTMLElement, event);
   }
-  
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
+
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
   if (isMobileMenuOpen.value) {
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = "hidden";
     // 菜单打开时刷新天气信息（如果数据为空或过期）
     if (!weatherData.value) {
-      fetchWeatherInfo()
+      fetchWeatherInfo();
     }
   } else {
-    document.body.style.overflow = ''
+    document.body.style.overflow = "";
   }
 }
 
 // 关闭移动端菜单（带绽放效果）
 function closeMobileMenu(event?: MouseEvent) {
   if (event) {
-    createColorfulRipple(event.currentTarget as HTMLElement, event)
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
   }
-  isMobileMenuOpen.value = false
-  document.body.style.overflow = ''
+  isMobileMenuOpen.value = false;
+  document.body.style.overflow = "";
 }
 
 // 滚动监听
 function handleScroll() {
-  isScrolled.value = window.scrollY > 20
+  isScrolled.value = window.scrollY > 20;
 }
 
 // 全屏状态监听
 function handleFullscreenChange() {
-  isFullscreen.value = !!document.fullscreenElement
+  isFullscreen.value = !!document.fullscreenElement;
 }
 
 // 窗口大小变化监听
 function handleResize() {
   if (window.innerWidth > 768 && isMobileMenuOpen.value) {
-    closeMobileMenu()
+    closeMobileMenu();
   }
 }
 
 // 更新时间信息
 function updateTimeInfo() {
-  const timezone = locationData.value?.timezone
-  timeInfo.value = timeUtils.getCurrentTimeInfo(timezone)
+  const timezone = locationData.value?.timezone;
+  timeInfo.value = timeUtils.getCurrentTimeInfo(timezone);
 }
 
 // 获取天气信息
 async function fetchWeatherInfo() {
   try {
-    console.log('开始获取天气信息...')
-    const { location, weather } = await weatherService.getCompleteWeatherInfo()
-    
-    console.log('获取到位置信息:', location)
-    console.log('获取到天气信息:', weather)
-    
-    locationData.value = location
-    weatherData.value = weather
-    
+    console.log("开始获取天气信息...");
+    const { location, weather } = await weatherService.getCompleteWeatherInfo();
+
+    console.log("获取到位置信息:", location);
+    console.log("获取到天气信息:", weather);
+
+    locationData.value = location;
+    weatherData.value = weather;
+
     // 更新时间信息（使用获取到的时区）
-    updateTimeInfo()
-    
-    console.log('天气信息更新完成')
+    updateTimeInfo();
+
+    console.log("天气信息更新完成");
   } catch (error) {
-    console.error('获取天气信息失败:', error)
+    console.error("获取天气信息失败:", error);
   }
 }
 
 // 生命周期
 onMounted(() => {
   // 初始化语言设置
-  initLanguage()
+  initLanguage();
 
   // 添加事件监听器
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  document.addEventListener('fullscreenchange', handleFullscreenChange)
-  window.addEventListener('resize', handleResize)
-  
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  window.addEventListener("resize", handleResize);
+
   // 初始化滚动状态
-  handleScroll()
-  
+  handleScroll();
+
   // 初始化时间信息
-  updateTimeInfo()
-  const timeInterval = setInterval(updateTimeInfo, 1000)
-  
+  updateTimeInfo();
+  const timeInterval = setInterval(updateTimeInfo, 1000);
+
   // 获取天气信息（延迟加载，避免阻塞页面渲染）
   setTimeout(() => {
-    fetchWeatherInfo()
-  }, 1000)
-  
+    fetchWeatherInfo();
+  }, 1000);
+
   // 清理定时器
   onBeforeUnmount(() => {
-    clearInterval(timeInterval)
-  })
-})
+    clearInterval(timeInterval);
+  });
+});
 
 onBeforeUnmount(() => {
   // 清理事件监听器
-  window.removeEventListener('scroll', handleScroll)
-  document.removeEventListener('fullscreenchange', handleFullscreenChange)
-  window.removeEventListener('resize', handleResize)
-  
+  window.removeEventListener("scroll", handleScroll);
+  document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  window.removeEventListener("resize", handleResize);
+
   // 恢复body滚动
-  document.body.style.overflow = ''
-})
+  document.body.style.overflow = "";
+});
 </script>
 
 <style scoped>
@@ -459,7 +552,8 @@ onBeforeUnmount(() => {
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
 .header-container {
@@ -497,7 +591,7 @@ onBeforeUnmount(() => {
 }
 
 .logo-text {
-  font-family: 'STXingkai', '华文行楷', '楷体', 'KaiTi', serif;
+  font-family: "STXingkai", "华文行楷", "楷体", "KaiTi", serif;
   font-size: 20px;
   font-weight: 400;
   color: #ffffff;
@@ -555,10 +649,14 @@ onBeforeUnmount(() => {
 }
 
 .nav-button::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1),
+    rgba(139, 92, 246, 0.1)
+  );
   border-radius: 12px;
   opacity: 0;
   transform: scale(0.8);
@@ -566,13 +664,17 @@ onBeforeUnmount(() => {
 }
 
 .nav-button::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
+  );
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -663,10 +765,14 @@ onBeforeUnmount(() => {
 }
 
 .action-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.2),
+    rgba(139, 92, 246, 0.2)
+  );
   border-radius: 12px;
   opacity: 0;
   transform: scale(0.5) rotate(180deg);
@@ -730,7 +836,11 @@ onBeforeUnmount(() => {
 .btn-ripple {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.3),
+    transparent 70%
+  );
   opacity: 0;
   transform: scale(0);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -743,8 +853,14 @@ onBeforeUnmount(() => {
 }
 
 @keyframes ripple {
-  0% { transform: scale(0); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 }
 
 /* 移动端菜单按钮 - 与全屏按钮保持一致的大小 */
@@ -764,10 +880,14 @@ onBeforeUnmount(() => {
 }
 
 .mobile-menu-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.2),
+    rgba(139, 92, 246, 0.2)
+  );
   border-radius: 12px;
   opacity: 0;
   transform: scale(0.5) rotate(180deg);
@@ -808,9 +928,15 @@ onBeforeUnmount(() => {
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.line-1 { top: 0; }
-.line-2 { top: 7px; }
-.line-3 { top: 14px; }
+.line-1 {
+  top: 0;
+}
+.line-2 {
+  top: 7px;
+}
+.line-3 {
+  top: 14px;
+}
 
 .mobile-menu-btn.active .line-1 {
   top: 7px;
@@ -861,7 +987,11 @@ onBeforeUnmount(() => {
 .bg-circle {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.12),
+    rgba(139, 92, 246, 0.12)
+  );
   animation: float 6s ease-in-out infinite;
 }
 
@@ -901,8 +1031,13 @@ onBeforeUnmount(() => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 .mobile-menu {
@@ -913,10 +1048,8 @@ onBeforeUnmount(() => {
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    0 1px 0 rgba(255, 255, 255, 0.1) inset,
-    0 0 0 1px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(99, 102, 241, 0.1);
   overflow: hidden;
   /* 移除滚动条，确保内容适配 */
 }
@@ -961,12 +1094,19 @@ onBeforeUnmount(() => {
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
 }
 
 .mobile-logo-text {
-  font-family: 'STXingkai', '华文行楷', '楷体', 'KaiTi', serif;
+  font-family: "STXingkai", "华文行楷", "楷体", "KaiTi", serif;
   font-size: 16px; /* 缩小字体 */
   font-weight: 400;
   color: #ffffff;
@@ -991,10 +1131,14 @@ onBeforeUnmount(() => {
 }
 
 .close-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.2),
+    rgba(220, 38, 38, 0.2)
+  );
   border-radius: 12px;
   opacity: 0;
   transform: scale(0.5);
@@ -1069,7 +1213,7 @@ onBeforeUnmount(() => {
   font-size: 18px;
   font-weight: 800;
   color: #ffffff;
-  font-family: 'Courier New', 'SF Mono', monospace;
+  font-family: "Courier New", "SF Mono", monospace;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   letter-spacing: 1px;
 }
@@ -1149,8 +1293,12 @@ onBeforeUnmount(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 导航菜单区域 - 缩小间距 */
@@ -1340,10 +1488,14 @@ onBeforeUnmount(() => {
 }
 
 .mobile-action-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.2),
+    rgba(139, 92, 246, 0.2)
+  );
   border-radius: 12px;
   opacity: 0;
   transform: scale(0.5) rotate(180deg);
@@ -1405,7 +1557,11 @@ onBeforeUnmount(() => {
 .mobile-action-btn .btn-ripple {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.3),
+    transparent 70%
+  );
   opacity: 0;
   transform: scale(0);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1456,28 +1612,28 @@ onBeforeUnmount(() => {
   .main-nav {
     display: none;
   }
-  
+
   .mobile-menu-btn {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
+
   .header-container {
     padding: 0 20px;
     height: 56px;
   }
-  
+
   .actions-section {
     gap: 8px;
   }
-  
+
   .action-btn {
     min-width: 40px;
     width: 40px;
     height: 40px;
   }
-  
+
   .language-toggle {
     min-width: 46px;
     width: 46px;
@@ -1489,84 +1645,84 @@ onBeforeUnmount(() => {
     padding: 0 16px;
     height: 52px;
   }
-  
+
   .logo-text {
     font-size: 18px;
   }
-  
+
   .mobile-menu-overlay {
     padding: 70px 12px 12px 12px;
   }
-  
+
   .mobile-menu-container {
     max-width: none;
   }
-  
+
   .mobile-menu {
     border-radius: 18px;
   }
-  
+
   .mobile-menu-header {
     padding: 16px 18px 12px;
   }
-  
+
   .mobile-info-section {
     padding: 14px 18px;
   }
-  
+
   .info-row {
     gap: 12px;
   }
-  
+
   .greeting {
     font-size: 13px;
   }
-  
+
   .time {
     font-size: 16px;
   }
-  
+
   .date {
     font-size: 11px;
   }
-  
+
   .weather-emoji {
     font-size: 20px;
   }
-  
+
   .temp {
     font-size: 14px;
   }
-  
+
   .desc {
     font-size: 10px;
   }
-  
+
   .location {
     font-size: 10px;
   }
-  
+
   .mobile-nav-list {
     padding: 0 16px;
   }
-  
+
   .nav-btn-content {
     padding: 12px 14px;
     gap: 10px;
   }
-  
+
   .mobile-actions {
     padding: 16px 18px 18px;
   }
-  
+
   .action-grid {
     gap: 8px;
   }
-  
+
   .mobile-action-btn {
     padding: 10px 8px;
   }
-  
+
   .language-toggle {
     min-width: 40px;
     width: 40px;
@@ -1577,73 +1733,73 @@ onBeforeUnmount(() => {
   .mobile-menu-overlay {
     padding: 65px 8px 8px 8px;
   }
-  
+
   .mobile-menu-header {
     padding: 14px 16px 10px;
   }
-  
+
   .mobile-info-section {
     padding: 12px 16px;
   }
-  
+
   .info-row {
     gap: 10px;
   }
-  
+
   .greeting {
     font-size: 12px;
   }
-  
+
   .time {
     font-size: 15px;
   }
-  
+
   .date {
     font-size: 10px;
   }
-  
+
   .weather-emoji {
     font-size: 18px;
   }
-  
+
   .temp {
     font-size: 13px;
   }
-  
+
   .desc {
     font-size: 9px;
   }
-  
+
   .location {
     font-size: 9px;
   }
-  
+
   .mobile-nav-list {
     padding: 0 14px;
     gap: 4px;
   }
-  
+
   .nav-btn-content {
     padding: 10px 12px;
     gap: 8px;
   }
-  
+
   .nav-icon {
     font-size: 18px;
   }
-  
+
   .mobile-nav-text {
     font-size: 14px;
   }
-  
+
   .mobile-actions {
     padding: 12px 16px 16px;
   }
-  
+
   .action-grid {
     gap: 6px;
   }
-  
+
   .mobile-action-btn {
     padding: 8px 6px;
   }
@@ -1654,12 +1810,12 @@ onBeforeUnmount(() => {
   .app-header {
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   }
-  
+
   .nav-button,
   .action-btn {
     border: 2px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   .nav-button.active {
     border-color: #6366f1;
   }

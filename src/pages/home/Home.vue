@@ -16,10 +16,12 @@
         </div>
         <div class="hello-actions">
           <div class="magical primary-btn">
-            <a href="#" target="_blank">{{ t.downloadResume }}</a>
+            <a href="/简历.pdf" download>{{ t.downloadResume }}</a>
           </div>
           <div class="magical btn normal-btn">
-            <a href="#" target="_blank">{{ t.portfolio }}</a>
+            <a href="https://gitee.com/caixukun66666666" target="_blank">{{
+              t.portfolio
+            }}</a>
             <div class="glowing-border"></div>
           </div>
         </div>
@@ -107,7 +109,7 @@
       </div>
       <div class="link-list load-pro">
         <div class="magical link-card">
-          <a href="https://github.com/roysmee" target="_blank">
+          <a href="https://github.com/1812095643" target="_blank">
             <img src="/assets/index/github.png" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.github }}</div>
@@ -130,7 +132,7 @@
           </a>
         </div>
         <div class="magical link-card">
-          <a href="https://gitee.com/roysmee" target="_blank">
+          <a href="https://gitee.com/caixukun66666666" target="_blank">
             <img src="/assets/index/Gitee.png" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.gitee }}</div>
@@ -153,7 +155,10 @@
           </a>
         </div>
         <div class="magical link-card">
-          <a href="https://blog.csdn.net/roysmee" target="_blank">
+          <a
+            href="https://blog.csdn.net/m0_66700324?spm=1010.2135.3001.10640"
+            target="_blank"
+          >
             <img src="/assets/index/CSDN.png" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.csdn }}</div>
@@ -176,10 +181,7 @@
           </a>
         </div>
         <div class="magical link-card">
-          <a
-            href="https://2.taobao.com/list/list.htm?spm=2007.1000261.0.0.7ddf3e5dqzQOCD&user_id=roysmee"
-            target="_blank"
-          >
+          <a href="https://m.tb.cn/h.S31syW1?tk=mWkI4EoemjQ" target="_blank">
             <img src="/assets/index/Xianyu.png" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.xianyu }}</div>
@@ -202,7 +204,7 @@
           </a>
         </div>
         <div class="magical link-card">
-          <a href="https://www.douyin.com/user/roysmee" target="_blank">
+          <a href="https://www.douyin.com/search/1812095943cxk" target="_blank">
             <img src="/assets/index/douyin.ico" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.douyin }}</div>
@@ -225,7 +227,7 @@
           </a>
         </div>
         <div class="magical link-card">
-          <a href="https://space.bilibili.com/roysmee" target="_blank">
+          <a href="https://b23.tv/zp94xWR" target="_blank">
             <img src="/assets/index/Bilibili.ico" alt="" />
             <div class="info">
               <div class="info-title">{{ t.social.bilibili }}</div>
@@ -256,6 +258,7 @@
 import { onMounted, onBeforeUnmount } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useI18n } from "../../composables/useI18n";
+// @ts-ignore - shim default export for SFC
 import Pet from "../../components/Pet.vue";
 
 // 使用页面动画

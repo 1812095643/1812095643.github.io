@@ -57,6 +57,17 @@ const translations = {
             bilibiliDesc: '技术视频与教程'
         },
 
+        // Music Player
+        musicPlayer: {
+            play: '播放',
+            pause: '暂停',
+            playlist: '播放列表',
+            nowPlaying: '正在播放',
+            volume: '音量',
+            previous: '上一首',
+            next: '下一首'
+        },
+
         // Book Section
         book: {
             title: '书籍推荐',
@@ -464,6 +475,17 @@ const translations = {
             douyinDesc: 'Search "一只小盒" or "biliux"',
             bilibili: 'Bilibili',
             bilibiliDesc: 'Technical videos and tutorials'
+        },
+
+        // Music Player
+        musicPlayer: {
+            play: 'Play',
+            pause: 'Pause',
+            playlist: 'Playlist',
+            nowPlaying: 'Now Playing',
+            volume: 'Volume',
+            previous: 'Previous',
+            next: 'Next'
         },
 
         // Book Section

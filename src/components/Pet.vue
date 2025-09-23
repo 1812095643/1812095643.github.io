@@ -1,58 +1,120 @@
 <template>
-  <div class="pet-container" ref="petContainer" @click="toggleChat">
-    <div :class="['pet-body', `expression-${expression}`]">
+  <div
+    class="pet-container"
+    ref="petContainer"
+    @mouseenter="onHover"
+    @mouseleave="onLeave"
+    @mousedown="onPress"
+    @mouseup="onRelease"
+    @dblclick.stop="onDblclick"
+  >
+    <div
+      :class="[
+        'pet-body',
+        `expression-${expression}`,
+        useSymbolEyes ? 'symbol-eyes' : '',
+      ]"
+      ref="petBody"
+      @click="toggleChat"
+    >
       <div class="eye left-eye" ref="leftEye">
         <div class="pupil"></div>
+        <span class="eye-symbol">{{ eyeSymbol("left") }}</span>
+        <svg
+          class="eye-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <g id="heart">
+              <path
+                d="M50 70 L25 45 C15 35 25 20 40 25 C46 27 50 32 50 32 C50 32 54 27 60 25 C75 20 85 35 75 45 Z"
+                fill="#a5b4fc"
+              />
+            </g>
+            <g id="star">
+              <polygon
+                points="50,15 58,38 82,38 62,52 70,75 50,60 30,75 38,52 18,38 42,38"
+                fill="#a5b4fc"
+              />
+            </g>
+          </defs>
+          <use v-if="expression === 'love'" href="#heart" class="shape glow" />
+          <use v-if="expression === 'star'" href="#star" class="shape glow" />
+        </svg>
         <div class="eye-shape happy"></div>
       </div>
       <div class="eye right-eye" ref="rightEye">
         <div class="pupil"></div>
+        <span class="eye-symbol">{{ eyeSymbol("right") }}</span>
+        <svg
+          class="eye-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <use v-if="expression === 'love'" href="#heart" class="shape glow" />
+          <use v-if="expression === 'star'" href="#star" class="shape glow" />
+        </svg>
         <div class="eye-shape happy"></div>
       </div>
       <div class="mouth"></div>
     </div>
-    <div class="chat-bubble-teaser" v-if="showTeaser">
+
+    <!-- 引导气泡（定时出现，点击切换到聊天） -->
+    <div
+      class="teaser-bubble"
+      v-if="showTeaser"
+      @click.stop="openBubbleWithIntro"
+    >
       {{ teaserText }}
     </div>
-    <div class="chat-window" v-if="chatActive">
-      <div class="chat-header">
+
+    <!-- 贴靠宠物正下方的聊天气泡（含打字机/流式效果） -->
+    <div class="speech-bubble bottom" v-if="chatActive" @click.stop>
+      <div class="bubble-header">
         <span>AI Pet</span>
-        <button @click.stop="toggleChat">X</button>
+        <button class="bubble-close" @click="toggleChat">×</button>
       </div>
-      <div class="chat-messages" ref="chatMessages">
+      <div class="bubble-messages" ref="chatMessages">
         <div
           v-for="(msg, index) in messages"
           :key="index"
-          :class="['message', `${msg.sender}-message`]"
+          :class="['msg', msg.sender === 'user' ? 'me' : 'pet']"
         >
           {{ msg.text }}
         </div>
+        <div v-if="isStreaming" class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
       </div>
-      <div class="chat-input">
+      <div class="bubble-input">
         <input
           type="text"
           v-model="userInput"
           @keyup.enter="sendMessage"
-          placeholder="Say something..."
+          placeholder="和我说点什么..."
         />
-        <button @click="sendMessage">Send</button>
+        <button @click="sendMessage">发送</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
-import anime from "animejs";
+import { ref, onMounted, onUnmounted, nextTick, watch, computed } from "vue";
 import { useChat } from "../composables/useChat";
 
 const petContainer = ref<HTMLElement | null>(null);
+const petBody = ref<HTMLElement | null>(null);
 const leftEye = ref<HTMLElement | null>(null);
 const rightEye = ref<HTMLElement | null>(null);
+const leftPupil = ref<HTMLElement | null>(null);
+const rightPupil = ref<HTMLElement | null>(null);
 
 // --- Expression State ---
-const expression = ref("idle"); // idle, happy, squint, thinking
+const expression = ref("idle"); // idle, happy, squint, wink, surprised, curious, thinking, love, star, shy, angry, sleepy
 let expressionTimeout: any = null;
+let isHovering = false;
 
 const setExpression = (
   newExpression: string,
@@ -62,241 +124,359 @@ const setExpression = (
   expression.value = newExpression;
   if (duration) {
     expressionTimeout = setTimeout(() => {
-      if (expression.value === newExpression) {
-        expression.value = "idle";
-      }
+      if (expression.value === newExpression) expression.value = "idle";
     }, duration);
   }
 };
-// --- End Expression State ---
+
+// 是否使用符号眼睛（替换圆形眼球为符号）
+const useSymbolEyes = computed(() => {
+  const e = expression.value;
+  return [
+    "happy",
+    "squint",
+    "wink",
+    "surprised",
+    "curious",
+    "love",
+    "star",
+    "shy",
+    "angry",
+    "sleepy",
+  ].includes(e);
+});
+
+// 根据表情和左右眼返回符号
+function eyeSymbol(side: "left" | "right"): string {
+  const e = expression.value;
+  switch (e) {
+    case "squint":
+      return "-";
+    case "wink":
+      return side === "left" ? ">" : "-";
+    case "surprised":
+      return "o";
+    case "curious":
+      return side === "left" ? "<" : ">";
+    case "love":
+      return "❤";
+    case "star":
+      return "✦";
+    case "shy":
+      return "^";
+    case "angry":
+      return side === "left" ? ">" : "<";
+    case "sleepy":
+      return "︶";
+    case "happy":
+      return "^";
+    default:
+      return "";
+  }
+}
 
 // --- Chat State ---
 const chatActive = ref(false);
 const showTeaser = ref(false);
-const teaserText = ref("Click me!");
-const { userInput, messages, sendMessage: performSendMessage } = useChat();
+const teaserText = ref("点我聊天吧！");
+const {
+  userInput,
+  messages,
+  isStreaming,
+  sendMessage: performSendMessage,
+} = useChat();
 const chatMessages = ref<HTMLElement | null>(null);
 
-// Watch for AI thinking status
-watch(
-  messages,
-  (newMessages) => {
-    const lastMessage = newMessages[newMessages.length - 1];
-    if (!lastMessage) return;
+// 思考状态联动
+watch(isStreaming, (val) => {
+  if (val) setExpression("thinking");
+  else setExpression("happy", 1500);
+});
 
-    // Detect when a new, empty message from the pet is added, which indicates thinking.
-    if (
-      lastMessage.sender === "pet" &&
-      lastMessage.text === "" &&
-      expression.value !== "thinking"
-    ) {
-      setExpression("thinking");
-    }
-    // Detect when the pet's message is no longer empty, which means it has finished thinking.
-    else if (
-      expression.value === "thinking" &&
-      lastMessage.sender === "pet" &&
-      lastMessage.text !== ""
-    ) {
-      setExpression("happy", 2000);
-    }
-  },
-  { deep: true }
-);
+// 鼠标交互
+const onHover = () => {
+  isHovering = true;
+  // 悬停时持续展示更明显的表情
+  setExpression(Math.random() > 0.5 ? "love" : "star");
+};
+const onLeave = () => {
+  isHovering = false;
+  setExpression("idle");
+};
+const onPress = () =>
+  setExpression(Math.random() > 0.5 ? "squint" : "wink", 400);
+const onRelease = () => setExpression("idle");
+const onDblclick = () => setExpression("surprised", 1000);
 
-let teaserInterval: any;
+// 打开聊天（带本地打字机引导）
+const openBubbleWithIntro = () => {
+  chatActive.value = true;
+  showTeaser.value = false;
+  playLocalIntro();
+};
 
 const toggleChat = () => {
   chatActive.value = !chatActive.value;
   if (chatActive.value) {
     showTeaser.value = false;
-    clearInterval(teaserInterval);
-  } else {
-    startTeaserCycle();
+  }
+};
+
+// 本地打字机欢迎语，不调用API
+const playLocalIntro = async () => {
+  const hello = "你好呀，我是你的赛博宠物 (｀・ω・´) 有什么想聊的吗？";
+  // 如果已经有消息了，就不重复
+  if (messages.value.length > 0) return;
+  messages.value.push({ sender: "pet", text: "" });
+  for (let i = 0; i < hello.length; i++) {
+    messages.value[0].text += hello[i];
+    await new Promise((r) => setTimeout(r, 24));
   }
 };
 
 const sendMessage = async () => {
+  if (!userInput.value.trim()) return;
   await performSendMessage();
-  scrollToBottom();
+  nextTick(scrollToBottom);
 };
 
 const scrollToBottom = () => {
-  nextTick(() => {
-    if (chatMessages.value) {
-      chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
-    }
-  });
+  if (!chatMessages.value) return;
+  chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
 };
 
+// 眼睛跟随（每只眼睛独立）+ 轻微倾斜
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
-
 const handleMouseMove = (event: MouseEvent) => {
   mouseX = event.clientX;
   mouseY = event.clientY;
 };
 
+// 平滑插值
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+let lp = { x: 0, y: 0 }; // left pupil current offset
+let rp = { x: 0, y: 0 }; // right pupil current offset
+
+function computeTarget(eyeEl: HTMLElement | null, amplitude = 14) {
+  if (!eyeEl) return { tx: 0, ty: 0 };
+  const rect = eyeEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const angle = Math.atan2(mouseY - cy, mouseX - cx);
+  const dist = Math.min(amplitude, Math.hypot(mouseX - cx, mouseY - cy) / 12);
+  return { tx: Math.cos(angle) * dist, ty: Math.sin(angle) * dist };
+}
+
 const updateEyes = () => {
-  if (!petContainer.value || !leftEye.value || !rightEye.value) return;
+  // 符号模式下不做瞳孔跟随，只保留整体轻微倾斜
+  if (!useSymbolEyes.value) {
+    const { tx: ltx, ty: lty } = computeTarget(leftEye.value);
+    const { tx: rtx, ty: rty } = computeTarget(rightEye.value);
+    lp.x = lerp(lp.x, ltx, 0.18);
+    lp.y = lerp(lp.y, lty, 0.18);
+    rp.x = lerp(rp.x, rtx, 0.18);
+    rp.y = lerp(rp.y, rty, 0.18);
+  } else {
+    lp = { x: 0, y: 0 };
+    rp = { x: 0, y: 0 };
+  }
 
-  const petRect = petContainer.value.getBoundingClientRect();
-  const petCenterX = petRect.left + petRect.width / 2;
-  const petCenterY = petRect.top + petRect.height / 2;
+  // 应用到 transform，避免覆盖原始居中位移
+  if (!leftPupil.value)
+    leftPupil.value = leftEye.value?.querySelector(
+      ".pupil"
+    ) as HTMLElement | null;
+  if (!rightPupil.value)
+    rightPupil.value = rightEye.value?.querySelector(
+      ".pupil"
+    ) as HTMLElement | null;
+  if (leftPupil.value)
+    leftPupil.value.style.transform = `translate(-50%, -50%) translate(${lp.x}px, ${lp.y}px)`;
+  if (rightPupil.value)
+    rightPupil.value.style.transform = `translate(-50%, -50%) translate(${rp.x}px, ${rp.y}px)`;
 
-  const angle = Math.atan2(mouseY - petCenterY, mouseX - petCenterX);
-  const distance = Math.min(
-    6, // Reduced pupil movement range
-    Math.hypot(mouseX - petCenterX, mouseY - petCenterY) / 25 // Smoother/slower tracking
-  );
-
-  const pupilX = Math.cos(angle) * distance;
-  const pupilY = Math.sin(angle) * distance;
-
-  anime({
-    targets: [
-      leftEye.value.querySelector(".pupil"),
-      rightEye.value.querySelector(".pupil"),
-    ],
-    translateX: pupilX,
-    translateY: pupilY,
-    duration: 100,
-    easing: "easeOutSine",
-  });
-
+  // 身体轻微倾斜/浮动
+  if (petBody.value) {
+    const tiltX = (lp.y + rp.y) * 0.6;
+    const tiltY = (lp.x + rp.x) * -0.6;
+    petBody.value.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+  }
   requestAnimationFrame(updateEyes);
 };
 
+// 引导气泡
+let teaserTimer: any;
 const startTeaserCycle = () => {
-  const teasers = ["Hey!", "Click me!", "What's up?", "I'm bored..."];
-  teaserInterval = setInterval(() => {
+  const teasers = [
+    "点我试试~",
+    "我会眨眼哦 (≧▽≦)/",
+    "问我点什么吧！",
+    "看看我会什么～",
+  ];
+  clearInterval(teaserTimer);
+  teaserTimer = setInterval(() => {
+    if (chatActive.value) return;
     showTeaser.value = true;
     teaserText.value = teasers[Math.floor(Math.random() * teasers.length)];
-    setTimeout(() => {
-      showTeaser.value = false;
-    }, 2500);
-  }, 8000); // Increased delay
+    setTimeout(() => (showTeaser.value = false), 2600);
+  }, 12000);
 };
 
 onMounted(() => {
   window.addEventListener("mousemove", handleMouseMove);
   requestAnimationFrame(updateEyes);
+  startTeaserCycle();
 
-  if (!chatActive.value) {
-    startTeaserCycle();
-  }
-
-  // Blinking interval
+  // 偶发表情（更灵动）
   setInterval(() => {
-    if (expression.value === "idle" && !chatActive.value) {
-      setExpression("squint", 200);
-    }
-  }, 4000);
-
-  // Random happy expression interval
-  setInterval(() => {
-    if (expression.value === "idle" && !chatActive.value) {
-      setExpression("happy", 1500);
-    }
-  }, 10000);
+    if (expression.value !== "idle" || chatActive.value || isHovering) return;
+    const roll = Math.random();
+    if (roll > 0.8) setExpression("love", 1200);
+    else if (roll > 0.6) setExpression("star", 1000);
+    else if (roll > 0.45) setExpression("shy", 900);
+    else if (roll > 0.3) setExpression("wink", 900);
+  }, 9000);
 });
 
 onUnmounted(() => {
   window.removeEventListener("mousemove", handleMouseMove);
   clearTimeout(expressionTimeout);
-  clearInterval(teaserInterval);
+  clearInterval(teaserTimer);
 });
 </script>
 
 <style scoped>
 .pet-container {
   position: relative;
-  width: 200px;
-  height: 100px;
+  width: 220px;
+  height: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  perspective: 800px;
 }
 
 .pet-body {
   position: relative;
-  width: 150px;
-  height: 75px;
+  width: 170px;
+  height: 85px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  gap: 15px; /* Space between eyes */
+  gap: 16px;
+  animation: float 4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .eye {
-  width: 55px;
-  height: 55px;
-  background-color: #1e1b4b; /* Dark indigo from site palette */
+  width: 58px;
+  height: 58px;
+  background-color: #1e1b4b;
   border-radius: 50%;
   position: relative;
-  border: 2px solid rgba(139, 92, 246, 0.4); /* Purple glow */
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5),
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.45),
     inset 0 0 8px rgba(99, 102, 241, 0.3);
   transition: all 0.25s ease-in-out;
+  overflow: hidden;
 }
 
 .pupil {
   width: 12px;
   height: 12px;
-  background-color: #a5b4fc; /* Light indigo */
+  background-color: #a5b4fc;
   border-radius: 50%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 8px #a5b4fc, 0 0 15px #6366f1;
-  transition: opacity 0.2s ease-in-out;
+  box-shadow: 0 0 8px #a5b4fc, 0 0 16px #6366f1;
+}
+
+/* 符号模式样式：隐藏圆形球体外观，仅显示符号 */
+.symbol-eyes .eye {
+  background: transparent;
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: none;
+}
+.symbol-eyes .pupil,
+.symbol-eyes .eye-svg,
+.symbol-eyes .eye-shape {
+  display: none;
+}
+.eye-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 34px;
+  line-height: 1;
+  color: #c7d2fe;
+  text-shadow: 0 0 8px #a5b4fc, 0 0 18px #6366f1;
+  pointer-events: none;
+}
+
+.eye-svg {
+  position: absolute;
+  inset: 0;
+}
+.shape.glow {
+  filter: drop-shadow(0 0 8px #a5b4fc) drop-shadow(0 0 16px #6366f1);
 }
 
 .mouth {
   width: 20px;
   height: 3px;
   background-color: #a5b4fc;
-  box-shadow: 0 0 5px #a5b4fc;
+  box-shadow: 0 0 6px #a5b4fc;
   border-radius: 2px;
   position: absolute;
-  bottom: 5px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   transition: all 0.3s ease-in-out;
 }
 
-/* --- Expressions --- */
 .eye-shape {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  pointer-events: none;
+  transition: opacity 0.25s;
 }
 
-/* Happy Expression: ^w^ */
+/* happy: ^ ^ + w */
 .expression-happy .pupil {
   opacity: 0;
 }
 .expression-happy .eye-shape.happy {
   opacity: 1;
 }
-.eye-shape.happy::before,
-.eye-shape.happy::after {
+.expression-happy .left-eye .eye-shape.happy::before,
+.expression-happy .left-eye .eye-shape.happy::after,
+.expression-happy .right-eye .eye-shape.happy::before,
+.expression-happy .right-eye .eye-shape.happy::after {
   content: "";
   position: absolute;
   width: 5px;
   height: 22px;
-  background-color: #a5b4fc;
-  box-shadow: 0 0 10px #a5b4fc;
-  top: 45%;
+  top: 42%;
   left: 50%;
+  background: #a5b4fc;
   border-radius: 2px;
+  box-shadow: 0 0 10px #a5b4fc;
 }
 .expression-happy .left-eye .eye-shape.happy::before {
   transform: translate(-50%, -50%) rotate(35deg);
@@ -310,147 +490,300 @@ onUnmounted(() => {
 .expression-happy .right-eye .eye-shape.happy::after {
   transform: translate(-50%, -50%) rotate(35deg);
 }
-
 .expression-happy .mouth {
-  background-color: transparent;
+  background: transparent;
   box-shadow: none;
-  width: 25px;
+  width: 28px;
   height: 12px;
   border-bottom: 4px solid #a5b4fc;
   border-radius: 0 0 12px 12px;
 }
 
-/* Squint/Blink Expression: -_- */
+/* overlay shapes should hide pupils */
+.expression-love .pupil,
+.expression-star .pupil {
+  opacity: 0;
+}
+
+/* love/star/wink/curious: 微笑曲线 */
+.expression-love .mouth,
+.expression-star .mouth,
+.expression-wink .mouth,
+.expression-curious .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 26px;
+  height: 12px;
+  border-bottom: 4px solid #a5b4fc;
+  border-radius: 0 0 12px 12px;
+}
+
+/* shy: 小幅度笑 + 腮红 */
+.expression-shy .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 20px;
+  height: 10px;
+  border-bottom: 3px solid #f472b6;
+  border-radius: 0 0 12px 12px;
+}
+
+/* angry: 倒弧形 */
+.expression-angry .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 22px;
+  height: 12px;
+  border-top: 4px solid #ef4444;
+  border-radius: 12px 12px 0 0;
+}
+
+/* sleepy: 微弱下弧 */
+.expression-sleepy .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 18px;
+  height: 8px;
+  border-bottom: 3px solid #94a3b8;
+  border-radius: 0 0 10px 10px;
+  opacity: 0.9;
+}
+
+/* shy: 加腮红 */
+.expression-shy .left-eye::after,
+.expression-shy .right-eye::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 14px;
+  height: 6px;
+  background: rgba(236, 72, 153, 0.5);
+  border-radius: 6px;
+  filter: blur(1px);
+}
+.expression-shy .left-eye::after {
+  left: 6px;
+}
+.expression-shy .right-eye::after {
+  right: 6px;
+}
+
+/* angry: 眼角斜线 */
+.expression-angry .left-eye::before,
+.expression-angry .right-eye::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 16px;
+  height: 2px;
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+.expression-angry .left-eye::before {
+  left: 2px;
+  transform: rotate(25deg);
+}
+.expression-angry .right-eye::before {
+  right: 2px;
+  transform: rotate(-25deg);
+}
+
+/* sleepy: 下垂与半闭 */
+.expression-sleepy .pupil {
+  transform: translate(-50%, -30%);
+  opacity: 0.8;
+}
+.expression-sleepy .eye {
+  box-shadow: inset 0 -10px 12px rgba(99, 102, 241, 0.25),
+    0 0 10px rgba(99, 102, 241, 0.25);
+}
+
+/* squint/blink: - - */
 .expression-squint .pupil {
   opacity: 0;
 }
 .expression-squint .eye {
-  transform: scaleY(0.15);
-  background-color: #a5b4fc;
-  box-shadow: 0 0 15px #a5b4fc;
+  transform: scaleY(0.18);
+  background: #a5b4fc;
+  box-shadow: 0 0 14px #a5b4fc;
 }
 
-/* Thinking Expression */
+/* wink: left eye squint */
+.expression-wink .left-eye {
+  transform: scaleY(0.2);
+  background: #a5b4fc;
+  box-shadow: 0 0 14px #a5b4fc;
+}
+
+/* surprised: O O + mouth */
+.expression-surprised .pupil {
+  width: 18px;
+  height: 18px;
+}
+.expression-surprised .mouth {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a5b4fc;
+}
+
+/* curious: 强化光晕，不再改变 pupil 位置，避免与跟随冲突 */
+.expression-curious .pupil {
+  box-shadow: 0 0 12px #a5b4fc, 0 0 22px #6366f1;
+}
+
+/* thinking: spinning pupils */
 .expression-thinking .pupil {
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   from {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0);
   }
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
-.chat-bubble-teaser {
+/* 引导气泡 */
+.teaser-bubble {
   position: absolute;
-  top: -40px;
+  top: -46px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #fff;
-  color: #333;
+  background: rgba(30, 27, 75, 0.9);
+  color: #e5e7eb;
   padding: 8px 12px;
-  border-radius: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
   white-space: nowrap;
-  font-size: 14px;
-  animation: bounce 0.5s ease-in-out;
+  font-size: 13px;
 }
 
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translate(-50%, 0) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -5px) scale(1.05);
-  }
-}
-
-.chat-window {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 350px;
-  height: 500px;
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+/* 聊天气泡（宠物正下方） */
+.speech-bubble.bottom {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 10px);
+  width: 320px;
+  max-height: 360px;
+  background: rgba(17, 24, 39, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.5);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 10;
+}
+.speech-bubble.bottom::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: rgba(17, 24, 39, 0.95);
+  border-left: 1px solid rgba(99, 102, 241, 0.35);
+  border-top: 1px solid rgba(99, 102, 241, 0.35);
 }
 
-.chat-header {
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-bottom: 1px solid #ddd;
+.bubble-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
+  padding: 8px 10px;
+  color: #e5e7eb;
+  background: rgba(31, 41, 55, 0.6);
+  font-weight: 600;
 }
-
-.chat-header button {
-  background: none;
+.bubble-close {
+  background: transparent;
   border: none;
-  font-size: 16px;
+  color: #e5e7eb;
+  font-size: 18px;
   cursor: pointer;
 }
 
-.chat-messages {
-  flex-grow: 1;
+.bubble-messages {
+  flex: 1;
   padding: 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
-
-.message {
-  padding: 8px 12px;
-  border-radius: 15px;
-  max-width: 80%;
-  word-wrap: break-word;
+.msg {
+  max-width: 85%;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
 }
-
-.user-message {
-  background-color: #007bff;
+.msg.pet {
+  background: rgba(55, 65, 81, 0.6);
+  color: #e5e7eb;
+  align-self: flex-start;
+}
+.msg.me {
+  background: #2563eb;
   color: white;
   align-self: flex-end;
-  border-bottom-right-radius: 3px;
 }
 
-.pet-message {
-  background-color: #e9e9eb;
-  color: #333;
-  align-self: flex-start;
-  border-bottom-left-radius: 3px;
+.typing-dots {
+  display: inline-flex;
+  gap: 3px;
+  padding: 4px;
+}
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: #9ca3af;
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 0.9s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
 }
 
-.chat-input {
+.bubble-input {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-}
-
-.chat-input input {
-  flex-grow: 1;
-  border: 1px solid #ccc;
+  gap: 8px;
   padding: 8px;
-  border-radius: 20px;
-  margin-right: 10px;
+  border-top: 1px solid rgba(55, 65, 81, 0.8);
 }
-
-.chat-input button {
-  background-color: #007bff;
+.bubble-input input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(75, 85, 99, 0.8);
+  background: rgba(31, 41, 55, 0.7);
+  color: #e5e7eb;
+}
+.bubble-input button {
+  background: #6366f1;
   color: white;
   border: none;
-  padding: 8px 15px;
-  border-radius: 20px;
+  border-radius: 10px;
+  padding: 8px 12px;
   cursor: pointer;
 }
 </style>
