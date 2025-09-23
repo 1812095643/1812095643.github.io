@@ -287,6 +287,25 @@ const toggleChat = () => {
   }
 };
 
+// --- 全局事件处理：供导航栏等处触发 ---
+const onGlobalOpenChat = () => {
+  if (!chatActive.value) {
+    chatActive.value = true;
+    showTeaser.value = false;
+    nextTick(async () => {
+      await anchorBubbleToPet();
+      playLocalIntro();
+    });
+  } else if (!bubblePosition.value.isFixed) {
+    // 如果已打开但未固定定位，尝试锚定
+    nextTick(() => anchorBubbleToPet());
+  }
+};
+
+const onGlobalToggleChat = () => {
+  toggleChat();
+};
+
 // 本地打字机欢迎语，不调用API
 const playLocalIntro = async () => {
   const hello =
@@ -574,6 +593,10 @@ onMounted(() => {
   // 窗口尺寸变化时，若气泡打开且未拖拽，重新锚定
   window.addEventListener("resize", handleResize);
 
+  // 全局事件：来自导航栏等处的聊天触发
+  window.addEventListener("ai-pet:open", onGlobalOpenChat as EventListener);
+  window.addEventListener("ai-pet:toggle", onGlobalToggleChat as EventListener);
+
   // 确保页面完全加载后，Pet 容器的布局已稳定
   // 这对初次访问页面时的定位计算很重要
   if (document.readyState === "loading") {
@@ -613,6 +636,13 @@ onUnmounted(() => {
   clearTimeout(expressionTimeout);
   clearInterval(teaserTimer);
   window.removeEventListener("resize", handleResize);
+
+  // 清理全局事件监听
+  window.removeEventListener("ai-pet:open", onGlobalOpenChat as EventListener);
+  window.removeEventListener(
+    "ai-pet:toggle",
+    onGlobalToggleChat as EventListener
+  );
 
   // 清理拖拽事件监听
   document.removeEventListener("mousemove", handleDrag, {

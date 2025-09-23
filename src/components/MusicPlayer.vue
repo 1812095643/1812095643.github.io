@@ -975,6 +975,39 @@ onBeforeUnmount(() => {
   }
 }
 
+/* 极窄屏适配：将胶片直径缩小为一半，并更靠右上角 */
+@media (max-width: 480px) {
+  .music-player {
+    top: 48px;
+    right: 10px;
+  }
+
+  /* 未展开时的胶片容器缩小为一半直径（80 -> 40） */
+  .vinyl-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* 展开时的胶片容器缩小为一半直径（100 -> 50） */
+  .music-player.expanded .vinyl-container {
+    width: 50px;
+    height: 50px;
+    margin: 12px auto 0;
+  }
+
+  /* 动画回位时保持窄屏尺寸 */
+  .music-player.animating:not(.expanded) .vinyl-container {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  /* 调整中心按钮以匹配更小的胶片比例 */
+  .vinyl-center {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* 滚动条样式 */
 .playlist-items::-webkit-scrollbar {
   width: 4px;

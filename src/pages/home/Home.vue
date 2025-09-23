@@ -32,7 +32,7 @@
     </div>
     <div class="main-content">
       <div class="power-list-container load-pro">
-        <div class="power-list">
+        <div class="power-list" role="list" aria-label="skills list">
           <div class="power-card load-item" :title="t.skills.frontendDesc">
             <div class="power-container">
               <div
@@ -465,6 +465,20 @@ onBeforeUnmount(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  /* 仅为技能展示区启用横向滚动，不改动现有间距/布局规则 */
+  .power-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    scroll-behavior: smooth;
+  }
+
+  .power-list::-webkit-scrollbar {
+    display: none;
+  }
+
   .tech-stack-grid {
     grid-template-columns: 1fr;
     gap: 12px;

@@ -29,6 +29,22 @@
         </ul>
       </nav>
 
+      <!-- 移动端中间“小宠物”按钮（两黑点一横线），用于触发 AI Pet 聊天 -->
+      <button
+        class="mini-pet-btn"
+        @click="triggerAiPet($event)"
+        aria-label="Open AI Pet Chat"
+      >
+        <span class="brows">
+          <span class="brow brow-left"></span>
+          <span class="brow brow-right"></span>
+        </span>
+        <span class="eyes">
+          <span class="eye"></span>
+          <span class="eye"></span>
+        </span>
+      </button>
+
       <!-- 功能按钮区域 -->
       <div class="actions-section">
         <!-- 语言切换 -->
@@ -427,6 +443,15 @@ function toggleMobileMenu(event?: MouseEvent) {
   }
 }
 
+// 触发 AI Pet 聊天（分发全局事件）
+function triggerAiPet(event?: MouseEvent) {
+  if (event) {
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
+  }
+  // 优先打开而不是切换，避免被错误关闭
+  window.dispatchEvent(new CustomEvent("ai-pet:open"));
+}
+
 // 关闭移动端菜单（带绽放效果）
 function closeMobileMenu(event?: MouseEvent) {
   if (event) {
@@ -534,6 +559,198 @@ onBeforeUnmount(() => {
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: slideDown 0.6s ease-out;
   box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 移动端中间小宠物按钮 */
+.mini-pet-btn {
+  display: none; /* 仅移动端显示，在媒体查询中开启 */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  translate: 0 -50%;
+  width: 56px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(99, 102, 241, 0.08) inset;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.mini-pet-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0)
+  );
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.mini-pet-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 75%;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.16);
+  pointer-events: none;
+}
+
+.mini-pet-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(99, 102, 241, 0.14) inset;
+}
+
+/* 眉毛（两条斜线） */
+.mini-pet-btn .brows {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+.mini-pet-btn .brow {
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
+  --brow-rot: 0deg;
+  transform: rotate(var(--brow-rot)) scaleY(1);
+  animation: brow-express 4.8s infinite;
+}
+
+.mini-pet-btn .brow-left {
+  --brow-rot: 22deg;
+}
+
+.mini-pet-btn .brow-right {
+  --brow-rot: -22deg;
+}
+
+.mini-pet-btn .eyes {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+.mini-pet-btn .eyes::before,
+.mini-pet-btn .eyes::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 158, 179, 0.7),
+    rgba(255, 158, 179, 0) 70%
+  );
+  filter: blur(0.2px);
+  opacity: 0.75;
+}
+
+.mini-pet-btn .eyes::before {
+  left: -12px;
+}
+
+.mini-pet-btn .eyes::after {
+  right: -12px;
+}
+
+.mini-pet-btn .eye {
+  width: 9px;
+  height: 9px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
+  transform-origin: center center;
+  animation: blink 4.8s infinite;
+}
+
+.mini-pet-btn .eye:nth-child(2) {
+  animation-delay: 1.2s;
+}
+
+.mini-pet-btn .eye::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  top: 1px;
+  left: 1px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+/* 轻微漂浮，让整体更灵动（不影响定位用 transform） */
+.mini-pet-btn .eyes {
+  animation: pet-float 6s ease-in-out infinite;
+}
+.mini-pet-btn .brows {
+  animation: pet-float 6s ease-in-out infinite reverse;
+}
+
+@keyframes blink {
+  0%,
+  4%,
+  8%,
+  100% {
+    transform: scaleY(1);
+  }
+  6% {
+    transform: scaleY(0.15);
+  }
+}
+
+@keyframes brow-express {
+  0%,
+  4%,
+  8%,
+  100% {
+    transform: rotate(var(--brow-rot)) scaleY(1);
+    border-radius: 2px;
+  }
+  6% {
+    transform: rotate(var(--brow-rot)) scaleY(0.5);
+    border-radius: 1px;
+  }
+}
+
+@keyframes pet-float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-1.5px);
+  }
 }
 
 @keyframes slideDown {
@@ -1617,6 +1834,13 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* 显示小宠物按钮并居中放置 */
+  .mini-pet-btn {
+    display: inline-flex;
+    /* 让其处于 logo 与 actions 之间的中线，更易点按 */
+    z-index: 2;
   }
 
   .header-container {
