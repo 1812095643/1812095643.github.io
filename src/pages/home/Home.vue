@@ -253,46 +253,58 @@
       <div class="tech-stack-section">
         <h3 class="tech-stack-title">{{ t.techStack.title }}</h3>
         <div class="tech-stack-grid">
-          <div class="tech-item">
-            <div class="tech-icon">⚡</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.vue3 }}</div>
-              <div class="tech-desc">{{ t.techStack.vue3Desc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">⚡</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.vue3 }}</div>
+                <div class="tech-desc">{{ t.techStack.vue3Desc }}</div>
+              </div>
             </div>
           </div>
-          <div class="tech-item">
-            <div class="tech-icon">📱</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.responsive }}</div>
-              <div class="tech-desc">{{ t.techStack.responsiveDesc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">📱</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.responsive }}</div>
+                <div class="tech-desc">{{ t.techStack.responsiveDesc }}</div>
+              </div>
             </div>
           </div>
-          <div class="tech-item">
-            <div class="tech-icon">🔧</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.typescript }}</div>
-              <div class="tech-desc">{{ t.techStack.typescriptDesc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">🔧</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.typescript }}</div>
+                <div class="tech-desc">{{ t.techStack.typescriptDesc }}</div>
+              </div>
             </div>
           </div>
-          <div class="tech-item">
-            <div class="tech-icon">🏪</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.pinia }}</div>
-              <div class="tech-desc">{{ t.techStack.piniaDesc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">🏪</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.pinia }}</div>
+                <div class="tech-desc">{{ t.techStack.piniaDesc }}</div>
+              </div>
             </div>
           </div>
-          <div class="tech-item">
-            <div class="tech-icon">⚡</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.vite }}</div>
-              <div class="tech-desc">{{ t.techStack.viteDesc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">⚡</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.vite }}</div>
+                <div class="tech-desc">{{ t.techStack.viteDesc }}</div>
+              </div>
             </div>
           </div>
-          <div class="tech-item">
-            <div class="tech-icon">🌐</div>
-            <div class="tech-content">
-              <div class="tech-name">{{ t.techStack.i18n }}</div>
-              <div class="tech-desc">{{ t.techStack.i18nDesc }}</div>
+          <div class="magical tech-item">
+            <div class="tech-item-content">
+              <div class="tech-icon">🌐</div>
+              <div class="tech-content">
+                <div class="tech-name">{{ t.techStack.i18n }}</div>
+                <div class="tech-desc">{{ t.techStack.i18nDesc }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -371,31 +383,30 @@ onBeforeUnmount(() => {
   font-weight: 600;
   color: #e8e8f6;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: left;
 }
 
 .tech-stack-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 }
 
 .tech-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  transition: all 0.3s ease;
+  background-color: #141419;
+  box-shadow: 0px 0px 8px 0px rgba(10, 10, 14, 0.4);
+  border-radius: 12px;
+  --circle-size: 400px;
 }
 
-.tech-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+.tech-item-content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
 }
 
 .tech-icon {
@@ -406,34 +417,61 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.4s;
 }
 
 .tech-content {
-  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  opacity: 0.8;
+  transition: opacity 0.4s;
 }
 
 .tech-name {
+  width: 100%;
   font-size: 14px;
-  font-weight: 600;
-  color: #e8e8f6;
-  margin-bottom: 3px;
+  line-height: 24px;
+  font-weight: 500;
+  background: linear-gradient(
+    180deg,
+    #e8e8f6 0%,
+    rgba(232, 232, 246, 0.72) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .tech-desc {
+  width: 100%;
   font-size: 12px;
-  color: #b3b3c1;
-  line-height: 1.4;
+  line-height: 20px;
+  color: #a8a8b6;
+}
+
+.tech-item-content:hover {
+  color: #6461f1;
+}
+
+.tech-item-content:hover .tech-content,
+.tech-item-content:hover .tech-icon {
+  opacity: 1;
+  transition: opacity 0.4s;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .tech-stack-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .tech-item {
-    padding: 10px;
+  .tech-item-content {
+    padding: 12px;
   }
 
   .tech-stack-title {
@@ -443,10 +481,12 @@ onBeforeUnmount(() => {
 
   .tech-name {
     font-size: 13px;
+    line-height: 22px;
   }
 
   .tech-desc {
     font-size: 11px;
+    line-height: 18px;
   }
 
   .tech-icon {
@@ -462,12 +502,12 @@ onBeforeUnmount(() => {
   }
 
   .tech-stack-grid {
-    gap: 8px;
+    gap: 10px;
   }
 
-  .tech-item {
-    padding: 8px;
-    gap: 8px;
+  .tech-item-content {
+    padding: 10px;
+    gap: 10px;
   }
 
   .tech-icon {
@@ -483,10 +523,12 @@ onBeforeUnmount(() => {
 
   .tech-name {
     font-size: 12px;
+    line-height: 20px;
   }
 
   .tech-desc {
     font-size: 10px;
+    line-height: 16px;
   }
 }
 </style>
