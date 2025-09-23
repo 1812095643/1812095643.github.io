@@ -112,7 +112,7 @@ const leftPupil = ref<HTMLElement | null>(null);
 const rightPupil = ref<HTMLElement | null>(null);
 
 // --- Expression State ---
-const expression = ref("idle"); // idle, happy, squint, wink, surprised, curious, thinking, love, star, shy, angry, sleepy
+const expression = ref("idle"); // idle, happy, squint, wink, surprised, curious, thinking, love, star, shy, angry, sleepy, excited, confused, dizzy, cool, mischievous
 let expressionTimeout: any = null;
 let isHovering = false;
 
@@ -143,6 +143,11 @@ const useSymbolEyes = computed(() => {
     "shy",
     "angry",
     "sleepy",
+    "excited",
+    "confused",
+    "dizzy",
+    "cool",
+    "mischievous",
   ].includes(e);
 });
 
@@ -151,9 +156,9 @@ function eyeSymbol(side: "left" | "right"): string {
   const e = expression.value;
   switch (e) {
     case "squint":
-      return "-";
+      return ">f";
     case "wink":
-      return side === "left" ? ">" : "-";
+      return side === "left" ? ">f" : "-";
     case "surprised":
       return "o";
     case "curious":
@@ -170,6 +175,16 @@ function eyeSymbol(side: "left" | "right"): string {
       return "︶";
     case "happy":
       return "^";
+    case "excited":
+      return "★";
+    case "confused":
+      return "?";
+    case "dizzy":
+      return "@";
+    case "cool":
+      return "-";
+    case "mischievous":
+      return side === "left" ? ">" : "<";
     default:
       return "";
   }
@@ -203,10 +218,19 @@ const onLeave = () => {
   isHovering = false;
   setExpression("idle");
 };
-const onPress = () =>
-  setExpression(Math.random() > 0.5 ? "squint" : "wink", 400);
+const onPress = () => {
+  const expressions = ["squint", "wink", "excited", "mischievous", "cool"];
+  const randomExpression =
+    expressions[Math.floor(Math.random() * expressions.length)];
+  setExpression(randomExpression, 3000);
+};
 const onRelease = () => setExpression("idle");
-const onDblclick = () => setExpression("surprised", 1000);
+const onDblclick = () => {
+  const expressions = ["surprised", "dizzy", "confused", "excited"];
+  const randomExpression =
+    expressions[Math.floor(Math.random() * expressions.length)];
+  setExpression(randomExpression, 3000);
+};
 
 // 打开聊天（带本地打字机引导）
 const openBubbleWithIntro = () => {
@@ -219,18 +243,23 @@ const toggleChat = () => {
   chatActive.value = !chatActive.value;
   if (chatActive.value) {
     showTeaser.value = false;
+    // 确保任何方式打开聊天都会显示欢迎消息
+    nextTick(() => {
+      playLocalIntro();
+    });
   }
 };
 
 // 本地打字机欢迎语，不调用API
 const playLocalIntro = async () => {
-  const hello = "你好呀，我是你的赛博宠物 (｀・ω・´) 有什么想聊的吗？";
+  const hello =
+    "你好呀~ (◕‿◕)✨ 我是你的AI智能助手！我可以和你聊天、回答问题、帮你解决疑惑，还能告诉你关于作者的简历信息哦！快来和我互动吧，我会很开心的~ (｀・ω・´)";
   // 如果已经有消息了，就不重复
   if (messages.value.length > 0) return;
   messages.value.push({ sender: "pet", text: "" });
   for (let i = 0; i < hello.length; i++) {
     messages.value[0].text += hello[i];
-    await new Promise((r) => setTimeout(r, 24));
+    await new Promise((r) => setTimeout(r, 30));
   }
 };
 
@@ -332,12 +361,24 @@ onMounted(() => {
   // 偶发表情（更灵动）
   setInterval(() => {
     if (expression.value !== "idle" || chatActive.value || isHovering) return;
+    const expressions = [
+      "love",
+      "star",
+      "shy",
+      "wink",
+      "excited",
+      "confused",
+      "mischievous",
+      "cool",
+      "happy",
+    ];
     const roll = Math.random();
-    if (roll > 0.8) setExpression("love", 1200);
-    else if (roll > 0.6) setExpression("star", 1000);
-    else if (roll > 0.45) setExpression("shy", 900);
-    else if (roll > 0.3) setExpression("wink", 900);
-  }, 9000);
+    if (roll > 0.7) {
+      const randomExpression =
+        expressions[Math.floor(Math.random() * expressions.length)];
+      setExpression(randomExpression, 3000);
+    }
+  }, 8000);
 });
 
 onUnmounted(() => {
@@ -598,21 +639,100 @@ onUnmounted(() => {
     0 0 10px rgba(99, 102, 241, 0.25);
 }
 
-/* squint/blink: - - */
+/* excited: 兴奋表情 */
+.expression-excited .pupil {
+  width: 16px;
+  height: 16px;
+  animation: bounce 0.6s ease-in-out infinite;
+}
+.expression-excited .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 32px;
+  height: 16px;
+  border-bottom: 5px solid #10b981;
+  border-radius: 0 0 16px 16px;
+}
+
+/* confused: 困惑表情 */
+.expression-confused .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #f59e0b;
+  border-radius: 50%;
+}
+
+/* dizzy: 眩晕表情 */
+.expression-dizzy .pupil {
+  animation: dizzy 2s linear infinite;
+}
+.expression-dizzy .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 24px;
+  height: 12px;
+  border-top: 3px solid #8b5cf6;
+  border-radius: 12px 12px 0 0;
+}
+@keyframes dizzy {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(90deg) scale(1.2);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(270deg) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+  }
+}
+
+/* cool: 酷酷的表情 */
+.expression-cool .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 16px;
+  height: 2px;
+  background: #6366f1;
+  border-radius: 1px;
+}
+
+/* mischievous: 顽皮表情 */
+.expression-mischievous .mouth {
+  background: transparent;
+  box-shadow: none;
+  width: 28px;
+  height: 14px;
+  border-bottom: 4px solid #f59e0b;
+  border-radius: 0 0 14px 14px;
+  transform: rotate(-3deg);
+}
+
+/* squint/blink: >f >f */
 .expression-squint .pupil {
   opacity: 0;
 }
 .expression-squint .eye {
-  transform: scaleY(0.18);
-  background: #a5b4fc;
-  box-shadow: 0 0 14px #a5b4fc;
+  background: transparent;
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: none;
 }
 
-/* wink: left eye squint */
+/* wink: left eye blink */
 .expression-wink .left-eye {
-  transform: scaleY(0.2);
-  background: #a5b4fc;
-  box-shadow: 0 0 14px #a5b4fc;
+  background: transparent;
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: none;
+}
+.expression-wink .left-eye .pupil {
+  opacity: 0;
 }
 
 /* surprised: O O + mouth */
@@ -761,6 +881,17 @@ onUnmounted(() => {
   }
   40% {
     transform: translateY(-4px);
+  }
+}
+
+/* 为 excited 表情的 bounce 动画重新定义 */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
   }
 }
 
