@@ -257,8 +257,8 @@ const onDblclick = () => {
 const openBubbleWithIntro = () => {
   chatActive.value = true;
   showTeaser.value = false;
-  nextTick(() => {
-    anchorBubbleToPet();
+  nextTick(async () => {
+    await anchorBubbleToPet();
     playLocalIntro();
   });
 };
@@ -271,8 +271,8 @@ const toggleChat = () => {
   if (chatActive.value) {
     showTeaser.value = false;
     // 定位到宠物下方并显示欢迎语
-    nextTick(() => {
-      anchorBubbleToPet();
+    nextTick(async () => {
+      await anchorBubbleToPet();
       playLocalIntro();
     });
   }
@@ -436,9 +436,28 @@ const resetBubblePosition = () => {
 };
 
 // 计算并将弹窗锚定到宠物下方（fixed 坐标，避免父级 stacking context 影响）
-const anchorBubbleToPet = () => {
+const anchorBubbleToPet = async (retries = 3) => {
   if (!petContainer.value) return;
+
+  // 等待一帧确保 DOM 和 CSS 都已渲染
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
   const petRect = petContainer.value.getBoundingClientRect();
+
+  // 检查 petRect 是否有效（初次加载时可能为 0）
+  if (petRect.width === 0 || petRect.height === 0) {
+    if (retries > 0) {
+      // 等待更长时间后重试
+      setTimeout(() => anchorBubbleToPet(retries - 1), 100);
+      return;
+    } else {
+      // 最后的兜底：使用默认位置
+      console.warn("Pet container rect is invalid, using fallback position");
+      bubblePosition.value = { x: 50, y: 200, isFixed: true };
+      return;
+    }
+  }
+
   const margin = 10;
   const bubbleWidth = chatBubble.value?.offsetWidth ?? 320;
   const bubbleHeight = chatBubble.value?.offsetHeight ?? 260;
@@ -545,6 +564,17 @@ onMounted(() => {
   startTeaserCycle();
   // 窗口尺寸变化时，若气泡打开且未拖拽，重新锚定
   window.addEventListener("resize", handleResize);
+
+  // 确保页面完全加载后，Pet 容器的布局已稳定
+  // 这对初次访问页面时的定位计算很重要
+  if (document.readyState === "loading") {
+    window.addEventListener("load", () => {
+      // 页面完全加载后，如果聊天已打开，重新计算位置
+      if (chatActive.value && bubblePosition.value.isFixed) {
+        setTimeout(() => anchorBubbleToPet(), 100);
+      }
+    });
+  }
 
   // 偶发表情（更灵动）
   setInterval(() => {
