@@ -117,6 +117,7 @@ const translations = {
             resume: '简历下载',
             resumeDesc: '获取完整简历 (PDF)',
             download: '下载',
+            view: '查看',
 
             graduationYear: '届毕业生',
             projects: '项目经验',
@@ -554,6 +555,7 @@ const translations = {
             resume: 'Resume',
             resumeDesc: 'Download Complete Resume (PDF)',
             download: 'Download',
+            view: 'View',
 
             graduationYear: 'Graduate',
             projects: 'Project Experience',

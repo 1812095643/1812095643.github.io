@@ -69,8 +69,13 @@
             </div>
             <div class="resume-desc">
               <div class="resume-desc-helptext">{{ t.about.resumeDesc }}</div>
-              <div class="magical primary-btn btn-s">
-                <a href="/简历.pdf" download>{{ t.about.download }}</a>
+              <div class="resume-buttons">
+                <div class="magical primary-btn btn-s">
+                  <a href="/简历.pdf" download>{{ t.about.download }}</a>
+                </div>
+                <div class="magical normal-btn btn-s">
+                  <a @click="viewResume" role="button" tabindex="0">{{ t.about.view }}</a>
+                </div>
               </div>
             </div>
           </div>
@@ -507,6 +512,10 @@ const showPhoneCopiedMessage = () => {
   }, 1000);
 };
 
+const viewResume = () => {
+  window.open('/简历.pdf', '_blank');
+};
+
 // 初始化语言设置
 onMounted(() => {
   initLanguage();
@@ -533,11 +542,22 @@ onMounted(() => {
 .contact-desc .list-value {
   display: inline-block;
   min-width: 140px;
-  text-align: left; /* 左对齐 */
 }
 
-.contact-desc .list-value a {
-  text-align: left; /* 左对齐 */
+/* 简历按钮样式 */
+.resume-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resume-buttons .btn-s {
+  flex: 1;
+  min-width: 80px;
+}
+
+.resume-buttons .normal-btn a {
+  cursor: pointer;
 }
 
 /* 确保复制提示有足够空间 */
