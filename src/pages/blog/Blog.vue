@@ -509,13 +509,36 @@ const { t } = useI18n();
   animation-delay: 4s;
 }
 
-/* SVG图标动画 */
+/* SVG图标动画和内发光效果 */
 .card-img {
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.card-img::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: inherit;
+  background-size: 28px 28px;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(12px) brightness(3) saturate(1.5);
+  opacity: 0.9;
+  z-index: -1;
 }
 
 .link-card-item:hover .card-img {
   animation: rotate 2s linear infinite;
+}
+
+.link-card-item:hover .card-img::before {
+  filter: blur(16px) brightness(4) saturate(2);
+  opacity: 1;
 }
 
 /* 推荐文章卡片动画 */

@@ -641,6 +641,91 @@ const translations = {
 
         // Tool Section
         tool: {
+            hoppscotch: {
+                name: 'Hoppscotch',
+                desc: 'Open-source API testing client, perfect alternative to Postman. Supports REST, GraphQL, WebSocket and other protocols with clean interface and powerful features.',
+                category: 'API Testing Tool'
+            },
+            jsonformatter: {
+                name: 'JSON Formatter',
+                desc: 'Online JSON formatting, validation and beautification tool. Supports JSON compression, syntax highlighting, and error detection - essential for developers.',
+                category: 'Formatting Tool'
+            },
+            regexr: {
+                name: 'RegExr',
+                desc: 'Powerful regular expression learning, building and testing tool. Provides real-time matching, detailed explanations and rich examples.',
+                category: 'Regex Tool'
+            },
+            base64encoder: {
+                name: 'Base64 Encoder',
+                desc: 'Online Base64 encoding and decoding tool supporting text and file conversion. Clean interface, easy operation, commonly used encoding tool in web development.',
+                category: 'Encoding Tool'
+            },
+            caniuse: {
+                name: 'Can I Use',
+                desc: 'Browser compatibility query tool helping developers check HTML, CSS, JavaScript feature support across different browsers.',
+                category: 'Compatibility Tool'
+            },
+            bundlephobia: {
+                name: 'Bundle Phobia',
+                desc: 'npm package size analysis tool helping developers understand package size, dependencies and loading time to optimize project performance.',
+                category: 'Performance Analysis'
+            },
+            lighthouse: {
+                name: 'Lighthouse',
+                desc: 'Google\'s open-source web quality audit tool evaluating webpage quality from multiple dimensions including performance, accessibility, SEO.',
+                category: 'Performance Tool'
+            },
+            transformtools: {
+                name: 'Transform Tools',
+                desc: 'Multi-functional online conversion tool collection supporting mutual conversion between JSON, TypeScript, GraphQL and other formats.',
+                category: 'Conversion Tool'
+            },
+            responsively: {
+                name: 'Responsively App',
+                desc: 'Browser designed for responsive development, allowing simultaneous preview of webpage display on multiple device sizes.',
+                category: 'Responsive Tool'
+            },
+            httpie: {
+                name: 'HTTPie',
+                desc: 'Modern command-line HTTP client supporting JSON, syntax highlighting, session management and other features.',
+                category: 'HTTP Tool'
+            },
+            mcpservers: {
+                name: 'MCP Servers',
+                desc: 'Model Context Protocol server collection providing standardized context access interfaces for AI models, supporting file systems, databases, APIs.',
+                category: 'MCP Tool'
+            },
+            langchain: {
+                name: 'LangChain',
+                desc: 'Open-source framework for building LLM applications, providing chain calls, memory management, Agent proxies and other features.',
+                category: 'AI Framework'
+            },
+            autogen: {
+                name: 'AutoGen',
+                desc: 'Microsoft\'s open-source multi-Agent conversation framework supporting collaboration and dialogue between multiple AI agents.',
+                category: 'Agent Framework'
+            },
+            autogpt: {
+                name: 'AutoGPT',
+                desc: 'Autonomous AI agent tool capable of automatically executing complex tasks with self-improvement and goal-oriented capabilities.',
+                category: 'Autonomous Agent'
+            },
+            llamaindex: {
+                name: 'LlamaIndex',
+                desc: 'Data framework specifically providing data connection and indexing services for LLM applications, supporting RAG and other advanced AI patterns.',
+                category: 'Data Framework'
+            },
+            anthropicsdk: {
+                name: 'Anthropic SDK',
+                desc: 'Official Anthropic SDK providing complete access interface to Claude AI models, supporting dialogue, tool calls, MCP protocol.',
+                category: 'AI SDK'
+            },
+            openaisdk: {
+                name: 'OpenAI Python SDK',
+                desc: 'Official OpenAI Python SDK providing complete API access to GPT, DALL-E, Whisper and other models - fundamental tool for AI development.',
+                category: 'AI SDK'
+            },
             devtools: {
                 name: 'Browser DevTools',
                 desc: 'Built-in browser developer tools for debugging web pages, inspecting elements, monitoring performance and network requests.',
@@ -656,27 +741,7 @@ const translations = {
                 desc: 'Cloud-based interface design tool supporting real-time collaboration, prototyping and design system management.',
                 category: 'Design Tools'
             },
-            lighthouse: {
-                name: 'Lighthouse',
-                desc: 'Google\'s open-source web quality audit tool for checking performance, accessibility, SEO and other metrics.',
-                category: 'Performance Tools'
-            },
-            jsonformatter: {
-                name: 'JSON Formatter',
-                desc: 'Online JSON formatting and validation tool supporting JSON beautification, compression and syntax checking.',
-                category: 'Formatting Tools'
-            },
-            regexr: {
-                name: 'RegExr',
-                desc: 'Regular expression learning, building and testing tool providing real-time matching and detailed explanations.',
-                category: 'Regex Tools'
-            },
-            caniuse: {
-                name: 'Can I Use',
-                desc: 'Browser compatibility query tool for checking HTML, CSS, JavaScript feature support across browsers.',
-                category: 'Compatibility Tools'
-            },
-            bundlephobia: {
+            bundlephobia_old: {
                 name: 'Bundle Phobia',
                 desc: 'npm package size analysis tool showing download size, unpacked size and dependency relationships.',
                 category: 'Analysis Tools'

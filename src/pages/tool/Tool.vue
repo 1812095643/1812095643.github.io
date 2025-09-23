@@ -1,31 +1,22 @@
 <template>
   <div class="tool">
     <div class="scroll-indicator">
-      <div class="scroll-thumb"></div>
+      <div class="scroll-thumb" :style="{ height: scrollProgress + '%' }"></div>
     </div>
     <div class="tool-list">
       <div class="tool-list-item">
         <div class="magical item">
-          <a
-            href="https://www.xiaohongshu.com/goods-detail/6887372186c0df0001e0e0c9?xsec_token=XBVjc4lVke4qkgAvLmJPHQoQ2aQiZof4ZB4emR_QCMdHo=&xsec_source=app_share&instation_link=xhsdiscover%3A%2F%2Fgoods_detail%2F6887372186c0df0001e0e0c9?trade_ext%3DeyJjaGFubmVsSW5mbyI6bnVsbCwiZHNUb2tlbkluZm8iOm51bGwsInNoYXJlTGluayI6Imh0dHBzOi8vd3d3LnhpYW9ob25nc2h1LmNvbS9nb29kcy1kZXRhaWwvNjg4NzM3MjE4NmMwZGYwMDAxZTBlMGM5P2FwcHVpZD01OGZlYmRhYjUwYzRiNDUyN2VmMGRjMDkiLCJsaXZlSW5mbyI6bnVsbCwic2hvcEluZm8iOm51bGwsImdvb2RzTm90ZUluZm8iOm51bGwsImNoYXRJbmZvIjpudWxsLCJzZWFyY2hJbmZvIjpudWxsLCJwcmVmZXIiOm51bGx9%26rate_limit_meta%3DitemId%253D6887372186c0df0001e0e0c8%26rn%3Dtrue&xhsshare=CopyLink&appuid=58febdab50c4b4527ef0dc09&apptime=1753760946&share_id=069c919f07314dd4b978c8b9d4e00625"
-            target="_blank"
-          >
+          <a href="https://github.com/hoppscotch/hoppscotch" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Asorn's Blog 2025</div>
+                  <div class="name">Hoppscotch</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  这套博客源码出售中，可到我的小红书店铺购买 🎉
+                  开源的API测试客户端，Postman的完美替代品。支持REST、GraphQL、WebSocket等多种协议，界面简洁，功能强大。
                 </div>
-                <div class="time">2025-03-24 · 商业项目</div>
-                <div class="pic">
-                  <img src="/assets/tool/asornopen2025-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/asorn2025.png" alt="" />
+                <div class="time">2024-12-01 · API测试工具</div>
               </div>
             </div>
           </a>
@@ -33,23 +24,17 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://3bodys.biliui.com/" target="_blank">
+          <a href="https://jsonformatter.curiousconcept.com/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">3 Body Problem</div>
+                  <div class="name">JSON Formatter</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  三体问题虽说是无解的，但稍微改改参数就可以有很多种稳定解法了，欣赏一下各种漂亮的轨迹吧！
+                  在线JSON格式化、验证和美化工具。支持JSON压缩、语法高亮、错误检测，是开发者处理JSON数据的必备工具。
                 </div>
-                <div class="time">2024-09-25 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/3body-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/3bodys.png" alt="" />
+                <div class="time">2024-11-28 · 格式化工具</div>
               </div>
             </div>
           </a>
@@ -57,24 +42,17 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://github.com/DipperMap/dippermap" target="_blank">
+          <a href="https://regexr.com/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Dippermap</div>
+                  <div class="name">RegExr</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  与阿里一个可视化团队基于我的设计导航 Larkmap
-                  设计开发了一款开源 GIS 导航工具。
+                  强大的正则表达式学习、构建和测试工具。提供实时匹配、详细解释和丰富的示例，帮助开发者掌握正则表达式。
                 </div>
-                <div class="time">2024-07-23 · 开源项目</div>
-                <div class="pic">
-                  <img src="/assets/tool/dippermap-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/dippermap.png" alt="" />
+                <div class="time">2024-11-25 · 正则工具</div>
               </div>
             </div>
           </a>
@@ -82,44 +60,17 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://btn.biliui.com/" target="_blank">
+          <a href="https://www.base64encode.org/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Linear Buttons</div>
+                  <div class="name">Base64 Encoder</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  Linear
-                  风格这阵子很火，所以设计并开发了大量能够用于实际项目的各种样式的按钮。
+                  在线Base64编码解码工具，支持文本、文件的Base64转换。界面简洁，操作便捷，是Web开发中常用的编码工具。
                 </div>
-                <div class="time">2024-05-28 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/linearbtn-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo"><img src="/assets/tool/btn.png" alt="" /></div>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="tool-list-item">
-        <div class="magical item">
-          <a href="https://github.com/asorn/asorn-open" target="_blank">
-            <div class="card">
-              <div class="card-left">
-                <div class="title">
-                  <div class="name">Asorn's Blog Open</div>
-                  <div class="link">↗</div>
-                </div>
-                <div class="desc">这套博客 1.0 版本开源啦 🎉</div>
-                <div class="time">2024-03-26 · 开源项目</div>
-                <div class="pic">
-                  <img src="/assets/tool/asornopen-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/asorn.png" alt="" />
+                <div class="time">2024-11-22 · 编码工具</div>
               </div>
             </div>
           </a>
@@ -127,48 +78,17 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a
-            href="https://www.figma.com/community/plugin/1286263811056993042"
-            target="_blank"
-          >
+          <a href="https://caniuse.com/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">RPB</div>
+                  <div class="name">Can I Use</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  可以一键替换 Figma 文件中所有页面背景色的插件
+                  浏览器兼容性查询工具，帮助开发者检查HTML、CSS、JavaScript特性在各浏览器中的支持情况。
                 </div>
-                <div class="time">2023-09-20 · Figma 插件</div>
-                <div class="pic">
-                  <img src="/assets/tool/rpb-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo"><img src="/assets/tool/rpb.png" alt="" /></div>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="tool-list-item">
-        <div class="magical item">
-          <a href="https://adapter.biliui.com" target="_blank">
-            <div class="card">
-              <div class="card-left">
-                <div class="title">
-                  <div class="name">Q-Adapter</div>
-                  <div class="link">↗</div>
-                </div>
-                <div class="desc">
-                  工作期间，为产品梳理的常见、常用页面布局与模版。通过代码的方式将其实现，辅助设计师、开发者快速了解适配效果，降低沟通成本。
-                </div>
-                <div class="time">2023-07-16 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/adapter-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/adapter.png" alt="" />
+                <div class="time">2024-11-20 · 兼容性工具</div>
               </div>
             </div>
           </a>
@@ -176,24 +96,17 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://qingicon.com" target="_blank">
+          <a href="https://bundlephobia.com/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">QingIcon</div>
+                  <div class="name">Bundle Phobia</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  工作期间，花大力气整合、重构、标准化落地的一套单双色图标库，共计
-                  2200+ 枚，聚焦云计算行业。
+                  分析npm包大小的工具，帮助开发者了解包的体积、依赖关系和加载时间，优化项目性能。
                 </div>
-                <div class="time">2022-09-23 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/qingicon-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/qingicon.png" alt="" />
+                <div class="time">2024-11-18 · 性能分析</div>
               </div>
             </div>
           </a>
@@ -201,23 +114,35 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://larkmap.com" target="_blank">
+          <a href="https://github.com/GoogleChrome/lighthouse" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Larkmap</div>
+                  <div class="name">Lighthouse</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  管理书签太麻烦了，索性自己开发了一款设计领域的导航工具，造福广大设计师。
+                  Google开源的网站质量审计工具，从性能、可访问性、SEO等多个维度评估网页质量，提供优化建议。
                 </div>
-                <div class="time">2022-07-16 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/larkmap-pic.png" alt="" />
-                </div>
+                <div class="time">2024-11-15 · 性能工具</div>
               </div>
-              <div class="logo">
-                <img src="/assets/tool/larkmap.png" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a href="https://transform.tools/" target="_blank">
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">Transform Tools</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  多功能在线转换工具集合，支持JSON、TypeScript、GraphQL等多种格式之间的相互转换，提高开发效率。
+                </div>
+                <div class="time">2024-11-12 · 转换工具</div>
               </div>
             </div>
           </a>
@@ -226,25 +151,19 @@
       <div class="tool-list-item">
         <div class="magical item">
           <a
-            href="https://www.figma.com/community/plugin/1111565622161029659"
+            href="https://github.com/responsively-org/responsively-app"
             target="_blank"
           >
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Figicon</div>
+                  <div class="name">Responsively App</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  将 QingIcon 图标库搬到了 Figma 插件上，6000+ 使用量了 🎉
+                  专为响应式开发设计的浏览器，可以同时预览网页在多种设备尺寸下的显示效果，提高响应式开发效率。
                 </div>
-                <div class="time">2022-05-26 · Figma 插件</div>
-                <div class="pic">
-                  <img src="/assets/tool/figicon-pic.png" alt="" />
-                </div>
-              </div>
-              <div class="logo">
-                <img src="/assets/tool/figicon.png" alt="" />
+                <div class="time">2024-11-10 · 响应式工具</div>
               </div>
             </div>
           </a>
@@ -252,23 +171,155 @@
       </div>
       <div class="tool-list-item">
         <div class="magical item">
-          <a href="https://biliui.com" target="_blank">
+          <a href="https://httpie.io/" target="_blank">
             <div class="card">
               <div class="card-left">
                 <div class="title">
-                  <div class="name">Biliui</div>
+                  <div class="name">HTTPie</div>
                   <div class="link">↗</div>
                 </div>
                 <div class="desc">
-                  初代博客，刚学代码，到处拼拼凑凑乱七八糟的不想维护了，已暂停更新。
+                  现代化的命令行HTTP客户端，支持JSON、语法高亮、会话管理等功能，为开发者提供便捷的HTTP请求方式。
                 </div>
-                <div class="time">2019-06-16 · 网站</div>
-                <div class="pic">
-                  <img src="/assets/tool/biliui-pic.png" alt="" />
-                </div>
+                <div class="time">2024-11-08 · HTTP工具</div>
               </div>
-              <div class="logo">
-                <img src="/assets/tool/biliui.png" alt="" />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a
+            href="https://github.com/modelcontextprotocol/servers"
+            target="_blank"
+          >
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">MCP Servers</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  Model Context
+                  Protocol服务器集合，为AI模型提供标准化的上下文访问接口，支持文件系统、数据库、API等多种数据源。
+                </div>
+                <div class="time">2024-12-15 · MCP工具</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a href="https://github.com/langchain-ai/langchain" target="_blank">
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">LangChain</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  构建LLM应用的开源框架，提供链式调用、记忆管理、Agent代理等功能，是开发AI应用的强大工具链。
+                </div>
+                <div class="time">2024-12-12 · AI框架</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a href="https://github.com/microsoft/autogen" target="_blank">
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">AutoGen</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  微软开源的多Agent对话框架，支持多个AI代理之间的协作和对话，可构建复杂的AI工作流。
+                </div>
+                <div class="time">2024-12-10 · Agent框架</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a
+            href="https://github.com/Significant-Gravitas/AutoGPT"
+            target="_blank"
+          >
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">AutoGPT</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  自主AI代理工具，能够自动执行复杂任务，具备自我改进和目标导向的能力，是AGI探索的重要项目。
+                </div>
+                <div class="time">2024-12-08 · 自主Agent</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a href="https://github.com/run-llama/llama_index" target="_blank">
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">LlamaIndex</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  数据框架，专门为LLM应用提供数据连接和索引服务，支持RAG（检索增强生成）等高级AI应用模式。
+                </div>
+                <div class="time">2024-12-05 · 数据框架</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a
+            href="https://github.com/anthropics/anthropic-sdk-python"
+            target="_blank"
+          >
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">Anthropic SDK</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  Anthropic官方SDK，提供Claude
+                  AI模型的完整访问接口，支持对话、工具调用、MCP协议等功能。
+                </div>
+                <div class="time">2024-12-03 · AI SDK</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="tool-list-item">
+        <div class="magical item">
+          <a href="https://github.com/openai/openai-python" target="_blank">
+            <div class="card">
+              <div class="card-left">
+                <div class="title">
+                  <div class="name">OpenAI Python SDK</div>
+                  <div class="link">↗</div>
+                </div>
+                <div class="desc">
+                  OpenAI官方Python
+                  SDK，提供GPT、DALL-E、Whisper等模型的完整API访问，是AI开发的基础工具。
+                </div>
+                <div class="time">2024-12-01 · AI SDK</div>
               </div>
             </div>
           </a>
@@ -279,27 +330,195 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, nextTick } from "vue";
+import { onMounted, onBeforeUnmount, nextTick } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
+import { useScrollProgress } from "../../composables/useScrollProgress";
 
-// 使用页面动画
+// 使用页面动画和滚动进度
 usePageAnimations();
+const { scrollProgress } = useScrollProgress();
 
-// Tool页面特殊的滚动动画
+let scrollHandler: (() => void) | null = null;
+
+// Tool页面动画管理
+const initToolAnimations = () => {
+  const vh = window.innerHeight;
+
+  // 检查并激活可见的工具项
+  const checkVisibleItems = () => {
+    document.querySelectorAll<HTMLElement>(".tool-list-item").forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= vh * 0.8 && rect.bottom >= -100) {
+        el.classList.add("active");
+      }
+    });
+  };
+
+  // 立即执行一次检查
+  checkVisibleItems();
+
+  // 创建滚动监听器
+  scrollHandler = () => {
+    checkVisibleItems();
+  };
+
+  // 添加滚动监听
+  window.addEventListener("scroll", scrollHandler);
+
+  // 防抖处理，确保动画流畅
+  let ticking = false;
+  const optimizedScrollHandler = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        checkVisibleItems();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  window.removeEventListener("scroll", scrollHandler);
+  window.addEventListener("scroll", optimizedScrollHandler);
+  scrollHandler = optimizedScrollHandler;
+};
+
 onMounted(() => {
   nextTick(() => {
+    // 延迟初始化，确保DOM完全渲染
     setTimeout(() => {
-      // 立即触发一次工具页面的倾斜效果检查
-      const vh = window.innerHeight;
-      document
-        .querySelectorAll<HTMLElement>(".tool-list-item")
-        .forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= vh * 0.6 && rect.bottom >= 0) {
-            el.classList.add("active");
-          }
-        });
-    }, 400);
+      initToolAnimations();
+    }, 100);
   });
 });
+
+onBeforeUnmount(() => {
+  if (scrollHandler) {
+    window.removeEventListener("scroll", scrollHandler);
+  }
+});
 </script>
+
+<style scoped>
+/* Tool页面浮现动画样式 - 使用更高优先级覆盖全局样式 */
+.tool .tool-list .tool-list-item {
+  opacity: 0 !important;
+  transform: translateY(30px) scale(0.95) !important;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.tool .tool-list .tool-list-item:nth-child(odd) {
+  flex-direction: row-reverse !important;
+}
+
+.tool .tool-list .tool-list-item.active {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* 闪烁效果关键帧 */
+@keyframes shimmer {
+  0% {
+    box-shadow: 0 0 0 rgba(100, 97, 241, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(100, 97, 241, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(100, 97, 241, 0);
+  }
+}
+
+/* 浮现后的闪烁效果 */
+.tool .tool-list .tool-list-item.active .item {
+  animation: shimmer 2s ease-in-out 0.5s !important;
+}
+
+/* 增强悬停效果 - 覆盖全局样式 */
+.tool .tool-list .tool-list-item:hover {
+  transform: translateY(-5px) scale(1.02) !important;
+  transition: all 0.3s ease !important;
+}
+
+.tool .tool-list .tool-list-item:hover .item {
+  box-shadow: 0 10px 30px rgba(100, 97, 241, 0.2) !important;
+}
+
+/* 卡片动画 */
+.item a .card {
+  transition: all 0.3s ease;
+}
+
+.item:hover a .card {
+  transform: translateY(-2px);
+}
+
+/* 分阶段动画延迟 */
+.tool-list-item:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.tool-list-item:nth-child(2) {
+  transition-delay: 0.2s;
+}
+.tool-list-item:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.tool-list-item:nth-child(4) {
+  transition-delay: 0.4s;
+}
+.tool-list-item:nth-child(5) {
+  transition-delay: 0.5s;
+}
+.tool-list-item:nth-child(6) {
+  transition-delay: 0.6s;
+}
+.tool-list-item:nth-child(7) {
+  transition-delay: 0.7s;
+}
+.tool-list-item:nth-child(8) {
+  transition-delay: 0.8s;
+}
+.tool-list-item:nth-child(9) {
+  transition-delay: 0.9s;
+}
+.tool-list-item:nth-child(10) {
+  transition-delay: 1s;
+}
+.tool-list-item:nth-child(11) {
+  transition-delay: 1.1s;
+}
+.tool-list-item:nth-child(12) {
+  transition-delay: 1.2s;
+}
+.tool-list-item:nth-child(13) {
+  transition-delay: 1.3s;
+}
+.tool-list-item:nth-child(14) {
+  transition-delay: 1.4s;
+}
+.tool-list-item:nth-child(15) {
+  transition-delay: 1.5s;
+}
+.tool-list-item:nth-child(16) {
+  transition-delay: 1.6s;
+}
+.tool-list-item:nth-child(17) {
+  transition-delay: 1.7s;
+}
+.tool-list-item:nth-child(18) {
+  transition-delay: 1.8s;
+}
+
+/* 响应式动画控制 */
+@media (prefers-reduced-motion: reduce) {
+  .tool-list-item,
+  .item a .card {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .tool-list-item {
+    opacity: 1 !important;
+  }
+}
+</style>
