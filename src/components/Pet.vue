@@ -229,6 +229,15 @@ watch(isStreaming, (val) => {
   else setExpression("happy", 1500);
 });
 
+// 在消息内容发生变化（包括流式逐字追加）时自动滚动到底部
+watch(
+  messages,
+  () => {
+    nextTick(scrollToBottom);
+  },
+  { deep: true }
+);
+
 // 鼠标交互
 const onHover = () => {
   isHovering = true;
