@@ -16,7 +16,7 @@ const translations = {
         detailedIntro: '作为一名充满激情的',
         highlight1: '全栈开发者',
         middleText: '，我在大学期间深入学习了前端、后端、移动端等多个技术领域，完成了',
-        highlight2: '10+个实战项目',
+        highlight2: '30+个实战项目',
         endText: '，涵盖电商平台、管理系统、移动应用等多种类型。我熟练掌握Vue.js、React、Node.js、Python等技术栈，具备从需求分析到产品上线的全流程开发能力。同时，我注重代码质量与用户体验，善于运用现代化的开发工具和最佳实践，致力于打造高性能、可维护的优质产品。',
 
         // Action Buttons
@@ -425,7 +425,7 @@ const translations = {
         detailedIntro: 'As a passionate',
         highlight1: 'full-stack developer',
         middleText: ', I have deeply studied frontend, backend, and mobile development during university, completing',
-        highlight2: '10+ practical projects',
+        highlight2: '30+ practical projects',
         endText: ', including e-commerce platforms, management systems, and mobile applications. I am proficient in Vue.js, React, Node.js, Python and other tech stacks, with full-cycle development capabilities from requirement analysis to product deployment. I focus on code quality and user experience, skilled in modern development tools and best practices, committed to creating high-performance, maintainable quality products.',
 
         // Action Buttons
