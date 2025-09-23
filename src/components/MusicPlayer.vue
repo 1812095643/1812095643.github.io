@@ -147,7 +147,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { useI18n } from "../composables/useI18n";
 
 // 使用国际化
@@ -165,6 +165,12 @@ const currentSongIndex = ref(0);
 // 音频元素引用
 const audioElement = ref<HTMLAudioElement | null>(null);
 const musicPlayerRef = ref<HTMLElement | null>(null);
+
+// 本地存储相关
+const MUSIC_STORAGE_KEY = "musicPlayer.state";
+let lastProgressSaveAt = 0;
+let restoredFromStorage = false;
+const restoreOnce = { time: null as number | null };
 
 // 播放列表
 const playlist = ref([
@@ -207,6 +213,7 @@ const togglePlay = () => {
     audioElement.value.play();
   }
   isPlaying.value = !isPlaying.value;
+  saveMusicState();
 };
 
 const toggleExpand = () => {
@@ -219,6 +226,10 @@ const playSong = (index: number) => {
   if (isPlaying.value) {
     audioElement.value?.play();
   }
+  // 切歌后从头播放
+  currentTime.value = 0;
+  if (audioElement.value) audioElement.value.currentTime = 0;
+  saveMusicState();
 };
 
 const loadCurrentSong = () => {
@@ -234,6 +245,9 @@ const nextSong = () => {
   if (isPlaying.value) {
     audioElement.value?.play();
   }
+  currentTime.value = 0;
+  if (audioElement.value) audioElement.value.currentTime = 0;
+  saveMusicState();
 };
 
 const prevSong = () => {
@@ -245,17 +259,34 @@ const prevSong = () => {
   if (isPlaying.value) {
     audioElement.value?.play();
   }
+  currentTime.value = 0;
+  if (audioElement.value) audioElement.value.currentTime = 0;
+  saveMusicState();
 };
 
 const updateProgress = () => {
   if (audioElement.value) {
     currentTime.value = audioElement.value.currentTime;
   }
+  // 节流保存播放进度
+  const now = performance.now();
+  if (now - lastProgressSaveAt > 1000) {
+    saveMusicState();
+    lastProgressSaveAt = now;
+  }
 };
 
 const updateDuration = () => {
   if (audioElement.value) {
     duration.value = audioElement.value.duration;
+    // 若存在一次性恢复时间点，在元数据加载后设置
+    if (restoreOnce.time != null) {
+      try {
+        audioElement.value.currentTime = restoreOnce.time;
+        currentTime.value = restoreOnce.time;
+      } catch {}
+      restoreOnce.time = null;
+    }
   }
 };
 
@@ -270,6 +301,7 @@ const seekTo = (event: MouseEvent) => {
 
   audioElement.value.currentTime = newTime;
   currentTime.value = newTime;
+  saveMusicState();
 };
 
 const setVolume = (event: MouseEvent) => {
@@ -283,6 +315,7 @@ const setVolume = (event: MouseEvent) => {
   if (audioElement.value) {
     audioElement.value.volume = newVolume;
   }
+  saveMusicState();
 };
 
 const formatTime = (seconds: number): string => {
@@ -321,22 +354,95 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+function saveMusicState() {
+  try {
+    const state = {
+      songIndex: currentSongIndex.value,
+      time: currentTime.value,
+      volume: volume.value,
+      isPlaying: isPlaying.value,
+    };
+    localStorage.setItem(MUSIC_STORAGE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function restoreMusicState() {
+  try {
+    const raw = localStorage.getItem(MUSIC_STORAGE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw || "null") as {
+      songIndex?: number;
+      time?: number;
+      volume?: number;
+      isPlaying?: boolean;
+    } | null;
+    if (!state) return;
+
+    // 恢复曲目索引
+    if (typeof state.songIndex === "number") {
+      const idx = Math.max(
+        0,
+        Math.min(playlist.value.length - 1, state.songIndex)
+      );
+      currentSongIndex.value = idx;
+    }
+
+    // 先加载音频，再在 metadata 到达后设置时间
+    loadCurrentSong();
+
+    // 恢复音量
+    if (typeof state.volume === "number") {
+      volume.value = state.volume;
+      if (audioElement.value) audioElement.value.volume = state.volume;
+    }
+
+    // 等待元数据后设置时间
+    if (typeof state.time === "number" && state.time > 0) {
+      restoreOnce.time = state.time;
+    }
+
+    // 恢复播放状态（可能被浏览器拦截）
+    if (state.isPlaying) {
+      setTimeout(() => {
+        if (audioElement.value) {
+          audioElement.value
+            .play()
+            .then(() => (isPlaying.value = true))
+            .catch(() => {
+              // 自动播放被阻止，则保持暂停
+              isPlaying.value = false;
+            });
+        }
+      }, 0);
+    }
+
+    restoredFromStorage = true;
+  } catch {
+    restoredFromStorage = false;
+  }
+}
+
 // 生命周期
 onMounted(() => {
-  loadCurrentSong();
+  // 优先恢复上次状态
+  restoreMusicState();
+
   // 添加全局点击监听器
   document.addEventListener("click", handleClickOutside);
 
-  // 自动播放（延迟一小段时间确保音频加载完成）
-  setTimeout(() => {
-    if (audioElement.value) {
-      audioElement.value.play().catch(() => {
-        // 如果浏览器阻止自动播放，静默处理
-        console.log("Autoplay was prevented by browser");
-      });
-      isPlaying.value = true;
-    }
-  }, 1000);
+  // 若未从本地恢复，才考虑自动播放
+  if (!restoredFromStorage) {
+    setTimeout(() => {
+      if (audioElement.value) {
+        audioElement.value.play().catch(() => {
+          // 如果浏览器阻止自动播放，静默处理
+          console.log("Autoplay was prevented by browser");
+        });
+        isPlaying.value = true;
+        saveMusicState();
+      }
+    }, 1000);
+  }
 });
 
 onBeforeUnmount(() => {

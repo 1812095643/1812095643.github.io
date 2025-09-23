@@ -1,9 +1,50 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export function useChat() {
     const messages = ref<{ sender: 'user' | 'pet'; text: string }[]>([]);
     const userInput = ref('');
     const isStreaming = ref(false);
+
+    // 本地存储：聊天进度
+    const CHAT_STORAGE_KEY = 'aiPet.chat.v1';
+    let lastChatSaveAt = 0;
+
+    function saveChatState(force = false) {
+        try {
+            const now = Date.now();
+            if (!force && now - lastChatSaveAt < 500) return; // 节流，避免打字机频繁写入
+            const state = {
+                messages: messages.value,
+                userInput: userInput.value,
+            };
+            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(state));
+            lastChatSaveAt = now;
+        } catch {
+            // 忽略存储异常
+        }
+    }
+
+    function restoreChatState() {
+        try {
+            const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+            if (!raw) return;
+            const state = JSON.parse(raw || 'null') as {
+                messages?: { sender: 'user' | 'pet'; text: string }[];
+                userInput?: string;
+            } | null;
+            if (!state) return;
+            if (Array.isArray(state.messages)) {
+                // 仅保留结构有效的消息
+                const valid = state.messages.filter(m => m && (m.sender === 'user' || m.sender === 'pet') && typeof m.text === 'string');
+                messages.value = valid;
+            }
+            if (typeof state.userInput === 'string') {
+                userInput.value = state.userInput;
+            }
+        } catch {
+            // 忽略恢复异常
+        }
+    }
 
     const VITE_DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
 
@@ -31,6 +72,7 @@ export function useChat() {
         const userMessage = userInput.value;
         messages.value.push({ sender: 'user', text: userMessage });
         userInput.value = '';
+        saveChatState(true);
 
         // 先推入占位消息，记录索引；后续一律通过 messages[petIndex] 写入，确保响应式
         const petMessage = { sender: 'pet' as const, text: '' };
@@ -102,12 +144,14 @@ export function useChat() {
                         const ch = pendingBuffer[0];
                         pendingBuffer = pendingBuffer.slice(1);
                         messages.value[petIndex].text += ch;
+                        saveChatState();
                     } else if (streamEnded) {
                         if (typewriterTimer !== null) {
                             clearInterval(typewriterTimer);
                             typewriterTimer = null;
                         }
                         isStreaming.value = false;
+                        saveChatState(true);
                     }
                 }, 16); // ~60fps
             };
@@ -163,6 +207,7 @@ export function useChat() {
                         // ignore
                     }
                 }
+                saveChatState(true);
             } else {
                 streamEnded = true;
             }
@@ -170,8 +215,16 @@ export function useChat() {
             console.error('Error calling DeepSeek API:', error);
             isStreaming.value = false;
             messages.value[messages.value.length - 1].text = '我暂时想不出来啦 (＞﹏＜) 稍后再试试～';
+            saveChatState(true);
         }
     };
+
+    // 初始化恢复
+    restoreChatState();
+
+    // 变更时保存
+    watch(messages, () => saveChatState(), { deep: true });
+    watch(userInput, () => saveChatState(true));
 
     return {
         messages,
