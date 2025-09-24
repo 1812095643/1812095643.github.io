@@ -71,6 +71,41 @@ export function useChat() {
         return resumeContent;
     }
 
+    // 将本地消息历史转换为模型可读的对话上下文，并做长度/轮次截断
+    function buildContextMessages(
+        source: { sender: 'user' | 'pet'; text: string }[],
+        options?: { maxChars?: number; maxTurns?: number }
+    ) {
+        const maxChars = options?.maxChars ?? 6000; // 近似字符预算，防止过长
+        const maxTurns = options?.maxTurns ?? 12;   // 近似保留最近 12 轮以内
+
+        const reversed: { role: 'user' | 'assistant'; content: string }[] = [];
+        let usedChars = 0;
+        let turnsCount = 0;
+
+        // 从最近开始回溯，尽量纳入最近对话
+        for (let i = source.length - 1; i >= 0; i--) {
+            const m = source[i];
+            const role = m.sender === 'user' ? 'user' : 'assistant';
+            const content = m.text || '';
+            if (!content) continue;
+
+            // 若已达到轮次上限且当前为用户消息，则停止（按对话对近似）
+            if (turnsCount >= maxTurns && role === 'user') break;
+
+            // 至少保留最新一条用户消息；之后再按字符预算截断
+            const willExceed = usedChars + content.length > maxChars;
+            if (willExceed && reversed.length > 0) break;
+
+            reversed.push({ role, content });
+            usedChars += content.length;
+            if (role === 'user') turnsCount += 1;
+        }
+
+        // 反转回时间顺序
+        return reversed.reverse();
+    }
+
     const sendMessage = async () => {
         if (!userInput.value.trim()) return;
 
@@ -116,6 +151,16 @@ export function useChat() {
             let lastError: any = null;
             for (const url of endpointCandidates) {
                 try {
+                    // 构建含上下文的消息：排除占位的助手消息
+                    const history = buildContextMessages(
+                        messages.value.slice(0, petIndex),
+                        { maxChars: 6000, maxTurns: 12 }
+                    );
+                    const modelMessages = [
+                        { role: 'system', content: systemPrompt },
+                        ...history,
+                    ];
+
                     response = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -125,10 +170,7 @@ export function useChat() {
                         },
                         body: JSON.stringify({
                             model: 'deepseek-chat',
-                            messages: [
-                                { role: 'system', content: systemPrompt },
-                                { role: 'user', content: userMessage }
-                            ],
+                            messages: modelMessages,
                             stream: true
                         }),
                         cache: 'no-store'

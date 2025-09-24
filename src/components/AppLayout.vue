@@ -7,11 +7,23 @@
     <AppFooter />
     <AppWidget />
     <BackToTop />
+
+    <div
+      v-if="showMobileToast"
+      class="mobile-toast"
+      role="status"
+      aria-live="polite"
+    >
+      <span>检测到你在手机或窄屏访问，电脑端体验更佳</span>
+      <button class="toast-close" aria-label="关闭" @click="dismissMobileToast">
+        ×
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import AppHeader from "./AppHeader.vue";
 import AppFooter from "./AppFooter.vue";
@@ -31,6 +43,45 @@ const route = useRoute();
 const router = useRouter(); // 移到setup()顶层
 
 let cleanupFns: Array<() => void> = [];
+
+// —— 移动端/窄屏提示 ——
+const showMobileToast = ref(false);
+let mobileToastTimer: number | null = null;
+
+function isMobileUserAgent(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Mobi|Android|iPhone|iPad|iPod|Mobile|BlackBerry|Opera Mini|IEMobile/i.test(
+    navigator.userAgent
+  );
+}
+
+function isNarrowScreen(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth <= 820;
+}
+
+function maybeShowMobileToast() {
+  const KEY = "ui.mobileToastShown.v1";
+  try {
+    if (sessionStorage.getItem(KEY) === "1") return;
+  } catch {}
+  if (isMobileUserAgent() || isNarrowScreen()) {
+    showMobileToast.value = true;
+    try {
+      sessionStorage.setItem(KEY, "1");
+    } catch {}
+    if (mobileToastTimer) window.clearTimeout(mobileToastTimer);
+    mobileToastTimer = window.setTimeout(() => {
+      showMobileToast.value = false;
+    }, 6000);
+  }
+}
+
+function dismissMobileToast() {
+  showMobileToast.value = false;
+}
+
+const onResizeCheck = () => maybeShowMobileToast();
 
 // 重置页面状态函数
 function resetPageState() {
@@ -394,6 +445,15 @@ onMounted(async () => {
   };
   email?.addEventListener("click", onEmailClick);
   cleanupFns.push(() => email?.removeEventListener("click", onEmailClick));
+
+  // 移动端/窄屏提示（仅会话提示一次）
+  maybeShowMobileToast();
+  window.addEventListener("resize", onResizeCheck);
+  cleanupFns.push(() => window.removeEventListener("resize", onResizeCheck));
+  cleanupFns.push(() => {
+    if (mobileToastTimer) window.clearTimeout(mobileToastTimer);
+    mobileToastTimer = null;
+  });
 });
 
 onBeforeUnmount(() => {
@@ -408,5 +468,41 @@ onBeforeUnmount(() => {
   top: 80px;
   right: 40px;
   z-index: 100;
+}
+
+.mobile-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 10000;
+  max-width: 90vw;
+  background: rgba(17, 17, 17, 0.9);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 14px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast-close {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.toast-close:hover {
+  opacity: 1;
 }
 </style>

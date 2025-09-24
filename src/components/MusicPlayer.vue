@@ -212,6 +212,10 @@ const togglePlay = async () => {
       audioElement.value.pause();
       isPlaying.value = false;
     } else {
+      // 若首次还未设置音源，先加载当前曲目
+      if (!audioElement.value.src) {
+        loadCurrentSong();
+      }
       // 用户手势触发，确保先将音量恢复为用户设置值
       audioElement.value.volume = volume.value;
       await audioElement.value.play();
@@ -244,6 +248,9 @@ const loadCurrentSong = () => {
 
   audioElement.value.src = currentSong.value.src;
   audioElement.value.volume = volume.value;
+  try {
+    audioElement.value.load();
+  } catch {}
 };
 
 const nextSong = () => {
@@ -431,6 +438,9 @@ function restoreMusicState() {
 
 // 生命周期
 onMounted(() => {
+  // 确保首访也加载音源，避免未设置 src 造成的播放失败
+  loadCurrentSong();
+
   // 优先恢复上次状态
   restoreMusicState();
 

@@ -1856,6 +1856,8 @@ onBeforeUnmount(() => {
     display: inline-flex;
     /* 让其处于 logo 与 actions 之间的中线，更易点按 */
     z-index: 2;
+    /* 轻微左移以更贴合视觉中心 */
+    left: calc(50% - 8px);
   }
 
   .header-container {

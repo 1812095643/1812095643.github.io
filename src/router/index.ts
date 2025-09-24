@@ -9,11 +9,11 @@ import About from '../pages/about/About.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: Home, meta: { title: 'Roy·Smee - 个人博客' } },
-  { path: '/work', name: 'work', component: Work, meta: { title: '作品展示 - Roy·Smee' } },
-  { path: '/tool', name: 'tool', component: Tool, meta: { title: '工具推荐 - Roy·Smee' } },
-  { path: '/blog', name: 'blog', component: Blog, meta: { title: '博客文章 - Roy·Smee' } },
-  { path: '/book', name: 'book', component: Book, meta: { title: '读书笔记 - Roy·Smee' } },
-  { path: '/about', name: 'about', component: About, meta: { title: '关于我 - Roy·Smee' } },
+  { path: '/work', name: 'work', component: Work, meta: { title: 'Roy·Smee - 作品展示' } },
+  { path: '/tool', name: 'tool', component: Tool, meta: { title: 'Roy·Smee - 工具推荐' } },
+  { path: '/blog', name: 'blog', component: Blog, meta: { title: 'Roy·Smee - 博客文章' } },
+  { path: '/book', name: 'book', component: Book, meta: { title: 'Roy·Smee - 读书笔记' } },
+  { path: '/about', name: 'about', component: About, meta: { title: 'Roy·Smee - 关于我' } },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
