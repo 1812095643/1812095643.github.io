@@ -5,7 +5,10 @@
       <div class="logo-section">
         <RouterLink to="/" class="logo-link">
           <div class="logo-wrapper">
-            <span class="logo-text"> Roy·Smee 个人博客</span>
+            <span class="logo-text"
+              ><span class="logo-name">Roy·Smee</span
+              ><span class="logo-suffix"> 个人博客</span></span
+            >
             <div class="logo-glow"></div>
           </div>
         </RouterLink>
@@ -137,7 +140,9 @@
                   <div class="logo-icon">
                     <div class="logo-dot"></div>
                   </div>
-                  <span class="mobile-logo-text">YGQ的个人博客</span>
+                  <span class="mobile-logo-text"
+                    >YGQ的<span class="logo-suffix">个人博客</span></span
+                  >
                 </div>
                 <button
                   class="close-btn"
@@ -822,6 +827,11 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
 }
 
+/* Logo 文本后缀（中文“个人博客”），默认在桌面端显示 */
+.logo-suffix {
+  display: inline;
+}
+
 .logo-glow {
   display: none;
 }
@@ -1331,6 +1341,11 @@ onBeforeUnmount(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* 在移动端抽屉 Logo 文本中隐藏“个人博客”后缀 */
+.mobile-logo-text .logo-suffix {
+  display: none;
 }
 
 .close-btn {
@@ -1861,6 +1876,11 @@ onBeforeUnmount(() => {
   .language-toggle {
     min-width: 46px;
     width: 46px;
+  }
+
+  /* 768 以下隐藏顶部 Logo 的中文后缀 */
+  .logo-suffix {
+    display: none;
   }
 }
 
