@@ -204,16 +204,23 @@ const progressPercentage = computed(() => {
 });
 
 // 方法
-const togglePlay = () => {
+const togglePlay = async () => {
   if (!audioElement.value) return;
 
-  if (isPlaying.value) {
-    audioElement.value.pause();
-  } else {
-    audioElement.value.play();
+  try {
+    if (isPlaying.value) {
+      audioElement.value.pause();
+      isPlaying.value = false;
+    } else {
+      // 用户手势触发，确保先将音量恢复为用户设置值
+      audioElement.value.volume = volume.value;
+      await audioElement.value.play();
+      isPlaying.value = true;
+    }
+    saveMusicState();
+  } catch (e) {
+    // 播放失败则保持状态不变
   }
-  isPlaying.value = !isPlaying.value;
-  saveMusicState();
 };
 
 const toggleExpand = () => {
@@ -430,18 +437,45 @@ onMounted(() => {
   // 添加全局点击监听器
   document.addEventListener("click", handleClickOutside);
 
-  // 若未从本地恢复，才考虑自动播放
+  // 若未从本地恢复，采用“静音自动播+首个手势恢复音量”策略，提升首进播放成功率
   if (!restoredFromStorage) {
     setTimeout(() => {
       if (audioElement.value) {
-        audioElement.value.play().catch(() => {
-          // 如果浏览器阻止自动播放，静默处理
-          console.log("Autoplay was prevented by browser");
-        });
-        isPlaying.value = true;
-        saveMusicState();
+        const originalVolume = volume.value;
+        // 静音尝试自动播放
+        audioElement.value.volume = 0;
+        audioElement.value
+          .play()
+          .then(() => {
+            isPlaying.value = true;
+            saveMusicState();
+            // 监听首次用户交互后恢复音量
+            const restoreVolumeOnce = () => {
+              if (audioElement.value) {
+                audioElement.value.volume = originalVolume;
+              }
+              window.removeEventListener("click", restoreVolumeOnce, {
+                capture: true,
+              } as any);
+              window.removeEventListener("touchstart", restoreVolumeOnce, {
+                capture: true,
+              } as any);
+            };
+            window.addEventListener("click", restoreVolumeOnce, {
+              once: true,
+              capture: true,
+            } as any);
+            window.addEventListener("touchstart", restoreVolumeOnce, {
+              once: true,
+              capture: true,
+            } as any);
+          })
+          .catch(() => {
+            // 自动播放被阻止，保持暂停态
+            isPlaying.value = false;
+          });
       }
-    }, 1000);
+    }, 500);
   }
 });
 

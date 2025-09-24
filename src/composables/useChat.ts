@@ -46,7 +46,12 @@ export function useChat() {
         }
     }
 
-    const VITE_DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
+    // 优先读取浏览器运行时注入（public/env.js），其次 .env 构建变量
+    // 用户明确不介意暴露 Key，则可以通过 public/env.js 配置
+    // @ts-ignore
+    const RUNTIME_ENV: any = (typeof window !== 'undefined' && (window as any).ENV) ? (window as any).ENV : {};
+    const VITE_DEEPSEEK_API_KEY = RUNTIME_ENV.DEEPSEEK_API_KEY || import.meta.env.VITE_DEEPSEEK_API_KEY;
+    const RUNTIME_DEEPSEEK_API_BASE = (RUNTIME_ENV.DEEPSEEK_API_BASE || '').replace(/\/$/, '') || '';
 
     let resumeContent: string | null = null;
 
@@ -80,7 +85,7 @@ export function useChat() {
         const petIndex = messages.value.length - 1;
 
         if (!VITE_DEEPSEEK_API_KEY) {
-            petMessage.text = '环境未配置 API Key，请在 .env 中设置 VITE_DEEPSEEK_API_KEY。';
+            petMessage.text = '环境未配置 API Key，请在 .env 中设置 VITE_DEEPSEEK_API_KEY，或在 public/env.js 中设置 window.ENV.DEEPSEEK_API_KEY。';
             return;
         }
 
@@ -99,30 +104,43 @@ export function useChat() {
                 systemPrompt += `\n\n当且仅当用户询问作者/博主相关内容时，用下述资料作为事实依据作答：\n${resume}\n\n如果资料中没有的信息请说明“我没有确切信息”。`;
             }
 
-            // 通过本地代理以避免 CORS 与中间节点缓冲：/deepseek -> https://api.deepseek.com
-            const response = await fetch('/deepseek/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${VITE_DEEPSEEK_API_KEY}`,
-                    // 显式声明期望 SSE，有助于部分网关正确协商
-                    'Accept': 'text/event-stream'
-                },
-                body: JSON.stringify({
-                    model: 'deepseek-chat',
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userMessage }
-                    ],
-                    stream: true
-                }),
-                // 避免缓存导致的缓冲
-                cache: 'no-store'
-            });
+            // 端点优先级：1) 本地代理 /deepseek (开发/有反代) 2) 运行时直连 base 3) 官方默认
+            const endpointCandidates: string[] = [];
+            endpointCandidates.push('/deepseek/v1/chat/completions');
+            if (RUNTIME_DEEPSEEK_API_BASE) {
+                endpointCandidates.push(`${RUNTIME_DEEPSEEK_API_BASE}/v1/chat/completions`);
+            }
+            endpointCandidates.push('https://api.deepseek.com/v1/chat/completions');
 
-            if (!response.body) {
+            let response: Response | null = null;
+            let lastError: any = null;
+            for (const url of endpointCandidates) {
+                try {
+                    response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${VITE_DEEPSEEK_API_KEY}`,
+                            'Accept': 'text/event-stream'
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek-chat',
+                            messages: [
+                                { role: 'system', content: systemPrompt },
+                                { role: 'user', content: userMessage }
+                            ],
+                            stream: true
+                        }),
+                        cache: 'no-store'
+                    });
+                    if (response && response.ok && response.body) break;
+                } catch (e) {
+                    lastError = e;
+                }
+            }
+            if (!response || !response.body) {
                 isStreaming.value = false;
-                petMessage.text = '抱歉，网络似乎有点问题。';
+                petMessage.text = '抱歉，DeepSeek 服务暂时不可用。';
                 return;
             }
 

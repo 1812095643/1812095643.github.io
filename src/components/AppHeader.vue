@@ -141,7 +141,7 @@
                     <div class="logo-dot"></div>
                   </div>
                   <span class="mobile-logo-text"
-                    >YGQ的<span class="logo-suffix">个人博客</span></span
+                    >YGQ<span class="logo-suffix">个人博客</span></span
                   >
                 </div>
                 <button
