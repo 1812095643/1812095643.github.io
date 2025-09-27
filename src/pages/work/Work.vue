@@ -121,7 +121,7 @@
                   <div class="name-emoji">🔥</div>
                   <div class="name">{{ t.work.autoGitee }}</div>
                 </div>
-                <div class="tag tag-web">AI</div>
+                <div class="tag tag-web">Py</div>
               </div>
               <div class="desc">{{ t.work.autoGiteeDesc }}</div>
             </div>
@@ -232,11 +232,14 @@
       </div>
     </div>
 
-    <!-- 视频播放器区域 -->
+    <!-- 视频播放器区域（智能多线路） -->
     <div class="video-section">
-      <VimeoPlayer
-        :video-id="vimeoVideoId"
+      <SmartVideo
         :title="t.work.guigangTourism + ' - 作品演示录屏'"
+        :vimeo-id="vimeoVideoId"
+        :bilibili-bvid="bilibiliBvid"
+        :bilibili-quality="80"
+        preferred="cn"
       />
     </div>
   </div>
@@ -247,8 +250,8 @@ import { onMounted, ref } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useI18n } from "../../composables/useI18n";
 import { defineAsyncComponent } from "vue";
-const VimeoPlayer = defineAsyncComponent(
-  () => import("../../components/VimeoPlayer.vue")
+const SmartVideo = defineAsyncComponent(
+  () => import("../../components/SmartVideo.vue")
 );
 
 // 使用页面动画
@@ -259,8 +262,10 @@ const { t, currentLanguage, initLanguage } = useI18n();
 
 const scrollContainer = ref<HTMLElement>();
 
-// Vimeo视频ID
+// 国际线路：Vimeo videoId
 const vimeoVideoId = ref("1122407617");
+// 国内线路：Bilibili BV 号
+const bilibiliBvid = ref("BV1oqnJzHEMv");
 
 onMounted(() => {
   // 初始化语言设置
