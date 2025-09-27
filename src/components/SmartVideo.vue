@@ -35,18 +35,7 @@
       </template>
     </VimeoEmbed>
 
-    <div v-else class="fallback">
-      <div class="fallback-content">
-        <div class="fallback-icon">📺</div>
-        <div class="fallback-text">视频源不可用</div>
-        <div
-          v-if="!vimeoReachable && props.vimeoId && !props.bilibiliBvid"
-          class="fallback-hint"
-        >
-          国际线路网络不可达，建议添加国内备用线路
-        </div>
-      </div>
-    </div>
+    <div v-else class="fallback">视频源不可用</div>
   </div>
 </template>
 
@@ -79,8 +68,6 @@ type LineKey = "cn" | "global";
 
 // 初始为 null，避免未决策前渲染任意线路
 const activeLine = ref<LineKey | null>(null);
-// 记录 Vimeo 是否可达，用于动态隐藏国际线路按钮
-const vimeoReachable = ref(true);
 
 const availableLines = computed(() => {
   const lines: {
@@ -99,23 +86,23 @@ const availableLines = computed(() => {
       key: "global",
       label: "国际线路",
       shortLabel: "国际",
-      enabled: !!props.vimeoId && vimeoReachable.value,
+      enabled: !!props.vimeoId,
     },
   ];
   return lines.filter((l) => l.enabled);
 });
 
-// 改进的探测：尝试请求 Vimeo 的轻量级资源，快速判断网络可达性
-async function probeVimeo(timeoutMs = 800): Promise<boolean> {
+// 简单探测：请求 player.vimeo.com 一个轻量资源头部，200-1000ms 为可用，超时则认为不可用
+async function probeVimeo(timeoutMs = 1200): Promise<boolean> {
   if (!props.vimeoId) return false;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    // 使用更轻量的探测端点，避免加载完整播放器
     const resp = await fetch(
-      `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${props.vimeoId}`,
+      `https://player.vimeo.com/video/${props.vimeoId}`,
       { method: "HEAD", mode: "no-cors", signal: controller.signal }
     );
+    // no-cors 下无法读状态码，能返回即视为可达
     return true;
   } catch {
     return false;
@@ -128,11 +115,14 @@ function guessIsChinaMainland(): boolean {
   // 简易判断：时区 + 语言
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-    const lang = navigator.language.toLowerCase();
+    const lang = (
+      navigator.language || (navigator as any).browserLanguage
+    ).toLowerCase();
     return (
       tz.includes("Shanghai") ||
       tz.includes("Chongqing") ||
       tz.includes("Beijing") ||
+      tz.includes("Urumqi") ||
       lang.startsWith("zh")
     );
   } catch {
@@ -141,29 +131,33 @@ function guessIsChinaMainland(): boolean {
 }
 
 onMounted(async () => {
-  // 同步决策初始线路（不触发错误挂载）
+  // 决策初始线路
+  // 1. 如果首选为 'cn' 且B站源可用
   if (props.preferred === "cn" && props.bilibiliBvid) {
     activeLine.value = "cn";
-  } else if (props.preferred === "global" && props.vimeoId) {
+    return;
+  }
+
+  // 2. 如果首选为 'global' 且Vimeo源可用
+  if (props.preferred === "global" && props.vimeoId) {
     activeLine.value = "global";
-  } else if (props.bilibiliBvid && props.vimeoId) {
+    return;
+  }
+
+  // 3. 自动模式：如果两个源都提供
+  if (props.bilibiliBvid && props.vimeoId) {
+    // 根据环境猜测默认线路，不再进行网络探测
     activeLine.value = guessIsChinaMainland() ? "cn" : "global";
-  } else if (props.bilibiliBvid) {
+    return;
+  }
+
+  // 4. 回退：只提供了某个源
+  if (props.bilibiliBvid) {
     activeLine.value = "cn";
   } else if (props.vimeoId) {
     activeLine.value = "global";
   } else {
-    activeLine.value = null;
-  }
-
-  // 若当前为 global，探测不可达则自动回落到 cn 并隐藏国际按钮
-  if (activeLine.value === "global" && props.bilibiliBvid) {
-    const ok = await probeVimeo(800);
-    if (!ok) {
-      vimeoReachable.value = false;
-      activeLine.value = "cn";
-      console.log("Vimeo 网络不可达，已自动切换到国内线路");
-    }
+    activeLine.value = null; // 两个源都未提供
   }
 });
 
@@ -223,43 +217,6 @@ function switchLine(key: LineKey) {
   border-color: #ff6b6b;
   color: white;
   box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-}
-
-/* 兜底界面样式 */
-.fallback {
-  width: 100%;
-  padding-bottom: 56.25%;
-  position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.fallback-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: white;
-}
-
-.fallback-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.8;
-}
-
-.fallback-text {
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.fallback-hint {
-  font-size: 14px;
-  opacity: 0.8;
-  line-height: 1.4;
 }
 </style>
 
