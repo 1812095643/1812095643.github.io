@@ -2,6 +2,7 @@
   <div class="vimeo-embed-container">
     <div class="vimeo-embed-wrapper">
       <iframe
+        ref="iframeRef"
         :src="embedUrl"
         frameborder="0"
         allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
@@ -18,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 interface Props {
   videoId: string;
@@ -34,6 +35,9 @@ const props = withDefaults(defineProps<Props>(), {
   autopause: false,
   badge: false,
 });
+
+const emit = defineEmits(["load-error"]);
+const iframeRef = ref<HTMLIFrameElement | null>(null);
 
 // 构建嵌入URL
 const embedUrl = computed(() => {
@@ -51,19 +55,63 @@ const embedUrl = computed(() => {
   return `https://player.vimeo.com/video/${props.videoId}?${params.toString()}`;
 });
 
-// 加载Vimeo Player API
+function initializePlayer() {
+  if (!iframeRef.value || !(window as any).Vimeo) {
+    return;
+  }
+  try {
+    const player = new (window as any).Vimeo.Player(iframeRef.value);
+    player.on("error", () => {
+      console.warn("Vimeo player reported an error, switching lines.");
+      emit("load-error");
+    });
+  } catch (e) {
+    console.warn("Could not initialize Vimeo player:", e);
+    emit("load-error");
+  }
+}
+
 onMounted(() => {
-  // 动态加载Vimeo Player API脚本
-  if (
-    !document.querySelector(
-      'script[src="https://player.vimeo.com/api/player.js"]'
-    )
-  ) {
-    const script = document.createElement("script");
-    script.src = "https://player.vimeo.com/api/player.js";
+  const scriptId = "vimeo-player-api";
+  const scriptUrl = "https://player.vimeo.com/api/player.js";
+
+  if ((window as any).Vimeo) {
+    initializePlayer();
+    return;
+  }
+
+  const timeout = setTimeout(() => {
+    console.warn("Vimeo API script loading timed out.");
+    emit("load-error");
+  }, 8000);
+
+  let script = document.getElementById(scriptId) as HTMLScriptElement;
+  if (!script) {
+    script = document.createElement("script");
+    script.id = scriptId;
+    script.src = scriptUrl;
     script.async = true;
     document.head.appendChild(script);
   }
+
+  const onLoad = () => {
+    clearTimeout(timeout);
+    initializePlayer();
+  };
+  const onError = () => {
+    clearTimeout(timeout);
+    console.warn("Vimeo API script failed to load.");
+    emit("load-error");
+  };
+
+  script.addEventListener("load", onLoad);
+  script.addEventListener("error", onError);
+
+  onUnmounted(() => {
+    script.removeEventListener("load", onLoad);
+    script.removeEventListener("error", onError);
+    clearTimeout(timeout);
+  });
 });
 </script>
 

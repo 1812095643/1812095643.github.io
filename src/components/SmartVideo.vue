@@ -18,7 +18,11 @@
       </template>
     </BilibiliEmbed>
 
-    <VimeoEmbed v-else-if="activeLine === 'global'" v-bind="currentPropsGlobal">
+    <VimeoEmbed
+      v-else-if="activeLine === 'global'"
+      v-bind="currentPropsGlobal"
+      @load-error="handleVimeoError"
+    >
       <template #overlay-top-right>
         <div v-if="availableLines.length > 1" class="line-switcher">
           <button
@@ -171,6 +175,13 @@ const currentPropsGlobal = computed(() => ({
   videoId: props.vimeoId,
   title: props.title,
 }));
+
+function handleVimeoError() {
+  // 如果B站线路可用，则自动切换
+  if (props.bilibiliBvid) {
+    activeLine.value = "cn";
+  }
+}
 
 function switchLine(key: LineKey) {
   if (key === "cn" && !props.bilibiliBvid) return;
