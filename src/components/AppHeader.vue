@@ -50,6 +50,28 @@
 
       <!-- 功能按钮区域 -->
       <div class="actions-section">
+        <!-- 天气显示（仅宽屏显示） -->
+        <div class="weather-widget" v-if="weatherData">
+          <div class="weather-content">
+            <span class="weather-emoji">{{ weatherEmoji }}</span>
+            <div class="weather-info">
+              <span class="weather-temp">{{ weatherData.temp }}°</span>
+              <span class="weather-city">{{
+                locationData?.city || weatherData.city
+              }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="weather-widget weather-loading" v-else>
+          <div class="weather-content">
+            <div class="loading-spinner"></div>
+            <div class="weather-info">
+              <span class="weather-temp">--°</span>
+              <span class="weather-city">获取中</span>
+            </div>
+          </div>
+        </div>
+
         <!-- 语言切换 -->
         <button
           class="action-btn language-toggle"
@@ -973,6 +995,121 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 
+/* 天气组件样式 */
+.weather-widget {
+  display: none; /* 默认隐藏，在媒体查询中显示 */
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 12px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+
+.weather-widget::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1),
+    rgba(139, 92, 246, 0.1)
+  );
+  border-radius: 12px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.weather-widget:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+}
+
+.weather-widget:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.weather-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather-emoji {
+  font-size: 18px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  animation: weather-float 3s ease-in-out infinite;
+}
+
+@keyframes weather-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.weather-temp {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
+  line-height: 1;
+  font-family: "SF Mono", "Courier New", monospace;
+}
+
+.weather-city {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  line-height: 1;
+  text-transform: capitalize;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 天气加载状态 */
+.weather-loading .weather-content {
+  opacity: 0.7;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid rgba(99, 102, 241, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.weather-loading .weather-temp {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.weather-loading .weather-city {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 .action-btn {
   position: relative;
   display: flex;
@@ -1840,6 +1977,13 @@ onBeforeUnmount(() => {
 }
 
 /* 响应式设计 */
+@media (min-width: 769px) {
+  /* 宽屏时显示天气组件 */
+  .weather-widget {
+    display: flex;
+  }
+}
+
 @media (max-width: 768px) {
   .main-nav {
     display: none;
@@ -1849,6 +1993,11 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* 窄屏时隐藏天气组件 */
+  .weather-widget {
+    display: none;
   }
 
   /* 显示小宠物按钮并居中放置 */

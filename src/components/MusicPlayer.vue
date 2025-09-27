@@ -149,9 +149,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { useI18n } from "../composables/useI18n";
+import { useMusicControl } from "../composables/useMusicControl";
 
 // 使用国际化
 const { t } = useI18n();
+
+// 使用音乐控制
+const { registerMusicPlayer, setMusicVolume } = useMusicControl();
 
 // 响应式状态
 const isPlaying = ref(false);
@@ -325,6 +329,11 @@ const setVolume = (event: MouseEvent) => {
   // 将点击位置映射到0-0.1（0%-10%）的范围
   const newVolume = Math.max(0, Math.min(0.1, (clickX / rect.width) * 0.1));
 
+  updateVolume(newVolume);
+};
+
+// 统一的音量更新方法
+const updateVolume = (newVolume: number) => {
   volume.value = newVolume;
   if (audioElement.value) {
     audioElement.value.volume = newVolume;
@@ -443,6 +452,12 @@ onMounted(() => {
 
   // 优先恢复上次状态
   restoreMusicState();
+
+  // 注册到全局音乐控制
+  registerMusicPlayer({
+    setVolume: updateVolume,
+    getVolume: () => volume.value,
+  });
 
   // 添加全局点击监听器
   document.addEventListener("click", handleClickOutside);
