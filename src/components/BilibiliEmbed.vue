@@ -9,6 +9,10 @@
         :title="title"
         class="bili-embed-iframe"
       ></iframe>
+      <!-- 覆盖层插槽：允许上层把控制按钮放进播放器内部 -->
+      <div class="overlay-top-right">
+        <slot name="overlay-top-right" />
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +73,21 @@ const embedUrl = computed(() => {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+.overlay-top-right {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+  pointer-events: none; /* 避免遮挡视频其他区域 */
+}
+
+.overlay-top-right :deep(button),
+.overlay-top-right :deep(.line-btn) {
+  pointer-events: auto; /* 允许按钮可点击 */
 }
 </style>
 

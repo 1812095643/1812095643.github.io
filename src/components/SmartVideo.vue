@@ -1,27 +1,50 @@
 <template>
   <div class="smart-video">
-    <div class="line-switcher">
-      <button
-        v-for="line in availableLines"
-        :key="line.key"
-        class="line-btn"
-        :class="{ active: activeLine === line.key }"
-        @click="switchLine(line.key)"
-      >
-        {{ line.label }}
-      </button>
-    </div>
+    <!-- 明确渲染，避免首帧挂载到错误线路 -->
+    <BilibiliEmbed v-if="activeLine === 'cn'" v-bind="currentPropsCn">
+      <template #overlay-top-right>
+        <div v-if="availableLines.length > 1" class="line-switcher">
+          <button
+            v-for="line in availableLines"
+            :key="line.key"
+            class="line-btn"
+            :class="{ active: activeLine === line.key }"
+            @click="switchLine(line.key)"
+            :title="`切换到${line.label}`"
+          >
+            {{ line.shortLabel }}
+          </button>
+        </div>
+      </template>
+    </BilibiliEmbed>
 
-    <component :is="currentComponent" v-bind="currentProps" />
+    <VimeoEmbed v-else-if="activeLine === 'global'" v-bind="currentPropsGlobal">
+      <template #overlay-top-right>
+        <div v-if="availableLines.length > 1" class="line-switcher">
+          <button
+            v-for="line in availableLines"
+            :key="line.key"
+            class="line-btn"
+            :class="{ active: activeLine === line.key }"
+            @click="switchLine(line.key)"
+            :title="`切换到${line.label}`"
+          >
+            {{ line.shortLabel }}
+          </button>
+        </div>
+      </template>
+    </VimeoEmbed>
+
+    <div v-else class="fallback">视频源不可用</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, defineAsyncComponent } from "vue";
 
-// 按需加载，避免首屏体积
-const VimeoPlayer = () => import("./VimeoPlayer.vue");
-const BilibiliEmbed = () => import("./BilibiliEmbed.vue");
+// 使用正确组件：Vimeo 走官方嵌入，B 站走官方嵌入
+const VimeoEmbed = defineAsyncComponent(() => import("./VimeoEmbed.vue"));
+const BilibiliEmbed = defineAsyncComponent(() => import("./BilibiliEmbed.vue"));
 
 interface Props {
   title?: string;
@@ -37,18 +60,34 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: "视频播放",
-  bilibiliQuality: 80,
+  bilibiliQuality: 116,
   preferred: "auto",
 });
 
 type LineKey = "cn" | "global";
 
-const activeLine = ref<LineKey>("global");
+// 初始为 null，避免未决策前渲染任意线路
+const activeLine = ref<LineKey | null>(null);
 
 const availableLines = computed(() => {
-  const lines: { key: LineKey; label: string; enabled: boolean }[] = [
-    { key: "cn", label: "国内线路", enabled: !!props.bilibiliBvid },
-    { key: "global", label: "国际线路", enabled: !!props.vimeoId },
+  const lines: {
+    key: LineKey;
+    label: string;
+    shortLabel: string;
+    enabled: boolean;
+  }[] = [
+    {
+      key: "cn",
+      label: "国内线路",
+      shortLabel: "国内",
+      enabled: !!props.bilibiliBvid,
+    },
+    {
+      key: "global",
+      label: "国际线路",
+      shortLabel: "国际",
+      enabled: !!props.vimeoId,
+    },
   ];
   return lines.filter((l) => l.enabled);
 });
@@ -89,44 +128,38 @@ function guessIsChinaMainland(): boolean {
 }
 
 onMounted(async () => {
-  // 线路优先级
+  // 同步决策初始线路（不触发错误挂载）
   if (props.preferred === "cn" && props.bilibiliBvid) {
     activeLine.value = "cn";
-    return;
-  }
-  if (props.preferred === "global" && props.vimeoId) {
+  } else if (props.preferred === "global" && props.vimeoId) {
     activeLine.value = "global";
-    return;
-  }
-
-  // auto：先按地理猜测，再探测可达性
-  const isCN = guessIsChinaMainland();
-  if (isCN && props.bilibiliBvid) {
+  } else if (props.bilibiliBvid && props.vimeoId) {
+    activeLine.value = guessIsChinaMainland() ? "cn" : "global";
+  } else if (props.bilibiliBvid) {
     activeLine.value = "cn";
   } else if (props.vimeoId) {
     activeLine.value = "global";
+  } else {
+    activeLine.value = null;
   }
 
-  // 若选择了 global，再做一次探测，不可达则回落到 cn
+  // 若当前为 global，探测不可达则自动回落到 cn
   if (activeLine.value === "global" && props.bilibiliBvid) {
     const ok = await probeVimeo(1200);
     if (!ok) activeLine.value = "cn";
   }
 });
 
-const currentComponent = computed(() => {
-  return activeLine.value === "cn" ? BilibiliEmbed : VimeoPlayer;
-});
+const currentPropsCn = computed(() => ({
+  bvid: props.bilibiliBvid,
+  title: props.title,
+  quality: props.bilibiliQuality,
+}));
 
-const currentProps = computed(() => {
-  return activeLine.value === "cn"
-    ? {
-        bvid: props.bilibiliBvid,
-        title: props.title,
-        quality: props.bilibiliQuality,
-      }
-    : { videoId: props.vimeoId, title: props.title };
-});
+const currentPropsGlobal = computed(() => ({
+  videoId: props.vimeoId,
+  title: props.title,
+}));
 
 function switchLine(key: LineKey) {
   if (key === "cn" && !props.bilibiliBvid) return;
@@ -144,24 +177,35 @@ function switchLine(key: LineKey) {
 
 .line-switcher {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 4px;
 }
 
 .line-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: #e8e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 6px 10px;
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+  min-width: 32px;
+  text-align: center;
+}
+
+.line-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
 }
 
 .line-btn.active {
-  background: #6c7cff;
-  border-color: #6c7cff;
+  background: #ff6b6b;
+  border-color: #ff6b6b;
   color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
 }
 </style>
 
