@@ -243,7 +243,10 @@
 import { onMounted, ref } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useI18n } from "../../composables/useI18n";
-import VideoPlayer from "../../components/VideoPlayer.vue";
+import { defineAsyncComponent } from "vue";
+const VideoPlayer = defineAsyncComponent(
+  () => import("../../components/VideoPlayer.vue")
+);
 
 // 使用页面动画
 usePageAnimations();
