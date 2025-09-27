@@ -234,7 +234,10 @@
 
     <!-- 视频播放器区域 -->
     <div class="video-section">
-      <VideoPlayer :src="videoSrc" />
+      <VimeoPlayer
+        :video-id="vimeoVideoId"
+        :title="t.work.guigangTourism + ' - 作品演示录屏'"
+      />
     </div>
   </div>
 </template>
@@ -244,8 +247,8 @@ import { onMounted, ref } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useI18n } from "../../composables/useI18n";
 import { defineAsyncComponent } from "vue";
-const VideoPlayer = defineAsyncComponent(
-  () => import("../../components/VideoPlayer.vue")
+const VimeoPlayer = defineAsyncComponent(
+  () => import("../../components/VimeoPlayer.vue")
 );
 
 // 使用页面动画
@@ -256,8 +259,8 @@ const { t, currentLanguage, initLanguage } = useI18n();
 
 const scrollContainer = ref<HTMLElement>();
 
-// 视频源路径
-const videoSrc = ref("/《贵港文旅+》网站设计与开发  作品演示录屏.mp4");
+// Vimeo视频ID
+const vimeoVideoId = ref("1122407617");
 
 onMounted(() => {
   // 初始化语言设置
