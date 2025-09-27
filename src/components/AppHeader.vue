@@ -1002,7 +1002,8 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 0 12px; /* 移除上下内间距，只保留左右内间距 */
+  height: 40px; /* 与其他按钮保持一致的高度 */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
   backdrop-filter: blur(10px) saturate(150%);
@@ -1042,6 +1043,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 100%; /* 填满父容器高度 */
 }
 
 .weather-emoji {
@@ -1064,23 +1066,25 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  justify-content: center; /* 垂直居中 */
+  gap: 0px; /* 减少间距 */
+  height: 100%; /* 填满父容器高度 */
 }
 
 .weather-temp {
-  font-size: 14px;
+  font-size: 13px; /* 稍微减小字体 */
   font-weight: 700;
   color: #ffffff;
   text-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
-  line-height: 1;
+  line-height: 1.1; /* 调整行高 */
   font-family: "SF Mono", "Courier New", monospace;
 }
 
 .weather-city {
-  font-size: 10px;
+  font-size: 9px; /* 稍微减小字体 */
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1; /* 调整行高 */
   text-transform: capitalize;
   max-width: 60px;
   overflow: hidden;
@@ -1094,8 +1098,8 @@ onBeforeUnmount(() => {
 }
 
 .loading-spinner {
-  width: 16px;
-  height: 16px;
+  width: 14px; /* 稍微减小尺寸 */
+  height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-top: 2px solid rgba(99, 102, 241, 0.8);
   border-radius: 50%;

@@ -99,21 +99,59 @@
             v-for="(msg, index) in messages"
             :key="index"
             :class="['msg', msg.sender === 'user' ? 'me' : 'pet']"
+            @contextmenu="showMessageMenu($event, msg, index)"
           >
-            {{ msg.text }}
+            <div class="msg-content">
+              <div
+                v-if="msg.sender === 'pet'"
+                class="markdown-content"
+                v-html="renderMarkdown(msg.text)"
+              ></div>
+              <div v-else>{{ msg.text }}</div>
+            </div>
+            <button
+              v-if="msg.text && msg.sender === 'pet'"
+              class="copy-btn"
+              @click="copyMessage(msg.text)"
+              title="复制消息"
+            >
+              📋
+            </button>
           </div>
           <div v-if="isStreaming" class="typing-dots">
             <span></span><span></span><span></span>
           </div>
         </div>
         <div class="bubble-input">
-          <input
-            type="text"
-            v-model="userInput"
-            @keyup.enter="sendMessage"
-            placeholder="和我说点什么..."
-          />
-          <button @click="sendMessage">发送</button>
+          <div class="input-container">
+            <textarea
+              ref="inputTextarea"
+              v-model="userInput"
+              @keydown="handleKeyDown"
+              @input="adjustTextareaHeight"
+              placeholder="和我说点什么..."
+              rows="1"
+              :disabled="isStreaming"
+            ></textarea>
+            <div class="input-actions">
+              <button
+                class="clear-btn"
+                @click="clearChat"
+                title="清空聊天记录"
+                :disabled="messages.length === 0"
+              >
+                🗑️
+              </button>
+              <button
+                class="send-btn"
+                @click="sendMessage"
+                :disabled="!userInput.trim() || isStreaming"
+                :class="{ sending: isStreaming }"
+              >
+                {{ isStreaming ? "⏳" : "📤" }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </teleport>
@@ -123,6 +161,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, watch, computed } from "vue";
 import { useChat } from "../composables/useChat";
+import { marked } from "marked";
 
 const petContainer = ref<HTMLElement | null>(null);
 const petBody = ref<HTMLElement | null>(null);
@@ -222,6 +261,7 @@ const {
 } = useChat();
 const chatMessages = ref<HTMLElement | null>(null);
 const chatBubble = ref<HTMLElement | null>(null);
+const inputTextarea = ref<HTMLElement | null>(null);
 
 // 思考状态联动
 watch(isStreaming, (val) => {
@@ -328,6 +368,82 @@ const sendMessage = async () => {
 const scrollToBottom = () => {
   if (!chatMessages.value) return;
   chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
+};
+
+// Markdown渲染方法
+const renderMarkdown = (text: string): string => {
+  if (!text) return "";
+
+  // 配置marked选项
+  marked.setOptions({
+    breaks: true, // 支持换行符转换为<br>
+    gfm: true, // 启用GitHub风格的Markdown
+  });
+
+  try {
+    return marked(text) as string;
+  } catch (error) {
+    console.error("Markdown parsing error:", error);
+    return text; // 如果解析失败，返回原文本
+  }
+};
+
+// 复制消息到剪贴板
+const copyMessage = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    // 可以添加一个简单的提示
+    console.log("消息已复制到剪贴板");
+  } catch (error) {
+    console.error("复制失败:", error);
+    // 降级方案：使用传统的复制方法
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      console.log("消息已复制到剪贴板");
+    } catch (fallbackError) {
+      console.error("复制失败:", fallbackError);
+    }
+    document.body.removeChild(textArea);
+  }
+};
+
+// 清空聊天记录
+const clearChat = () => {
+  if (confirm("确定要清空所有聊天记录吗？")) {
+    messages.value = [];
+    localStorage.removeItem("aiPet.chat.v1");
+  }
+};
+
+// 处理键盘事件
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+};
+
+// 自动调整textarea高度
+const adjustTextareaHeight = () => {
+  const textarea = inputTextarea.value as HTMLTextAreaElement;
+  if (textarea) {
+    textarea.style.height = "auto";
+    const newHeight = Math.min(textarea.scrollHeight, 120); // 最大高度120px
+    textarea.style.height = newHeight + "px";
+  }
+};
+
+// 显示消息菜单（右键菜单）
+const showMessageMenu = (event: MouseEvent, msg: any, index: number) => {
+  event.preventDefault();
+  // 这里可以实现一个简单的右键菜单，暂时只是复制功能
+  if (msg.sender === "pet" && msg.text) {
+    copyMessage(msg.text);
+  }
 };
 
 // 拖拽功能
@@ -1120,6 +1236,38 @@ function handleResize() {
   border-radius: 12px;
   font-size: 14px;
   line-height: 1.4;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.msg-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  padding: 2px 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.msg:hover .copy-btn {
+  opacity: 1;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
 }
 .msg.pet {
   background: rgba(55, 65, 81, 0.6);
@@ -1130,6 +1278,129 @@ function handleResize() {
   background: #2563eb;
   color: white;
   align-self: flex-end;
+}
+
+/* Markdown内容样式 */
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin: 8px 0 4px 0;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.markdown-content h1 {
+  font-size: 16px;
+}
+.markdown-content h2 {
+  font-size: 15px;
+}
+.markdown-content h3 {
+  font-size: 14px;
+}
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-size: 13px;
+}
+
+.markdown-content p {
+  margin: 4px 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 4px 0;
+  padding-left: 16px;
+}
+
+.markdown-content li {
+  margin: 2px 0;
+}
+
+.markdown-content code {
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+.markdown-content pre {
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 6px;
+  padding: 8px;
+  margin: 6px 0;
+  overflow-x: auto;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: #e5e7eb;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #6366f1;
+  margin: 6px 0;
+  padding-left: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: #a5b4fc;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  color: #c7d2fe;
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: #f3f4f6;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+  font-size: 12px;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: rgba(55, 65, 81, 0.8);
+  font-weight: 600;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid rgba(75, 85, 99, 0.5);
+  margin: 8px 0;
 }
 
 .typing-dots {
@@ -1174,25 +1445,104 @@ function handleResize() {
 }
 
 .bubble-input {
-  display: flex;
-  gap: 8px;
   padding: 8px;
   border-top: 1px solid rgba(55, 65, 81, 0.8);
 }
-.bubble-input input {
+
+.input-container {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.input-container textarea {
   flex: 1;
   padding: 8px 10px;
   border-radius: 10px;
   border: 1px solid rgba(75, 85, 99, 0.8);
   background: rgba(31, 41, 55, 0.7);
   color: #e5e7eb;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 36px;
+  max-height: 120px;
+  transition: border-color 0.2s ease;
 }
-.bubble-input button {
+
+.input-container textarea:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.input-container textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input-actions {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.clear-btn,
+.send-btn {
+  background: rgba(55, 65, 81, 0.8);
+  color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-btn {
   background: #6366f1;
   color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.8);
+  color: white;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #5855eb;
+  transform: translateY(-1px);
+}
+
+.send-btn:disabled,
+.clear-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.send-btn.sending {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 </style>
+
