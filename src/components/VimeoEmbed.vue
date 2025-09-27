@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed } from "vue";
 
 interface Props {
   videoId: string;
@@ -51,20 +51,8 @@ const embedUrl = computed(() => {
   return `https://player.vimeo.com/video/${props.videoId}?${params.toString()}`;
 });
 
-// 加载Vimeo Player API
-onMounted(() => {
-  // 动态加载Vimeo Player API脚本
-  if (
-    !document.querySelector(
-      'script[src="https://player.vimeo.com/api/player.js"]'
-    )
-  ) {
-    const script = document.createElement("script");
-    script.src = "https://player.vimeo.com/api/player.js";
-    script.async = true;
-    document.head.appendChild(script);
-  }
-});
+// 说明：此处不再强制加载 Vimeo Player API 脚本。
+// 使用官方 iframe 即可正常播放；在中国大陆环境下避免额外的跨域脚本请求失败。
 </script>
 
 <style scoped>
