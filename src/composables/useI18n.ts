@@ -188,6 +188,30 @@ const translations = {
             achievement2: '学风思政调研委员会会长，优秀的团队管理能力',
             achievement3: '多项国家级、校级竞赛获奖，软件著作权1项',
 
+            // 证书展示
+            certificates: '证书与荣誉',
+            certificatesDesc: '展示我在大学期间获得的各种荣誉证书、实习证明以及学术成果',
+            certificatesList: {
+                excellentStudentLeader: '优秀学生干部',
+                excellentStudentLeaderDesc: '获得校级优秀学生干部荣誉称号',
+                excellentGraduationProject: '优秀毕业设计',
+                excellentGraduationProjectDesc: '毕业设计项目获得优秀等级评价',
+                provincialVideoCompetition: '省级短视频大赛一等奖',
+                provincialVideoCompetitionDesc: '获得省级短视频大赛一等奖',
+                academicDegree: '学历学位证明',
+                academicDegreeDesc: '桂林电子科技大学本科学历学位证书',
+                internship: '实习证明',
+                internshipDesc: '广州光迅数字科技有限公司全栈开发工程师实习证明',
+                technicalDirector: '技术部部长证明',
+                technicalDirectorDesc: '担任学风思政调研委员会技术部部长',
+                president: '社团会长证明',
+                presidentDesc: '担任学风思政调研委员会会长',
+                paperPublication: '论文发表证明',
+                paperPublicationDesc: '学术论文成功发表证明',
+                softwareCopyright: '软件著作权证书',
+                softwareCopyrightDesc: '获得软件著作权登记证书'
+            },
+
             // 实习经历
             internshipCompany: '广州光迅数字科技有限公司',
             internshipRole: '全栈开发工程师（实习）',
@@ -625,6 +649,30 @@ const translations = {
             achievement1: 'Outstanding Student Leader, Second-class Scholarship recipient',
             achievement2: 'President of Academic Style and Ideological Research Committee, excellent team management skills',
             achievement3: 'Multiple national and university-level competition awards, 1 software copyright',
+
+            // Certificates Display
+            certificates: 'Certificates & Honors',
+            certificatesDesc: 'Showcase various honor certificates, internship certificates, and academic achievements I obtained during my university studies',
+            certificatesList: {
+                excellentStudentLeader: 'Excellent Student Leader',
+                excellentStudentLeaderDesc: 'Awarded University-level Excellent Student Leader Honor',
+                excellentGraduationProject: 'Excellent Graduation Project',
+                excellentGraduationProjectDesc: 'Graduation project awarded excellent grade',
+                provincialVideoCompetition: 'Provincial Short Video Competition First Prize',
+                provincialVideoCompetitionDesc: 'Won first prize in provincial short video competition',
+                academicDegree: 'Academic Degree Certificate',
+                academicDegreeDesc: 'Bachelor\'s degree certificate from Guilin University of Electronic Technology',
+                internship: 'Internship Certificate',
+                internshipDesc: 'Full-stack Development Engineer internship certificate from Guangzhou Guangxun Digital Technology Co., Ltd.',
+                technicalDirector: 'Technical Director Certificate',
+                technicalDirectorDesc: 'Served as Technical Director of Academic Style and Ideological Research Committee',
+                president: 'Association President Certificate',
+                presidentDesc: 'Served as President of Academic Style and Ideological Research Committee',
+                paperPublication: 'Paper Publication Certificate',
+                paperPublicationDesc: 'Academic paper publication certificate',
+                softwareCopyright: 'Software Copyright Certificate',
+                softwareCopyrightDesc: 'Software copyright registration certificate'
+            },
 
             // Internship Experience
             internshipCompany: 'Guangzhou Guangxun Digital Technology Co., Ltd.',

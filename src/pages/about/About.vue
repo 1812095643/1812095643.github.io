@@ -74,7 +74,9 @@
                   <a href="/简历.pdf" download>{{ t.about.download }}</a>
                 </div>
                 <div class="magical normal-btn btn-s">
-                  <a @click="viewResume" role="button" tabindex="0">{{ t.about.view }}</a>
+                  <a @click="viewResume" role="button" tabindex="0">{{
+                    t.about.view
+                  }}</a>
                 </div>
               </div>
             </div>
@@ -443,6 +445,60 @@
         </div>
       </div>
     </div>
+
+    <!-- 证书展示板块 -->
+    <div class="about-certificates load-pro">
+      <div class="certificates-header">
+        <div class="certificates-title">{{ t.about.certificates }}</div>
+        <div class="certificates-subtitle">{{ t.about.certificatesDesc }}</div>
+      </div>
+      <div class="certificates-grid">
+        <div
+          class="magical certificate-card"
+          v-for="(certificate, index) in certificates"
+          :key="index"
+          @click="openCertificateModal(certificate)"
+        >
+          <div class="certificate-image">
+            <img :src="certificate.image" :alt="certificate.title" />
+            <div class="certificate-overlay">
+              <div class="certificate-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 3L15 9L10 4L3 11L9 17L15 11L21 3Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="certificate-info">
+            <div class="certificate-title">
+              {{ t.about.certificatesList[certificate.key] }}
+            </div>
+            <div class="certificate-description">
+              {{ t.about.certificatesList[certificate.key + "Desc"] }}
+            </div>
+            <div class="certificate-date">{{ certificate.date }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 使用新的ImageViewer组件 -->
+      <ImageViewer
+        :visible="showModal"
+        :image-src="selectedCertificate.image"
+        :title="t.about.certificatesList[selectedCertificate.key]"
+        :description="getCertificateDescription(selectedCertificate.key)"
+        :date="selectedCertificate.date"
+        :category="selectedCertificate.category"
+        :category-color="getCategoryColor(selectedCertificate.category)"
+        @close="closeCertificateModal"
+      />
+    </div>
   </div>
 </template>
 
@@ -450,6 +506,7 @@
 import { ref, onMounted } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useI18n } from "../../composables/useI18n";
+import ImageViewer from "../../components/ImageViewer.vue";
 
 // 使用页面动画
 usePageAnimations();
@@ -459,8 +516,73 @@ const { t, currentLanguage, initLanguage } = useI18n();
 
 const showEmailCopied = ref(false);
 const showPhoneCopied = ref(false);
+const showModal = ref(false);
+const selectedCertificate = ref({
+  key: "",
+  date: "",
+  image: "",
+  category: "",
+});
 let emailTimer: number | undefined;
 let phoneTimer: number | undefined;
+
+// 证书数据
+const certificates = ref([
+  {
+    key: "excellentStudentLeader",
+    date: "2024.06",
+    image: "/assets/about/Certificate/优秀学生干部证明.jpg",
+    category: "honor",
+  },
+  {
+    key: "excellentGraduationProject",
+    date: "2024.05",
+    image: "/assets/about/Certificate/优秀毕业设计证明.jpg",
+    category: "academic",
+  },
+  {
+    key: "provincialVideoCompetition",
+    date: "2023.12",
+    image: "/assets/about/Certificate/省级短视频大赛一等奖证明.jpg",
+    category: "competition",
+  },
+  {
+    key: "academicDegree",
+    date: "2025.06",
+    image: "/assets/about/Certificate/学历学位证明.jpg",
+    category: "education",
+  },
+  {
+    key: "internship",
+    date: "2024.09",
+    image: "/assets/about/Certificate/实习证明.JPG",
+    category: "work",
+  },
+  {
+    key: "technicalDirector",
+    date: "2023.05",
+    image: "/assets/about/Certificate/技术部部长证明.jpg",
+    category: "leadership",
+  },
+  {
+    key: "president",
+    date: "2024.04",
+    image: "/assets/about/Certificate/会长证明.jpg",
+    category: "leadership",
+  },
+  {
+    key: "paperPublication",
+    date: "2024.03",
+    image: "/assets/about/Certificate/论文发布证明.png",
+    category: "academic",
+  },
+  {
+    key: "softwareCopyright",
+    date: "2024.01",
+    image: "/assets/about/Certificate/软著.png",
+    category: "achievement",
+  },
+]);
 
 const copyEmail = async () => {
   const email = "1812095643@qq.com";
@@ -513,7 +635,36 @@ const showPhoneCopiedMessage = () => {
 };
 
 const viewResume = () => {
-  window.open('/简历.pdf', '_blank');
+  window.open("/简历.pdf", "_blank");
+};
+
+// 证书预览功能
+const openCertificateModal = (certificate: any) => {
+  selectedCertificate.value = certificate;
+  showModal.value = true;
+};
+
+const closeCertificateModal = () => {
+  showModal.value = false;
+};
+
+// 获取证书分类颜色
+const getCategoryColor = (category: string) => {
+  const colors = {
+    honor: "#57AC84",
+    academic: "#6461F1",
+    competition: "#FF6B6B",
+    education: "#4ECDC4",
+    work: "#45B7D1",
+    leadership: "#FFA726",
+    achievement: "#AB47BC",
+  };
+  return colors[category as keyof typeof colors] || "#6461F1";
+};
+
+// 获取证书描述
+const getCertificateDescription = (key: string) => {
+  return (t.value.about.certificatesList as any)[key + "Desc"] || "";
 };
 
 // 初始化语言设置
@@ -563,5 +714,172 @@ onMounted(() => {
 /* 确保复制提示有足够空间 */
 .list-value.copied {
   margin-left: 10px;
+}
+
+/* 证书展示板块样式 */
+.about-certificates {
+  width: 100%;
+  max-width: var(--mw);
+  display: flex;
+  flex-direction: column;
+  margin: 80px 0 0 0;
+  padding-top: 80px;
+  border-top: 1px solid rgba(100, 97, 241, 0.1);
+}
+
+.certificates-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.certificates-title {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e8e8f6 0%, #6461f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+
+.certificates-subtitle {
+  font-size: 14px;
+  line-height: 24px;
+  color: #a8a8b6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  grid-auto-rows: 280px; /* 固定卡片高度 */
+}
+
+.certificate-card {
+  --circle-size: 400px;
+  background-color: #141419;
+  box-shadow: 0px 0px 8px 0px rgba(10, 10, 14, 0.4);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  border: 1px solid transparent;
+  height: 100%; /* 确保卡片占满网格行高 */
+  display: flex;
+  flex-direction: column;
+}
+
+.certificate-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0px 12px 32px 0px rgba(100, 97, 241, 0.15),
+    0px 0px 0px 1px rgba(100, 97, 241, 0.3);
+  border-color: rgba(100, 97, 241, 0.3);
+}
+
+.certificate-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1f 0%, #141419 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* 防止图片容器缩小 */
+}
+
+.certificate-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+  background: transparent;
+  border-radius: 4px;
+}
+
+.certificate-card:hover .certificate-image img {
+  transform: scale(1.08) rotate(0.5deg);
+}
+
+.certificate-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(100, 97, 241, 0.1) 0%,
+    rgba(100, 97, 241, 0.05) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.certificate-card:hover .certificate-overlay {
+  opacity: 1;
+}
+
+.certificate-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(100, 97, 241, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6461f1;
+}
+
+.certificate-info {
+  padding: 20px;
+  flex: 1; /* 让信息容器填充剩余空间 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.certificate-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #e8e8f6;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.certificate-description {
+  font-size: 13px;
+  line-height: 20px;
+  color: #a8a8b6;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+}
+
+.certificate-date {
+  font-size: 12px;
+  line-height: 18px;
+  color: #6461f1;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.certificate-card:hover .certificate-title {
+  color: #6461f1;
+}
+
+.certificate-card:hover .certificate-description {
+  color: #e8e8f6;
+}
+
+.certificate-card:hover .certificate-date {
+  color: #57ac84;
+  transform: translateX(4px);
 }
 </style>
