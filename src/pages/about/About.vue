@@ -758,6 +758,45 @@ onMounted(() => {
   grid-auto-rows: 280px; /* 固定卡片高度 */
 }
 
+/* 移动端两列布局与尺寸优化 */
+@media (max-width: 768px) {
+  .certificates-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    grid-auto-rows: 200px;
+  }
+
+  .certificate-image {
+    height: 120px;
+  }
+
+  .certificate-info {
+    padding: 12px;
+  }
+
+  .certificate-title {
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 6px;
+  }
+
+  .certificate-description {
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 8px;
+  }
+
+  .certificate-date {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  /* 强制移动端卡片图片始终居中裁切，避免底部偏移 */
+  .certificate-image img {
+    object-position: center center !important;
+  }
+}
+
 .certificate-card {
   --circle-size: 400px;
   background-color: #141419;

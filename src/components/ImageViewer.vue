@@ -838,6 +838,11 @@ onUnmounted(() => {
     padding: 16px;
   }
 
+  /* 移动端仅保留标题，隐藏徽标气泡 */
+  .modal-category-badge {
+    display: none;
+  }
+
   .modal-header-left {
     flex-direction: column;
     text-align: center;
@@ -881,6 +886,77 @@ onUnmounted(() => {
 
   .hint-item {
     font-size: 10px;
+  }
+}
+
+/* 极小屏适配（≤480px）：缩小内边距、工具组换行、信息面板更紧凑 */
+@media (max-width: 480px) {
+  .image-viewer-modal {
+    padding: 10px;
+  }
+
+  .modal-container {
+    border-radius: 10px;
+  }
+
+  .modal-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .modal-header-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .zoom-controls,
+  .rotation-controls {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .zoom-btn,
+  .rotation-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .zoom-level {
+    min-width: 30px;
+    font-size: 11px;
+  }
+
+  .modal-body {
+    grid-template-columns: 1fr;
+    height: calc(100% - 64px);
+  }
+
+  .image-container {
+    padding: 12px;
+  }
+
+  .certificate-image-modal {
+    max-width: calc(100% - 24px);
+    max-height: calc(100% - 24px);
+  }
+
+  .certificate-info-panel {
+    padding: 16px;
+  }
+
+  .info-description {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
   }
 }
 </style>
