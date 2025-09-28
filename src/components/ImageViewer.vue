@@ -137,10 +137,6 @@
                 <span>缩放</span>
               </div>
               <div class="hint-item">
-                <kbd>+ / -</kbd>
-                <span>缩放</span>
-              </div>
-              <div class="hint-item">
                 <kbd>← / →</kbd>
                 <span>旋转</span>
               </div>
@@ -840,6 +836,11 @@ onUnmounted(() => {
 
   /* 移动端仅保留标题，隐藏徽标气泡 */
   .modal-category-badge {
+    display: none;
+  }
+
+  /* 移动端隐藏操作提示 */
+  .image-controls-hint {
     display: none;
   }
 
