@@ -1752,6 +1752,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   min-width: 140px;
+  height: 40px; /* 与其他按钮保持一致的高度 */
   position: relative;
   overflow: hidden;
 }

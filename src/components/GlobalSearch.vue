@@ -54,7 +54,7 @@
               </button>
             </div>
             <div class="history-items">
-              <button
+              <div
                 v-for="(item, index) in searchHistory"
                 :key="index"
                 class="history-item"
@@ -74,7 +74,7 @@
                     <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   </svg>
                 </button>
-              </button>
+              </div>
             </div>
           </div>
         </div>

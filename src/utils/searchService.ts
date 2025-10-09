@@ -244,18 +244,85 @@ class SearchService {
                 })
             })
 
-            // 关于页面内容 - 详细信息
+            // 关于页面内容 - 完整详细信息
             const aboutItems = [
-                { name: '个人简介', desc: 'Java全栈开发工程师，长治学院软件工程专业，GPA 4.2/5.0', icon: '👤', tags: ['about', 'profile', 'jianjie', 'guanyu', 'java', 'quanzhan'] },
-                { name: '教育经历', desc: '长治学院 软件工程专业 2021-2025 GPA 4.2/5.0', icon: '🎓', tags: ['education', 'jiaoyu', 'xueli', 'university', 'daxue'] },
-                { name: '技能特长', desc: 'Java、Spring Boot、Vue、React、微服务、AI应用开发', icon: '💪', tags: ['skills', 'jineng', 'techstack', 'java', 'vue', 'spring'] },
-                { name: '联系方式', desc: '邮箱：1812095643@qq.com 电话：15536623157', icon: '📧', tags: ['contact', 'lianxi', 'email', 'phone', 'dianhua', 'youxiang'] },
-                { name: '实习经历', desc: '2024.07-2024.09 全栈开发实习生', icon: '💼', tags: ['internship', 'shixi', 'work', 'gongzuo', 'quanzhan'] },
-                { name: '项目经验', desc: '贵港文旅系统、自习室预约系统、人脸识别系统等30+项目', icon: '🚀', tags: ['project', 'xiangmu', 'jingyan', 'guigang', 'zixishi'] },
-                { name: '获奖证书', desc: '优秀学生干部、优秀毕业设计、省级短视频大赛一等奖', icon: '🏆', tags: ['certificate', 'zhengshu', 'award', 'jiangxiang', 'youxiu'] },
-                { name: '社团经历', desc: '技术部部长、会长，组织技术分享与团队建设', icon: '👥', tags: ['organization', 'shetuan', 'leader', 'lingdao', 'jishu'] },
-                { name: '论文发表', desc: '学术论文发表与软件著作权', icon: '📝', tags: ['paper', 'lunwen', 'academic', 'xueshu', 'ruanzhu'] },
-                { name: '简历下载', desc: '下载或查看完整简历PDF', icon: '📄', tags: ['resume', 'jianli', 'cv', 'download', 'xiazai'] }
+                // 基本信息
+                { name: '杨国庆', desc: '22岁，来自太原，桂林电子科技大学数字媒体技术专业2025届毕业生，Java全栈开发工程师', icon: '👤', tags: ['about', 'profile', 'jianjie', 'guanyu', 'yangguoqing', 'roy', 'smee', 'java', 'quanzhan', 'taiyuan', 'guilin'] },
+                { name: '个人简介', desc: '专注于Java全栈开发（Web开发、前后端开发），具备扎实的计算机基础和丰富的项目实战经验，精通Java Spring生态、Vue/React框架', icon: '📝', tags: ['introduction', 'jianjie', 'profile', 'java', 'web', 'quanzhan', 'spring', 'vue', 'react'] },
+
+                // 联系方式
+                { name: '联系方式', desc: '邮箱：1812095643@qq.com 电话：15536623157 微信：RoySmee_cxdzxy', icon: '📧', tags: ['contact', 'lianxi', 'email', 'phone', 'wechat', 'dianhua', 'youxiang', 'weixin'] },
+                { name: '邮箱地址', desc: '1812095643@qq.com 点击可复制', icon: '✉️', tags: ['email', 'youxiang', 'contact', 'lianxi', 'qq'] },
+                { name: '电话号码', desc: '15536623157 点击可复制', icon: '📱', tags: ['phone', 'dianhua', 'mobile', 'shouji', 'contact', 'lianxi'] },
+                { name: '微信号', desc: 'RoySmee_cxdzxy 扫码添加', icon: '💬', tags: ['wechat', 'weixin', 'contact', 'lianxi'] },
+
+                // 简历
+                { name: '简历下载', desc: '下载或查看完整简历PDF，包含详细的项目经历和技术栈', icon: '📄', tags: ['resume', 'jianli', 'cv', 'download', 'xiazai', 'pdf'] },
+
+                // 教育经历
+                { name: '教育经历', desc: '桂林电子科技大学 数字媒体技术专业 2021.09至今 GPA 4.2/5.0', icon: '🎓', tags: ['education', 'jiaoyu', 'xueli', 'university', 'daxue', 'guilin', 'guidianzikejidaxue', 'shumeitiajishu', 'gpa'] },
+                { name: '桂林电子科技大学', desc: '数字媒体技术专业 GPA 4.2/5.0 2025届毕业生', icon: '🏫', tags: ['guilin', 'guidianzikejidaxue', 'university', 'daxue', 'shumeitiajishu', 'digital', 'media'] },
+                { name: '主修课程', desc: 'Java开发、C++程序设计、Web开发、数据结构与算法、数据库存储、游戏引擎、软件工程等相关课程', icon: '📚', tags: ['courses', 'kecheng', 'java', 'cpp', 'web', 'shujujiegou', 'suanfa', 'shujuku', 'youxiyinqing', 'ruanjiangongcheng'] },
+
+                // 专业技能
+                { name: '全栈开发技术', desc: '前端：精通HTML5/CSS3/JavaScript，熟练React、Vue框架，完成30+响应式网站开发；后端：熟练Java(Spring Boot/Spring Security)、Python(Flask/Django)，支撑高并发场景', icon: '💻', tags: ['fullstack', 'quanzhan', 'frontend', 'backend', 'qianduan', 'houduan', 'html', 'css', 'javascript', 'react', 'vue', 'java', 'spring', 'python'] },
+                { name: '大模型与AI应用', desc: '熟悉Gemini、Claude等大模型API调用与轻量化微调，结合LangChain构建智能推荐、内容生成类应用；通过Agent、MCP技术优化多模型协同逻辑', icon: '🤖', tags: ['ai', 'llm', 'damoxing', 'gemini', 'claude', 'langchain', 'agent', 'mcp', 'zhineng', 'tuijian'] },
+                { name: '跨平台与工具链', desc: '精通微信小程序、Vue多端适配开发；熟练使用Git进行版本管理，掌握Redis缓存、MySQL数据库的性能优化策略', icon: '🔧', tags: ['crossplatform', 'kuapingtai', 'wechat', 'weixin', 'xiaochengxu', 'git', 'redis', 'mysql', 'huancun', 'shujuku', 'youhua'] },
+                { name: '创意与多媒体辅助', desc: '具备UI/UX设计思维，能用Figma、Axure完成产品原型与界面设计；掌握After Effects动效制作、Premiere Pro视频剪辑', icon: '🎨', tags: ['design', 'sheji', 'ui', 'ux', 'figma', 'axure', 'yuanxing', 'ae', 'pr', 'dongxiao', 'shipin', 'jianji'] },
+
+                // 荣誉奖项
+                { name: '荣誉奖项', desc: '校优秀学生干部，二等奖学金获得者，学风思政调研委员会会长，多项国家级、校级竞赛获奖，软件著作权1项', icon: '🏆', tags: ['awards', 'jiangxiang', 'honor', 'rongyu', 'youxiu', 'xueshengganbu', 'jiangxuejin', 'huizhang', 'ruanzhu'] },
+                { name: '优秀学生干部', desc: '获得校级优秀学生干部荣誉称号', icon: '🎖️', tags: ['award', 'jiangxiang', 'youxiu', 'xueshengganbu', 'honor', 'rongyu'] },
+                { name: '二等奖学金', desc: '获得二等奖学金', icon: '💰', tags: ['scholarship', 'jiangxuejin', 'erdeng'] },
+
+                // 实习经历
+                { name: '实习经历', desc: '广州光迅数字科技有限公司 全栈开发工程师（实习）2024.07-2024.09', icon: '💼', tags: ['internship', 'shixi', 'work', 'gongzuo', 'guangzhou', 'guangxun', 'quanzhan', 'fullstack'] },
+                { name: '广州光迅数字科技', desc: '全栈开发工程师实习，参与仿MOOC在线智慧视频学习平台开发，作为16人Web开发小组的组长，承担40%前后端任务', icon: '🏢', tags: ['guangzhou', 'guangxun', 'internship', 'shixi', 'mooc', 'xuexipingtai', 'zuzhang', 'leader'] },
+                { name: '实习职责', desc: '作为全栈核心开发，承担40%前后端任务，主导框架搭建与技术选型，独立开发视频播放页、分片上传接口等功能，开发API接口50+个', icon: '📋', tags: ['responsibility', 'zhize', 'quanzhan', 'kuangjia', 'jishu', 'shipin', 'shangchuan', 'api'] },
+                { name: '实习成果', desc: '通过Redis缓存等优化，将首页加载时间从4.2s降至1.8s，稳定支持日均800+用户同时在线，获领导与导师好评，生产实习课程成绩等级为优秀', icon: '✨', tags: ['achievement', 'chengguo', 'redis', 'huancun', 'youhua', 'xingneng', 'bingfa', 'youxiu'] },
+
+                // 项目经历 - 贵港文旅+
+                { name: '贵港文旅+项目', desc: '贵港市智慧旅游与文创互动平台，个人毕业设计，独立完成从需求分析到部署的全流程开发，获评优秀毕业设计奖', icon: '🏆', tags: ['project', 'xiangmu', 'guigang', 'wenlv', 'lvyou', 'wenhua', 'biyesheji', 'youxiu', 'ai', 'tuijian'] },
+                { name: '贵港文旅技术栈', desc: 'Vue生态 + Spring Boot/Spring Security + MySQL/Redis + Elasticsearch + LangChain + 高德API + Socket.IO', icon: '⚙️', tags: ['techstack', 'jishuzhan', 'vue', 'spring', 'mysql', 'redis', 'elasticsearch', 'langchain', 'gaode', 'socket'] },
+                { name: '贵港文旅核心功能', desc: '整合AI推荐、个性化攻略、文创交易等功能，解决当地旅游信息碎片化等痛点', icon: '🎯', tags: ['feature', 'gongneng', 'ai', 'tuijian', 'gonglve', 'wenhua', 'jiaoyi', 'lvyou'] },
+                { name: '贵港文旅技术难点', desc: '设计前后端分离架构，23张核心表及164张辅助表，核心接口响应从500ms降至180ms；AI推荐冷启动优化，搜索响应从1.8s缩至0.25s', icon: '🔥', tags: ['challenge', 'nandian', 'jiagou', 'shujuku', 'youhua', 'ai', 'tuijian', 'sousuo', 'xingneng'] },
+                { name: '贵港文旅AI创新', desc: '构建"通用大模型+旅游场景专属Agent"架构，AI攻略准确率从58%升至92%，响应时间≤100ms', icon: '🤖', tags: ['ai', 'innovation', 'chuangxin', 'damoxing', 'agent', 'mcp', 'zhunquelv', 'xiangying'] },
+
+                // 项目经历 - 乡村推荐官
+                { name: '乡村推荐官项目', desc: '全国大学生创新创业大赛项目，面向乡村农产品销售的微信小程序，Vue3+Node.js+MySQL技术栈，获评国家级优秀结项', icon: '🌾', tags: ['project', 'xiangmu', 'xiangcun', 'nongchanpin', 'xiaochengxu', 'chuangxin', 'chuangye', 'guojiaji', 'youxiu'] },
+                { name: '乡村推荐官成果', desc: '采用Vue3+Composition API重构前端架构，代码可维护性提升40%，首屏加载时间从2.5s降至0.8s，申请软件著作权1项', icon: '📊', tags: ['achievement', 'chengguo', 'vue3', 'composition', 'youhua', 'xingneng', 'ruanzhu'] },
+
+                // 项目经历 - 防诈小熊
+                { name: '防诈小熊App', desc: '互联网+大赛项目，反诈骗教育移动应用，React Native+Express+MySQL技术栈，获校级竞赛二等奖', icon: '🐻', tags: ['project', 'xiangmu', 'fangzha', 'app', 'react', 'native', 'express', 'mysql', 'jingsai', 'erdeng'] },
+                { name: '防诈小熊技术', desc: '使用React Native跨平台方案，代码复用率达到85%，实现基于JWT的用户认证系统，安全性测评满分', icon: '🔐', tags: ['technology', 'jishu', 'react', 'native', 'kuapingtai', 'jwt', 'renzheng', 'anquan'] },
+
+                // 社团经历
+                { name: '社团经历', desc: '学风思政调研委员会 技术部部长→会长 2022.04-2024.05', icon: '👥', tags: ['organization', 'shetuan', 'xuefeng', 'sizheng', 'jishubu', 'buzhang', 'huizhang', 'leader', 'lingdao'] },
+                { name: '学风思政调研委员会', desc: '先后担任技术部部长和会长，领导协会的技术开发和运营管理工作，组织技术团队完成多个校内项目', icon: '🏛️', tags: ['association', 'xiehui', 'xuefeng', 'sizheng', 'jishu', 'yunying', 'guanli', 'xiangmu'] },
+                { name: '社团贡献', desc: '组织和指导技术团队完成多个校内项目，策划执行多项大型活动，协助学工处老师处理日常行政事务', icon: '🌟', tags: ['contribution', 'gongxian', 'tuandui', 'xiangmu', 'huodong', 'xingzheng', 'xiegong'] },
+
+                // 证书展示
+                { name: '优秀毕业设计证书', desc: '毕业设计项目获得优秀等级评价', icon: '🎓', tags: ['certificate', 'zhengshu', 'biyesheji', 'youxiu', 'graduation'] },
+                { name: '省级短视频大赛一等奖', desc: '获得省级短视频大赛一等奖', icon: '🏅', tags: ['certificate', 'zhengshu', 'shipin', 'dasai', 'yideng', 'provincial'] },
+                { name: '学历学位证明', desc: '桂林电子科技大学本科学历学位证书', icon: '📜', tags: ['certificate', 'zhengshu', 'xueli', 'xuewei', 'benke', 'degree'] },
+                { name: '实习证明', desc: '广州光迅数字科技有限公司全栈开发工程师实习证明', icon: '📋', tags: ['certificate', 'zhengshu', 'shixi', 'guangzhou', 'guangxun', 'quanzhan'] },
+                { name: '技术部部长证明', desc: '担任学风思政调研委员会技术部部长', icon: '👔', tags: ['certificate', 'zhengshu', 'jishubu', 'buzhang', 'xuefeng', 'sizheng'] },
+                { name: '会长证明', desc: '担任学风思政调研委员会会长', icon: '👑', tags: ['certificate', 'zhengshu', 'huizhang', 'president', 'xuefeng', 'sizheng'] },
+                { name: '论文发表证明', desc: '学术论文成功发表证明', icon: '📝', tags: ['certificate', 'zhengshu', 'lunwen', 'fabiao', 'xueshu', 'paper'] },
+                { name: '软件著作权证书', desc: '获得软件著作权登记证书', icon: '©️', tags: ['certificate', 'zhengshu', 'ruanzhu', 'zhuzuoquan', 'software', 'copyright'] },
+
+                // 数据统计
+                { name: '2025届毕业生', desc: '桂林电子科技大学2025届毕业生', icon: '🎓', tags: ['graduation', 'biye', '2025', '届', 'graduate'] },
+                { name: '30+项目经验', desc: '完成30+个实战项目，涵盖电商平台、管理系统、移动应用等多种类型', icon: '📊', tags: ['projects', 'xiangmu', 'jingyan', '30', 'shizhan', 'dianshang', 'guanli', 'yidong'] },
+                { name: 'GPA 4.2/5.0', desc: '学业成绩优异，GPA 4.2/5.0', icon: '📈', tags: ['gpa', 'chengji', 'xuexiao', 'youyi', '4.2'] },
+                { name: '4年学习经历', desc: '4年计算机专业学习，扎实的技术基础', icon: '📚', tags: ['study', 'xuexi', '4', 'nian', 'jisuanji', 'jishu', 'jichu'] },
+
+                // 技能卡片
+                { name: '全栈开发能力', desc: '精通Java Spring生态，熟练Vue/React前端框架', icon: '💻', tags: ['skill', 'jineng', 'quanzhan', 'fullstack', 'java', 'spring', 'vue', 'react'] },
+                { name: 'AI应用开发', desc: '熟悉大模型API调用，LangChain智能应用构建', icon: '🤖', tags: ['skill', 'jineng', 'ai', 'damoxing', 'langchain', 'zhineng', 'yingyong'] },
+                { name: '数据库优化', desc: 'MySQL性能调优，Redis缓存架构设计', icon: '🗄️', tags: ['skill', 'jineng', 'shujuku', 'mysql', 'redis', 'youhua', 'huancun', 'jiagou'] },
+                { name: '团队协作', desc: '丰富的项目管理经验，Git规范制定与执行', icon: '🤝', tags: ['skill', 'jineng', 'tuandui', 'xiangmu', 'guanli', 'git', 'guifan'] },
+                { name: '产品思维', desc: 'UI/UX设计能力，注重用户体验与代码质量', icon: '🎨', tags: ['skill', 'jineng', 'chanpin', 'siwei', 'ui', 'ux', 'sheji', 'yonghu', 'tiyan', 'daima', 'zhiliang'] }
             ]
 
             aboutItems.forEach(item => {
