@@ -506,10 +506,11 @@ function scrollToTarget(result: SearchItem) {
   
   // 博客页面 - 查找对应的博客卡片
   if (result.type === '博客' || result.type === '文章') {
-    const blogCards = document.querySelectorAll('.link-card-item, .magical.link-card-item, .blog-item')
-    blogCards.forEach((card) => {
-      const titleElement = card.querySelector('.info-title, .title, h3')
-      const descElement = card.querySelector('.info-desc, .desc, .description')
+    // 先查找知识分类卡片（顶部的link-card-item）
+    const knowledgeCards = document.querySelectorAll('.blog-list-knowledge .link-card-item')
+    knowledgeCards.forEach((card) => {
+      const titleElement = card.querySelector('.info-title')
+      const descElement = card.querySelector('.info-desc')
       const titleText = titleElement?.textContent?.trim() || ''
       const descText = descElement?.textContent?.trim() || ''
       
@@ -519,6 +520,40 @@ function scrollToTarget(result: SearchItem) {
         targetElement = card as HTMLElement
       }
     })
+    
+    // 如果没找到，查找推荐文章（blog-recommend）
+    if (!targetElement) {
+      const recommendCard = document.querySelector('.blog-recommend')
+      if (recommendCard) {
+        const titleElement = recommendCard.querySelector('.title .name')
+        const descElement = recommendCard.querySelector('.desc')
+        const titleText = titleElement?.textContent?.trim() || ''
+        const descText = descElement?.textContent?.trim() || ''
+        
+        if ((titleText && result.title.includes(titleText)) || 
+            (titleText && titleText.includes(result.title)) ||
+            (descText && result.description.includes(descText.substring(0, 15)))) {
+          targetElement = recommendCard as HTMLElement
+        }
+      }
+    }
+    
+    // 如果还没找到，查找普通文章列表项（.item）
+    if (!targetElement) {
+      const articleItems = document.querySelectorAll('.blog-list-item .item')
+      articleItems.forEach((item) => {
+        const titleElement = item.querySelector('.title .name')
+        const descElement = item.querySelector('.desc')
+        const titleText = titleElement?.textContent?.trim() || ''
+        const descText = descElement?.textContent?.trim() || ''
+        
+        if ((titleText && result.title.includes(titleText)) || 
+            (titleText && titleText.includes(result.title)) ||
+            (descText && result.description.includes(descText.substring(0, 15)))) {
+          targetElement = item as HTMLElement
+        }
+      })
+    }
   }
   
   // 项目页面 - 查找对应的项目卡片

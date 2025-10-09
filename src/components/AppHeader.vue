@@ -78,63 +78,74 @@
           
           <!-- 悬停展开的详细信息面板 -->
           <div class="weather-detail-panel">
-            <div class="panel-header">
-              <div class="panel-title">
-                <span class="panel-emoji">{{ weatherEmoji }}</span>
-                <span class="panel-title-text">{{ isEnglish ? 'Weather & Calendar' : '天气与日历' }}</span>
+            <!-- 位置和时间整合为一行 -->
+            <div class="panel-header-row">
+              <div class="location-info">
+                <span class="location-icon">📍</span>
+                <span class="location-text">{{ getCityName(locationData?.city || weatherData.city) }}</span>
               </div>
-              <div class="panel-time">{{ timeInfo.time }}</div>
+              <div class="datetime-info">
+                <span class="weekday-short">{{ currentWeekday }}</span>
+                <span class="date-short">{{ currentMonth }}{{ currentDay }}{{ isEnglish ? '' : '日' }}</span>
+                <span class="time-short">{{ currentTime }}</span>
+              </div>
             </div>
             
-            <div class="panel-content">
-              <!-- 天气详情 -->
-              <div class="weather-section">
-                <div class="section-label">{{ isEnglish ? 'Weather' : '天气' }}</div>
-                <div class="weather-details">
-                  <div class="detail-row">
-                    <span class="detail-icon">🌡️</span>
-                    <span class="detail-label">{{ isEnglish ? 'Temperature' : '温度' }}</span>
-                    <span class="detail-value">{{ weatherData.temp }}°C</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-icon">💧</span>
-                    <span class="detail-label">{{ isEnglish ? 'Humidity' : '湿度' }}</span>
-                    <span class="detail-value">{{ weatherData.humidity }}%</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-icon">💨</span>
-                    <span class="detail-label">{{ isEnglish ? 'Wind' : '风速' }}</span>
-                    <span class="detail-value">{{ weatherData.windSpeed }} m/s</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-icon">📍</span>
-                    <span class="detail-label">{{ isEnglish ? 'Location' : '位置' }}</span>
-                    <span class="detail-value">{{ locationData?.city || weatherData.city }}</span>
-                  </div>
-                </div>
+            <!-- 天气信息 -->
+            <div class="panel-weather">
+              <div class="weather-item weather-condition">
+                <span class="weather-icon-large">{{ weatherEmoji }}</span>
+                <span class="weather-label">{{ isEnglish ? 'Weather' : '天气' }}</span>
+                <span class="weather-desc">{{ getWeatherDescription(weatherData.description) }}</span>
               </div>
-              
-              <!-- 日历详情 -->
-              <div class="calendar-section">
-                <div class="section-label">{{ isEnglish ? 'Calendar' : '日历' }}</div>
-                <div class="calendar-details">
-                  <div class="calendar-date">
-                    <div class="date-large">{{ new Date().getDate() }}</div>
-                    <div class="date-info">
-                      <div class="date-month">{{ timeInfo.date.split(' ')[0] }}</div>
-                      <div class="date-weekday">{{ timeInfo.weekday }}</div>
-                    </div>
-                  </div>
-                  <div class="calendar-extra">
-                    <div class="extra-row">
-                      <span class="extra-icon">🕐</span>
-                      <span class="extra-text">{{ timeInfo.period }}</span>
-                    </div>
-                    <div class="extra-row">
-                      <span class="extra-icon">🌍</span>
-                      <span class="extra-text">{{ timeInfo.timeZone }}</span>
-                    </div>
-                  </div>
+              <div class="weather-item">
+                <span class="weather-icon">🌡️</span>
+                <span class="weather-label">{{ isEnglish ? 'Temp' : '温度' }}</span>
+                <span class="weather-value">{{ weatherData.temp }}°C</span>
+              </div>
+              <div class="weather-item">
+                <span class="weather-icon">🤚</span>
+                <span class="weather-label">{{ isEnglish ? 'Feels' : '体感' }}</span>
+                <span class="weather-value">{{ weatherData.feelsLike }}°C</span>
+              </div>
+              <div class="weather-item">
+                <span class="weather-icon">💧</span>
+                <span class="weather-label">{{ isEnglish ? 'Humidity' : '湿度' }}</span>
+                <span class="weather-value">{{ weatherData.humidity }}%</span>
+              </div>
+              <div class="weather-item">
+                <span class="weather-icon">💨</span>
+                <span class="weather-label">{{ isEnglish ? 'Wind' : '风速' }}</span>
+                <span class="weather-value">{{ weatherData.windSpeed }}m/s</span>
+              </div>
+            </div>
+            
+            <!-- 日历表 -->
+            <div class="panel-calendar">
+              <div class="calendar-header">
+                <span class="calendar-title">{{ calendarMonth }}</span>
+              </div>
+              <div class="calendar-weekdays">
+                <div v-for="day in weekdays" :key="day" class="weekday-label">{{ day }}</div>
+              </div>
+              <div class="calendar-grid">
+                <div
+                  v-for="(day, index) in calendarDays"
+                  :key="index"
+                  :class="[
+                    'calendar-day',
+                    { 
+                      'is-today': day.isToday,
+                      'is-weekend': day.isWeekend,
+                      'is-holiday': day.isHoliday,
+                      'is-other-month': !day.isCurrentMonth
+                    }
+                  ]"
+                  :title="day.holidayName || day.lunarDay"
+                >
+                  <span class="day-number">{{ day.date }}</span>
+                  <span v-if="day.isHoliday && day.isCurrentMonth" class="day-badge">{{ isEnglish ? 'H' : '休' }}</span>
+                  <span v-else-if="day.lunarDay && day.isCurrentMonth && !isEnglish" class="day-lunar">{{ day.lunarDay }}</span>
                 </div>
               </div>
             </div>
@@ -145,7 +156,7 @@
             <div class="loading-spinner"></div>
             <div class="weather-info">
               <span class="weather-temp">--°</span>
-              <span class="weather-city">获取中</span>
+              <span class="weather-city">{{ isEnglish ? 'Loading...' : '获取中' }}</span>
             </div>
           </div>
         </div>
@@ -399,6 +410,7 @@ import {
 import { timeUtils, type TimeInfo } from "../utils/timeUtils";
 import { useRippleEffect } from "../utils/rippleEffect";
 import { useI18n } from "../composables/useI18n";
+import { getMonthCalendar, getMonthName, getWeekdayName, type CalendarDay } from "../utils/calendarUtils";
 
 const props = defineProps<{
   active: "home" | "work" | "tool" | "blog" | "book" | "about";
@@ -459,6 +471,48 @@ const currentTheme = computed(() => {
   return timeUtils.getTimeBasedTheme(hour);
 });
 
+// 日历相关计算属性
+const currentDate = ref(new Date())
+const currentWeekday = computed(() => {
+  const weekday = currentDate.value.getDay()
+  return isEnglish.value 
+    ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][weekday]
+    : `周${['日', '一', '二', '三', '四', '五', '六'][weekday]}`
+})
+
+const currentMonth = computed(() => {
+  return isEnglish.value
+    ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][currentDate.value.getMonth()]
+    : `${currentDate.value.getMonth() + 1}月`
+})
+
+const currentDay = computed(() => currentDate.value.getDate())
+
+const currentTime = computed(() => {
+  const hours = currentDate.value.getHours()
+  const minutes = currentDate.value.getMinutes()
+  const seconds = currentDate.value.getSeconds()
+  const period = isEnglish.value 
+    ? (hours >= 12 ? 'PM' : 'AM')
+    : (hours >= 12 ? '下午' : '上午')
+  const displayHours = hours % 12 || 12
+  return `${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${period}`
+})
+
+const calendarMonth = computed(() => {
+  return getMonthName(currentDate.value.getMonth(), isEnglish.value ? 'en' : 'zh')
+})
+
+const weekdays = computed(() => {
+  return isEnglish.value
+    ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    : ['日', '一', '二', '三', '四', '五', '六']
+})
+
+const calendarDays = computed(() => {
+  return getMonthCalendar(currentDate.value.getFullYear(), currentDate.value.getMonth())
+})
+
 // 获取导航图标
 function getNavIcon(name: string): string {
   const icons: Record<string, string> = {
@@ -470,6 +524,111 @@ function getNavIcon(name: string): string {
     about: "👋",
   };
   return icons[name] || "📄";
+}
+
+// 获取城市名（中英文）
+function getCityName(city: string): string {
+  if (!city) return ''
+  
+  const cityMap: Record<string, { zh: string; en: string }> = {
+    '北京': { zh: '北京', en: 'Beijing' },
+    '上海': { zh: '上海', en: 'Shanghai' },
+    '广州': { zh: '广州', en: 'Guangzhou' },
+    '深圳': { zh: '深圳', en: 'Shenzhen' },
+    '杭州': { zh: '杭州', en: 'Hangzhou' },
+    '南京': { zh: '南京', en: 'Nanjing' },
+    '武汉': { zh: '武汉', en: 'Wuhan' },
+    '成都': { zh: '成都', en: 'Chengdu' },
+    '西安': { zh: '西安', en: "Xi'an" },
+    '重庆': { zh: '重庆', en: 'Chongqing' },
+    '天津': { zh: '天津', en: 'Tianjin' },
+    '苏州': { zh: '苏州', en: 'Suzhou' },
+    '郑州': { zh: '郑州', en: 'Zhengzhou' },
+    '长沙': { zh: '长沙', en: 'Changsha' },
+    '沈阳': { zh: '沈阳', en: 'Shenyang' },
+    '青岛': { zh: '青岛', en: 'Qingdao' },
+    '济南': { zh: '济南', en: 'Jinan' },
+    '哈尔滨': { zh: '哈尔滨', en: 'Harbin' },
+    '长春': { zh: '长春', en: 'Changchun' },
+    '大连': { zh: '大连', en: 'Dalian' },
+    '厦门': { zh: '厦门', en: 'Xiamen' },
+    '福州': { zh: '福州', en: 'Fuzhou' },
+    '昆明': { zh: '昆明', en: 'Kunming' },
+    '南昌': { zh: '南昌', en: 'Nanchang' },
+    '贵阳': { zh: '贵阳', en: 'Guiyang' },
+    '太原': { zh: '太原', en: 'Taiyuan' },
+    '石家庄': { zh: '石家庄', en: 'Shijiazhuang' },
+    '南宁': { zh: '南宁', en: 'Nanning' },
+    '合肥': { zh: '合肥', en: 'Hefei' },
+    '呼和浩特': { zh: '呼和浩特', en: 'Hohhot' },
+    '兰州': { zh: '兰州', en: 'Lanzhou' },
+    '乌鲁木齐': { zh: '乌鲁木齐', en: 'Urumqi' },
+    '银川': { zh: '银川', en: 'Yinchuan' },
+    '西宁': { zh: '西宁', en: 'Xining' },
+    '拉萨': { zh: '拉萨', en: 'Lhasa' },
+    '海口': { zh: '海口', en: 'Haikou' },
+    '宁波': { zh: '宁波', en: 'Ningbo' },
+    '无锡': { zh: '无锡', en: 'Wuxi' },
+    '佛山': { zh: '佛山', en: 'Foshan' },
+    '东莞': { zh: '东莞', en: 'Dongguan' },
+    '温州': { zh: '温州', en: 'Wenzhou' },
+    '烟台': { zh: '烟台', en: 'Yantai' },
+    '唐山': { zh: '唐山', en: 'Tangshan' },
+    '包头': { zh: '包头', en: 'Baotou' },
+  }
+  
+  const cityData = cityMap[city]
+  if (cityData) {
+    return isEnglish.value ? cityData.en : cityData.zh
+  }
+  
+  // 如果没有匹配，返回原始城市名
+  return city
+}
+
+// 获取天气描述（中英文）
+function getWeatherDescription(description: string): string {
+  if (!description) return isEnglish.value ? 'Unknown' : '未知'
+  
+  const weatherMap: Record<string, { zh: string; en: string }> = {
+    '晴': { zh: '晴', en: 'Clear' },
+    '晴朗': { zh: '晴朗', en: 'Sunny' },
+    '晴热': { zh: '晴热', en: 'Hot' },
+    '多云': { zh: '多云', en: 'Cloudy' },
+    '阴': { zh: '阴', en: 'Overcast' },
+    '阴天': { zh: '阴天', en: 'Overcast' },
+    '雨': { zh: '雨', en: 'Rain' },
+    '小雨': { zh: '小雨', en: 'Light Rain' },
+    '中雨': { zh: '中雨', en: 'Moderate Rain' },
+    '大雨': { zh: '大雨', en: 'Heavy Rain' },
+    '暴雨': { zh: '暴雨', en: 'Storm' },
+    '阵雨': { zh: '阵雨', en: 'Shower' },
+    '雷雨': { zh: '雷雨', en: 'Thunderstorm' },
+    '雷阵雨': { zh: '雷阵雨', en: 'Thunderstorm' },
+    '雪': { zh: '雪', en: 'Snow' },
+    '小雪': { zh: '小雪', en: 'Light Snow' },
+    '中雪': { zh: '中雪', en: 'Moderate Snow' },
+    '大雪': { zh: '大雪', en: 'Heavy Snow' },
+    '暴雪': { zh: '暴雪', en: 'Blizzard' },
+    '阵雪': { zh: '阵雪', en: 'Snow Shower' },
+    '雨夹雪': { zh: '雨夹雪', en: 'Sleet' },
+    '冻雨': { zh: '冻雨', en: 'Freezing Rain' },
+    '雾': { zh: '雾', en: 'Fog' },
+    '薄雾': { zh: '薄雾', en: 'Mist' },
+    '霾': { zh: '霾', en: 'Haze' },
+    '沙尘': { zh: '沙尘', en: 'Dust' },
+    '大风': { zh: '大风', en: 'Windy' },
+    '微风': { zh: '微风', en: 'Breeze' },
+  }
+  
+  // 直接匹配中文描述
+  const weatherData = weatherMap[description]
+  if (weatherData) {
+    return isEnglish.value ? weatherData.en : weatherData.zh
+  }
+  
+  // 如果没有匹配，返回原始描述
+  return description
 }
 
 // 判断当前路由是否激活
@@ -642,6 +801,11 @@ onMounted(() => {
   // 初始化时间信息
   updateTimeInfo();
   const timeInterval = setInterval(updateTimeInfo, 1000);
+  
+  // 更新日历时间
+  const dateInterval = setInterval(() => {
+    currentDate.value = new Date()
+  }, 1000);
 
   // 获取天气信息（延迟加载，避免阻塞页面渲染）
   setTimeout(() => {
@@ -651,6 +815,7 @@ onMounted(() => {
   // 清理定时器
   onBeforeUnmount(() => {
     clearInterval(timeInterval);
+    clearInterval(dateInterval);
   });
 });
 
@@ -1188,25 +1353,26 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-/* 天气详情面板 */
+/* 天气详情面板 - 重新设计 */
 .weather-detail-panel {
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-  width: 320px;
-  background: rgba(15, 15, 23, 0.95);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  width: 360px;
+  background: rgba(15, 15, 23, 0.98);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(99, 102, 241, 0.1) inset;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+              0 0 0 1px rgba(99, 102, 241, 0.15) inset;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1000;
   pointer-events: none;
+  padding: 20px;
 }
 
 .weather-widget:hover .weather-detail-panel {
@@ -1220,168 +1386,263 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   top: -6px;
-  right: 20px;
+  right: 30px;
   width: 12px;
   height: 12px;
-  background: rgba(15, 15, 23, 0.95);
+  background: rgba(15, 15, 23, 0.98);
   border-left: 1px solid rgba(255, 255, 255, 0.15);
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   transform: rotate(45deg);
 }
 
-.panel-header {
+/* 位置和时间整合为一行 */
+.panel-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.panel-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.panel-emoji {
-  font-size: 24px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.panel-title-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-  text-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
-}
-
-.panel-time {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(99, 102, 241, 0.9);
-  font-family: "SF Mono", "Courier New", monospace;
-}
-
-.panel-content {
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.section-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
-}
-
-.weather-details {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.detail-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  gap: 12px;
   transition: all 0.2s ease;
 }
 
-.detail-row:hover {
+.panel-header-row:hover {
   background: rgba(255, 255, 255, 0.06);
-  transform: translateX(4px);
 }
 
-.detail-icon {
+.location-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.location-icon {
   font-size: 16px;
-  width: 24px;
-  text-align: center;
 }
 
-.detail-label {
-  flex: 1;
+.location-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.datetime-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "SF Mono", "Courier New", monospace;
+  flex-shrink: 0;
+}
+
+.weekday-short {
   font-size: 13px;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.detail-value {
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff;
-  font-family: "SF Mono", "Courier New", monospace;
-}
-
-.calendar-details {
-  display: flex;
-  gap: 16px;
-}
-
-.calendar-date {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-  border-radius: 12px;
-  flex: 1;
-}
-
-.date-large {
-  font-size: 36px;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1;
-  text-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
-}
-
-.date-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.date-month {
+.date-short {
   font-size: 13px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.date-weekday {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+.time-short {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.calendar-extra {
+/* 天气信息 */
+.panel-weather {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.weather-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  min-height: 90px;
+  position: relative;
 }
 
-.extra-row {
+.weather-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+/* 统一图标容器高度 */
+.weather-icon,
+.weather-icon-large {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
 }
 
-.extra-icon {
+.weather-icon {
+  font-size: 24px;
+}
+
+.weather-icon-large {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.weather-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.weather-value {
   font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: "SF Mono", "Courier New", monospace;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
-.extra-text {
+.weather-desc {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.weather-condition {
+  gap: 4px;
+}
+
+/* 日历表 */
+.panel-calendar {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.calendar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.weekday-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(1.05);
+}
+
+.calendar-day.is-other-month {
+  opacity: 0.3;
+}
+
+.calendar-day.is-today {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+.calendar-day.is-weekend {
+  color: rgba(255, 107, 107, 0.8);
+}
+
+.calendar-day.is-holiday {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.day-number {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.day-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  font-size: 7px;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 107, 107, 0.85);
+  color: #ffffff;
+  border-radius: 50%;
+  font-weight: 700;
+  z-index: 1;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(255, 107, 107, 0.4);
+}
+
+.day-lunar {
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 2px;
+  position: relative;
+  z-index: 2;
 }
 
 /* 天气加载状态 */
