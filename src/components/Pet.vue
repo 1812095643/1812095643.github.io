@@ -94,7 +94,7 @@
             ×
           </button>
         </div>
-        <div class="bubble-messages" ref="chatMessages">
+        <div class="bubble-messages custom-scrollbar" ref="chatMessages">
           <div
             v-for="(msg, index) in messages"
             :key="index"
@@ -1230,6 +1230,41 @@ function handleResize() {
   flex-direction: column;
   gap: 8px;
 }
+
+/* 自定义滚动条样式 - ArcoDesign 风格 */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+/* 滚动条角落 */
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
 .msg {
   max-width: 85%;
   padding: 6px 10px;
@@ -1469,6 +1504,13 @@ function handleResize() {
   min-height: 36px;
   max-height: 120px;
   transition: border-color 0.2s ease;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.input-container textarea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .input-container textarea:focus {

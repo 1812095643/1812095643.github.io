@@ -46,6 +46,12 @@
           <div v-if="!searchQuery && searchHistory.length > 0" class="search-history">
             <div class="history-header">
               <span>{{ isEnglish ? 'Recent Searches' : '最近搜索' }}</span>
+              <button class="clear-all-history-btn" @click="clearAllHistory" :title="isEnglish ? 'Clear all' : '清空全部'">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ isEnglish ? 'Clear All' : '清空全部' }}
+              </button>
             </div>
             <div class="history-items">
               <button
@@ -58,14 +64,23 @@
                   <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
                   <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <span>{{ item }}</span>
+                <span class="history-text">{{ item }}</span>
+                <button 
+                  class="remove-history-btn" 
+                  @click.stop="removeHistory(index)"
+                  :title="isEnglish ? 'Remove' : '删除'"
+                >
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
               </button>
             </div>
           </div>
         </div>
 
         <!-- 搜索结果 -->
-        <div v-if="searchQuery" class="search-results">
+        <CustomScrollbar v-if="searchQuery" class="search-results">
           <div v-if="isSearching" class="search-loading">
             <div class="loading-spinner"></div>
             <span>{{ isEnglish ? 'Searching...' : '搜索中...' }}</span>
@@ -100,78 +115,46 @@
                 <span class="external-title">{{ isEnglish ? 'Try searching with these engines' : '试试使用这些搜索引擎' }}</span>
               </div>
               
-              <div class="search-engines-grid">
-                <!-- 主流引擎 -->
-                <div class="engine-category">
-                  <div class="category-label">{{ isEnglish ? 'Popular' : '主流引擎' }}</div>
-                  <div class="engine-buttons">
-                    <a :href="getSearchUrl('google')" target="_blank" rel="noopener noreferrer" class="engine-btn google">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">Google</span>
-                    </a>
-                    <a :href="getSearchUrl('bing')" target="_blank" rel="noopener noreferrer" class="engine-btn bing">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <path d="M5 3v18l4-2 8 4V5l-8 4-4-6z" fill="#008373"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">Bing</span>
-                    </a>
-                  </div>
-                </div>
-                
-                <!-- 国内引擎 -->
-                <div class="engine-category">
-                  <div class="category-label">{{ isEnglish ? 'China' : '国内引擎' }}</div>
-                  <div class="engine-buttons">
-                    <a :href="getSearchUrl('baidu')" target="_blank" rel="noopener noreferrer" class="engine-btn baidu">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" fill="#2932E1"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">百度</span>
-                    </a>
-                    <a :href="getSearchUrl('360')" target="_blank" rel="noopener noreferrer" class="engine-btn so360">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" fill="#2ECC71"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">360</span>
-                    </a>
-                    <a :href="getSearchUrl('sogou')" target="_blank" rel="noopener noreferrer" class="engine-btn sogou">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" fill="#FF6B35"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">搜狗</span>
-                    </a>
-                  </div>
-                </div>
-                
-                <!-- 隐私引擎 -->
-                <div class="engine-category">
-                  <div class="category-label">{{ isEnglish ? 'Privacy' : '隐私保护' }}</div>
-                  <div class="engine-buttons">
-                    <a :href="getSearchUrl('duckduckgo')" target="_blank" rel="noopener noreferrer" class="engine-btn duckduckgo">
-                      <div class="engine-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" fill="#DE5833"/>
-                        </svg>
-                      </div>
-                      <span class="engine-name">DuckDuckGo</span>
-                    </a>
-                  </div>
-                </div>
+              <div class="search-engines-compact">
+                <a :href="getSearchUrl('google')" target="_blank" rel="noopener noreferrer" class="engine-btn google" title="Google">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  <span>Google</span>
+                </a>
+                <a :href="getSearchUrl('baidu')" target="_blank" rel="noopener noreferrer" class="engine-btn baidu" title="百度">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#2932E1"/>
+                  </svg>
+                  <span>百度</span>
+                </a>
+                <a :href="getSearchUrl('bing')" target="_blank" rel="noopener noreferrer" class="engine-btn bing" title="Bing">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 3v18l4-2 8 4V5l-8 4-4-6z" fill="#008373"/>
+                  </svg>
+                  <span>Bing</span>
+                </a>
+                <a :href="getSearchUrl('360')" target="_blank" rel="noopener noreferrer" class="engine-btn so360" title="360搜索">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#2ECC71"/>
+                  </svg>
+                  <span>360</span>
+                </a>
+                <a :href="getSearchUrl('sogou')" target="_blank" rel="noopener noreferrer" class="engine-btn sogou" title="搜狗">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#FF6B35"/>
+                  </svg>
+                  <span>搜狗</span>
+                </a>
+                <a :href="getSearchUrl('duckduckgo')" target="_blank" rel="noopener noreferrer" class="engine-btn duckduckgo" title="DuckDuckGo">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#DE5833"/>
+                  </svg>
+                  <span>DDG</span>
+                </a>
               </div>
             </div>
           </div>
@@ -205,7 +188,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </CustomScrollbar>
 
 
       </div>
@@ -215,19 +198,22 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import CustomScrollbar from './CustomScrollbar.vue'
 import { useRouter } from 'vue-router'
 import Fuse from 'fuse.js'
 import pinyin from 'pinyin'
 import { searchService, type SearchItem } from '../utils/searchService'
+import { useI18n } from '../composables/useI18n'
 
 const router = useRouter()
+const { currentLanguage } = useI18n()
 const isOpen = ref(false)
 const searchQuery = ref('')
 const searchInput = ref<HTMLInputElement | null>(null)
 const selectedIndex = ref(0)
 const isSearching = ref(false)
 const searchTime = ref(0)
-const isEnglish = ref(false)
+const isEnglish = computed(() => currentLanguage.value === 'en')
 const searchHistory = ref<string[]>([])
 const maxHistoryItems = 5
 const aiSuggestion = ref('')
@@ -485,8 +471,225 @@ function goToResult(result: SearchItem) {
     addToHistory(searchQuery.value.trim())
   }
   
+  // 跳转到页面
   router.push(result.route)
   closeSearch()
+  
+  // 等待页面加载后滚动到对应位置
+  setTimeout(() => {
+    scrollToTarget(result)
+  }, 1000)
+}
+
+// 模拟真人操作滚动到目标位置
+function scrollToTarget(result: SearchItem) {
+  // 根据结果类型查找对应的元素
+  let targetElement: HTMLElement | null = null
+  
+  // 工具页面 - 查找对应的工具卡片（更精确的匹配）
+  if (result.type === '工具') {
+    const toolCards = document.querySelectorAll('.tool-list-item .item, .magical.item')
+    toolCards.forEach((card) => {
+      const titleElement = card.querySelector('.name, .title, .card-left .title .name')
+      const descElement = card.querySelector('.desc, .card-text')
+      const titleText = titleElement?.textContent?.trim() || ''
+      const descText = descElement?.textContent?.trim() || ''
+      
+      // 匹配标题或描述
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
+          (descText && result.description.includes(descText.substring(0, 20)))) {
+        targetElement = card as HTMLElement
+      }
+    })
+  }
+  
+  // 博客页面 - 查找对应的博客卡片
+  if (result.type === '博客' || result.type === '文章') {
+    const blogCards = document.querySelectorAll('.link-card-item, .magical.link-card-item, .blog-item')
+    blogCards.forEach((card) => {
+      const titleElement = card.querySelector('.info-title, .title, h3')
+      const descElement = card.querySelector('.info-desc, .desc, .description')
+      const titleText = titleElement?.textContent?.trim() || ''
+      const descText = descElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
+          (descText && result.description.includes(descText.substring(0, 15)))) {
+        targetElement = card as HTMLElement
+      }
+    })
+  }
+  
+  // 项目页面 - 查找对应的项目卡片
+  if (result.type === '项目') {
+    const projectCards = document.querySelectorAll('.card-list .item, .work-card, .project-item')
+    projectCards.forEach((card) => {
+      const titleElement = card.querySelector('.title .name, .name, h3')
+      const descElement = card.querySelector('.desc, .description')
+      const titleText = titleElement?.textContent?.trim() || ''
+      const descText = descElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
+          (descText && result.description.includes(descText.substring(0, 15)))) {
+        targetElement = card as HTMLElement
+      }
+    })
+  }
+  
+  // 书籍页面 - 查找对应的书籍卡片
+  if (result.type === '书籍') {
+    const bookCards = document.querySelectorAll('.book-item, .book-card, .magical.item')
+    bookCards.forEach((card) => {
+      const titleElement = card.querySelector('.b-one-title, .title, .name')
+      const titleText = titleElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title))) {
+        targetElement = card as HTMLElement
+      }
+    })
+  }
+  
+  // 首页内容 - 查找技能卡片、技术栈等
+  if (result.type === '首页') {
+    // 查找技能卡片
+    const skillCards = document.querySelectorAll('.power-card, .tech-item')
+    skillCards.forEach((card) => {
+      const titleElement = card.querySelector('.title, .tech-name, .card-text')
+      const descElement = card.querySelector('.tech-desc, .desc')
+      const titleText = titleElement?.textContent?.trim() || ''
+      const descText = descElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
+          (descText && result.description.includes(descText.substring(0, 15)))) {
+        targetElement = card as HTMLElement
+      }
+    })
+    
+    // 查找社交链接卡片
+    if (!targetElement) {
+      const linkCards = document.querySelectorAll('.link-card')
+      linkCards.forEach((card) => {
+        const titleElement = card.querySelector('.info-title')
+        const descElement = card.querySelector('.info-desc')
+        const titleText = titleElement?.textContent?.trim() || ''
+        const descText = descElement?.textContent?.trim() || ''
+        
+        if ((titleText && result.title.includes(titleText)) || 
+            (descText && result.description.includes(descText.substring(0, 15)))) {
+          targetElement = card as HTMLElement
+        }
+      })
+    }
+  }
+  
+  // 关于页面 - 查找对应的内容区域
+  if (result.type === '关于') {
+    // 查找证书卡片
+    const certCards = document.querySelectorAll('.certificate-card')
+    certCards.forEach((card) => {
+      const titleElement = card.querySelector('.certificate-title')
+      const descElement = card.querySelector('.certificate-description')
+      const titleText = titleElement?.textContent?.trim() || ''
+      const descText = descElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (descText && result.description.includes(descText.substring(0, 15)))) {
+        targetElement = card as HTMLElement
+      }
+    })
+    
+    // 查找经历项目
+    if (!targetElement) {
+      const experienceItems = document.querySelectorAll('.experience .item')
+      experienceItems.forEach((item) => {
+        const companyElement = item.querySelector('.company')
+        const jobElement = item.querySelector('.job')
+        const titleElements = item.querySelectorAll('.title')
+        const companyText = companyElement?.textContent?.trim() || ''
+        const jobText = jobElement?.textContent?.trim() || ''
+        
+        if ((companyText && result.title.includes(companyText)) || 
+            (jobText && result.title.includes(jobText))) {
+          targetElement = item as HTMLElement
+        }
+        
+        // 检查项目标题
+        titleElements.forEach((titleEl) => {
+          const titleText = titleEl.textContent?.trim() || ''
+          if (titleText && result.title.includes(titleText)) {
+            targetElement = item as HTMLElement
+          }
+        })
+      })
+    }
+    
+    // 查找联系方式、简历等
+    if (!targetElement) {
+      if (result.title.includes('联系') || result.title.includes('邮箱') || result.title.includes('电话')) {
+        targetElement = document.querySelector('.contact') as HTMLElement
+      } else if (result.title.includes('简历')) {
+        targetElement = document.querySelector('.resume') as HTMLElement
+      } else if (result.title.includes('技能')) {
+        targetElement = document.querySelector('.power') as HTMLElement
+      }
+    }
+  }
+  
+  // 如果找到目标元素，平滑滚动过去
+  if (targetElement) {
+    // 计算目标位置（留出顶部导航栏的空间）
+    const headerHeight = 100
+    const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight
+    
+    // 使用平滑滚动动画
+    smoothScrollTo(targetPosition, 1000)
+    
+    // 高亮目标元素
+    highlightElement(targetElement)
+  } else {
+    // 如果没找到具体元素，至少滚动到页面顶部
+    smoothScrollTo(0, 600)
+  }
+}
+
+// 平滑滚动到指定位置（模拟真人操作）
+function smoothScrollTo(targetY: number, duration: number) {
+  const startY = window.scrollY
+  const distance = targetY - startY
+  const startTime = performance.now()
+  
+  function animation(currentTime: number) {
+    const elapsed = currentTime - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    
+    // 使用缓动函数（easeInOutCubic）
+    const easing = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2
+    
+    window.scrollTo(0, startY + distance * easing)
+    
+    if (progress < 1) {
+      requestAnimationFrame(animation)
+    }
+  }
+  
+  requestAnimationFrame(animation)
+}
+
+// 高亮目标元素
+function highlightElement(element: HTMLElement) {
+  // 添加高亮类
+  element.classList.add('search-highlight')
+  
+  // 3秒后移除高亮
+  setTimeout(() => {
+    element.classList.remove('search-highlight')
+  }, 3000)
 }
 
 // 添加到搜索历史
@@ -512,6 +715,26 @@ function loadSearchHistory() {
     }
   } catch (e) {
     console.warn('Failed to load search history:', e)
+  }
+}
+
+// 删除单个搜索历史
+function removeHistory(index: number) {
+  searchHistory.value.splice(index, 1)
+  try {
+    localStorage.setItem('search-history', JSON.stringify(searchHistory.value))
+  } catch (e) {
+    console.warn('Failed to save search history:', e)
+  }
+}
+
+// 清空所有搜索历史
+function clearAllHistory() {
+  searchHistory.value = []
+  try {
+    localStorage.removeItem('search-history')
+  } catch (e) {
+    console.warn('Failed to clear search history:', e)
   }
 }
 
@@ -756,12 +979,44 @@ kbd {
 }
 
 .history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.clear-all-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: rgba(239, 68, 68, 0.8);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-all-history-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.clear-all-history-btn svg {
+  width: 12px;
+  height: 12px;
 }
 
 .history-items {
@@ -771,10 +1026,11 @@ kbd {
 }
 
 .history-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 32px 6px 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -796,16 +1052,60 @@ kbd {
   height: 14px;
   color: rgba(255, 255, 255, 0.4);
   transition: color 0.2s ease;
+  flex-shrink: 0;
 }
 
 .history-item:hover .history-icon {
   color: #6366f1;
 }
 
+.history-text {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-history-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 4px;
+  color: rgba(239, 68, 68, 0.6);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.history-item:hover .remove-history-btn {
+  opacity: 1;
+}
+
+.remove-history-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.remove-history-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
 /* 搜索结果 */
 .search-results {
   max-height: 500px;
-  overflow-y: auto;
+  /* overflow由CustomScrollbar组件处理 */
 }
 
 .search-loading {
@@ -891,73 +1191,54 @@ kbd {
   line-height: 1.6;
 }
 
-/* 外部搜索引擎 - 重新设计 */
+/* 外部搜索引擎 - 紧凑设计 */
 .external-search {
-  margin-top: 32px;
-  padding: 20px;
+  margin-top: 24px;
+  padding: 16px;
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
   border: 1px solid rgba(99, 102, 241, 0.2);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .external-search-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .external-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: #6366f1;
+  flex-shrink: 0;
 }
 
 .external-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.search-engines-grid {
+.search-engines-compact {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.engine-category {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.category-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.engine-buttons {
-  display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .engine-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 6px;
+  padding: 8px 12px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 8px;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -969,7 +1250,7 @@ kbd {
   inset: 0;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .engine-btn:hover::before {
@@ -981,21 +1262,13 @@ kbd {
   transform: translateY(-2px);
 }
 
-.engine-icon {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.engine-btn svg {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
-.engine-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.engine-name {
+.engine-btn span {
   position: relative;
   z-index: 1;
 }
@@ -1192,6 +1465,30 @@ kbd {
   transform: translateX(4px);
 }
 
+/* 搜索高亮动画 */
+:global(.search-highlight) {
+  animation: searchHighlight 3s ease;
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes searchHighlight {
+  0%, 100% {
+    box-shadow: none;
+    transform: scale(1);
+  }
+  10%, 30%, 50% {
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4),
+                0 0 20px rgba(99, 102, 241, 0.3);
+    transform: scale(1.02);
+  }
+  20%, 40%, 60% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.2),
+                0 0 30px rgba(99, 102, 241, 0.2);
+    transform: scale(1);
+  }
+}
+
 /* 过渡动画 */
 .search-backdrop-enter-active,
 .search-backdrop-leave-active {
@@ -1246,22 +1543,21 @@ kbd {
   }
 
   .external-search {
-    padding: 16px;
+    padding: 12px;
   }
 
-  .engine-buttons {
-    flex-direction: column;
+  .search-engines-compact {
+    gap: 6px;
   }
 
   .engine-btn {
-    font-size: 12px;
-    padding: 10px 14px;
-    justify-content: flex-start;
+    font-size: 11px;
+    padding: 6px 10px;
   }
 
-  .engine-icon {
-    width: 18px;
-    height: 18px;
+  .engine-btn svg {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>

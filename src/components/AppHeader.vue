@@ -75,6 +75,70 @@
               }}</span>
             </div>
           </div>
+          
+          <!-- 悬停展开的详细信息面板 -->
+          <div class="weather-detail-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-emoji">{{ weatherEmoji }}</span>
+                <span class="panel-title-text">{{ isEnglish ? 'Weather & Calendar' : '天气与日历' }}</span>
+              </div>
+              <div class="panel-time">{{ timeInfo.time }}</div>
+            </div>
+            
+            <div class="panel-content">
+              <!-- 天气详情 -->
+              <div class="weather-section">
+                <div class="section-label">{{ isEnglish ? 'Weather' : '天气' }}</div>
+                <div class="weather-details">
+                  <div class="detail-row">
+                    <span class="detail-icon">🌡️</span>
+                    <span class="detail-label">{{ isEnglish ? 'Temperature' : '温度' }}</span>
+                    <span class="detail-value">{{ weatherData.temp }}°C</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-icon">💧</span>
+                    <span class="detail-label">{{ isEnglish ? 'Humidity' : '湿度' }}</span>
+                    <span class="detail-value">{{ weatherData.humidity }}%</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-icon">💨</span>
+                    <span class="detail-label">{{ isEnglish ? 'Wind' : '风速' }}</span>
+                    <span class="detail-value">{{ weatherData.windSpeed }} m/s</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-icon">📍</span>
+                    <span class="detail-label">{{ isEnglish ? 'Location' : '位置' }}</span>
+                    <span class="detail-value">{{ locationData?.city || weatherData.city }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 日历详情 -->
+              <div class="calendar-section">
+                <div class="section-label">{{ isEnglish ? 'Calendar' : '日历' }}</div>
+                <div class="calendar-details">
+                  <div class="calendar-date">
+                    <div class="date-large">{{ new Date().getDate() }}</div>
+                    <div class="date-info">
+                      <div class="date-month">{{ timeInfo.date.split(' ')[0] }}</div>
+                      <div class="date-weekday">{{ timeInfo.weekday }}</div>
+                    </div>
+                  </div>
+                  <div class="calendar-extra">
+                    <div class="extra-row">
+                      <span class="extra-icon">🕐</span>
+                      <span class="extra-text">{{ timeInfo.period }}</span>
+                    </div>
+                    <div class="extra-row">
+                      <span class="extra-icon">🌍</span>
+                      <span class="extra-text">{{ timeInfo.timeZone }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="weather-widget weather-loading" v-else>
           <div class="weather-content">
@@ -169,17 +233,21 @@
           </div>
 
           <nav class="mobile-menu" @click.stop role="navigation">
-            <!-- 菜单头部 -->
+            <!-- 菜单头部 - 改为搜索框 -->
             <div class="mobile-menu-header">
               <div class="header-content">
-                <div class="mobile-logo">
-                  <div class="logo-icon">
-                    <div class="logo-dot"></div>
-                  </div>
-                  <span class="mobile-logo-text"
-                    >YGQ<span class="logo-suffix">个人博客</span></span
-                  >
-                </div>
+                <!-- 移动端搜索框 -->
+                <button
+                  class="mobile-search-trigger"
+                  @click="openGlobalSearch($event)"
+                >
+                  <svg class="search-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                    <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <span class="search-text">{{ isEnglish ? 'Search...' : '搜索...' }}</span>
+                  <kbd class="search-kbd">{{ isMac ? '⌘K' : 'Ctrl K' }}</kbd>
+                </button>
                 <button
                   class="close-btn"
                   @click="closeMobileMenu($event)"
@@ -1031,7 +1099,7 @@ onBeforeUnmount(() => {
   padding: 0 12px; /* 移除上下内间距，只保留左右内间距 */
   height: 40px; /* 与其他按钮保持一致的高度 */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  overflow: hidden;
+  overflow: visible; /* 改为visible以显示详情面板 */
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
 }
@@ -1070,6 +1138,8 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 8px;
   height: 100%; /* 填满父容器高度 */
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .weather-emoji {
@@ -1116,6 +1186,202 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 天气详情面板 */
+.weather-detail-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 320px;
+  background: rgba(15, 15, 23, 0.95);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(99, 102, 241, 0.1) inset;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.weather-widget:hover .weather-detail-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.weather-detail-panel::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  background: rgba(15, 15, 23, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  transform: rotate(45deg);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-emoji {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.panel-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+.panel-time {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(99, 102, 241, 0.9);
+  font-family: "SF Mono", "Courier New", monospace;
+}
+
+.panel-content {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.detail-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+.detail-icon {
+  font-size: 16px;
+  width: 24px;
+  text-align: center;
+}
+
+.detail-label {
+  flex: 1;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.detail-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  font-family: "SF Mono", "Courier New", monospace;
+}
+
+.calendar-details {
+  display: flex;
+  gap: 16px;
+}
+
+.calendar-date {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border-radius: 12px;
+  flex: 1;
+}
+
+.date-large {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date-month {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.date-weekday {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.calendar-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.extra-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.extra-icon {
+  font-size: 14px;
+}
+
+.extra-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
 }
 
 /* 天气加载状态 */
@@ -1599,6 +1865,72 @@ onBeforeUnmount(() => {
   display: none;
 }
 
+/* 移动端搜索框 */
+.mobile-search-trigger {
+  flex: 0 1 70%;
+  max-width: 70%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-search-trigger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-search-trigger:hover::before {
+  opacity: 1;
+}
+
+.mobile-search-trigger:active {
+  transform: scale(0.98);
+}
+
+.mobile-search-trigger .search-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-search-trigger .search-text {
+  flex: 1;
+  font-size: 14px;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-search-trigger .search-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  z-index: 1;
+}
+
 .close-btn {
   position: relative;
   width: 36px; /* 缩小 */
@@ -1611,6 +1943,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .close-btn::before {
