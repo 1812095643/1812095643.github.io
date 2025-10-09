@@ -1,0 +1,33 @@
+{
+    "name": "Roy·Smee - 个人博客",
+    "short_name": "Roy·Smee",
+    "description": "Roy·Smee的个人博客，分享技术文章、作品展示、工具推荐和读书笔记",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0E0E13",
+    "theme_color": "#0E0E13",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/assets/index/logo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/index/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "blog",
+        "portfolio",
+        "technology"
+    ],
+    "lang": "zh-CN",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false
+}

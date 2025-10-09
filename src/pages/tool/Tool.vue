@@ -3,6 +3,17 @@
     <div class="scroll-indicator">
       <div class="scroll-thumb" :style="{ height: scrollProgress + '%' }"></div>
     </div>
+    
+    <!-- 在线工具体验板块 -->
+    <OnlineTools />
+    
+    <!-- 分隔线 -->
+    <div class="section-divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">{{ t.tool.externalTools }}</div>
+      <div class="divider-line"></div>
+    </div>
+    
     <div class="tool-list">
       <div class="tool-list-item">
         <div class="magical item">

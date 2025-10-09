@@ -3,6 +3,10 @@
     <div class="scroll-indicator">
       <div class="scroll-thumb" :style="{ height: scrollProgress + '%' }"></div>
     </div>
+    
+    <!-- 高级搜索框 -->
+    <AdvancedSearch />
+    
     <div class="blog-list">
       <div class="blog-list-knowledge">
         <div class="magical link-card-item">

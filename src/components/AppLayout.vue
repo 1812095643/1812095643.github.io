@@ -7,6 +7,7 @@
     <AppFooter />
     <AppWidget />
     <BackToTop />
+    <SwipeHint />
 
     <div
       v-if="showMobileToast"
@@ -31,6 +32,7 @@ import AppWidget from "./AppWidget.vue";
 import FireworksCanvas from "./FireworksCanvas.vue";
 import MusicPlayer from "./MusicPlayer.vue";
 import BackToTop from "./BackToTop.vue";
+import SwipeHint from "./SwipeHint.vue";
 import { loadScriptsInOrder } from "../utils/scriptLoader";
 
 const props = defineProps<{

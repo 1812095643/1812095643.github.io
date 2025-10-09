@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "animejs": "^3.2.2",
+    "blurhash": "^2.0.5",
+    "fuse.js": "^7.1.0",
     "marked": "^16.3.0",
+    "pinyin": "^4.0.0",
     "sharp": "^0.34.4",
     "vue": "^3.5.10",
     "vue-router": "^4.5.1"
@@ -19,6 +22,8 @@
     "@types/animejs": "^3.1.13",
     "@types/marked": "^6.0.0",
     "@vitejs/plugin-vue": "^5.1.2",
-    "vite": "^5.4.8"
+    "vite": "^5.4.8",
+    "vite-plugin-pwa": "^1.0.3",
+    "workbox-window": "^7.3.0"
   }
 }

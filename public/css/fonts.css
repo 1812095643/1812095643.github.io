@@ -1,0 +1,66 @@
+/* 现代字体引入 - Inter 和 Noto Sans SC */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+/* 字体变量定义 */
+:root {
+    /* 英文字体 */
+    --font-en: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* 中文字体 */
+    --font-zh: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+    /* 混合字体 - 英文优先，中文回退 */
+    --font-mixed: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+    /* 代码字体 */
+    --font-code: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
+/* 全局字体应用 */
+body {
+    font-family: var(--font-mixed);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* 针对纯英文内容优化 */
+.en-text {
+    font-family: var(--font-en);
+    letter-spacing: -0.01em;
+}
+
+/* 针对纯中文内容优化 */
+.zh-text {
+    font-family: var(--font-zh);
+    letter-spacing: 0.02em;
+}
+
+/* 代码块字体 */
+code,
+pre,
+.code {
+    font-family: var(--font-code);
+    font-variant-ligatures: common-ligatures;
+}
+
+/* 标题字体优化 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-mixed);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* 字体加载优化 - 防止字体闪烁 */
+.font-loading {
+    visibility: hidden;
+}
+
+.font-loaded {
+    visibility: visible;
+}
