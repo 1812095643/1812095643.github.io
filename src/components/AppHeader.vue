@@ -50,6 +50,20 @@
 
       <!-- 功能按钮区域 -->
       <div class="actions-section">
+        <!-- 现代化搜索框入口 -->
+        <button
+          class="search-trigger"
+          @click="openGlobalSearch($event)"
+          :title="isEnglish ? 'Search' : '搜索'"
+        >
+          <svg class="search-trigger-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="search-trigger-text">{{ isEnglish ? 'Search' : '搜索' }}</span>
+          <kbd class="search-trigger-kbd">{{ isMac ? '⌘K' : 'Ctrl K' }}</kbd>
+        </button>
+
         <!-- 天气显示（仅宽屏显示） -->
         <div class="weather-widget" v-if="weatherData">
           <div class="weather-content">
@@ -342,6 +356,7 @@ const isFullscreen = ref(false);
 const isMobileMenuOpen = ref(false);
 const weatherData = ref<WeatherData | null>(null);
 const locationData = ref<LocationData | null>(null);
+const isMac = ref(false);
 const timeInfo = ref<TimeInfo>({
   date: "",
   time: "",
@@ -479,6 +494,14 @@ function triggerAiPet(event?: MouseEvent) {
   window.dispatchEvent(new CustomEvent("ai-pet:open"));
 }
 
+// 打开全局搜索
+function openGlobalSearch(event?: MouseEvent) {
+  if (event) {
+    createColorfulRipple(event.currentTarget as HTMLElement, event);
+  }
+  window.dispatchEvent(new CustomEvent("open-global-search"));
+}
+
 // 关闭移动端菜单（带绽放效果）
 function closeMobileMenu(event?: MouseEvent) {
   if (event) {
@@ -534,6 +557,9 @@ async function fetchWeatherInfo() {
 
 // 生命周期
 onMounted(() => {
+  // 检测操作系统
+  isMac.value = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  
   // 初始化语言设置
   initLanguage();
 
@@ -1184,6 +1210,90 @@ onBeforeUnmount(() => {
   font-weight: 600;
   letter-spacing: 0.5px;
   color: inherit; /* 确保继承父元素颜色 */
+}
+
+/* 现代化搜索框入口 */
+.search-trigger {
+  display: none; /* 默认隐藏，在桌面端显示 */
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  min-width: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-trigger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-trigger:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.search-trigger:hover::before {
+  opacity: 1;
+}
+
+.search-trigger-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+}
+
+.search-trigger-text {
+  flex: 1;
+  font-size: 13px;
+  text-align: left;
+  z-index: 1;
+  position: relative;
+}
+
+.search-trigger-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  position: relative;
+}
+
+.search-trigger:hover .search-trigger-kbd {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #ffffff;
+}
+
+/* 桌面端显示搜索框 */
+@media (min-width: 1024px) {
+  .search-trigger {
+    display: flex;
+  }
 }
 
 .language-toggle {

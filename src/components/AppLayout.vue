@@ -2,6 +2,7 @@
   <div>
     <FireworksCanvas />
     <AppHeader :active="active" :logoSrc="logoSrc" />
+    <GlobalSearch />
     <MusicPlayer class="global-music-player" />
     <slot />
     <AppFooter />
@@ -33,6 +34,7 @@ import FireworksCanvas from "./FireworksCanvas.vue";
 import MusicPlayer from "./MusicPlayer.vue";
 import BackToTop from "./BackToTop.vue";
 import SwipeHint from "./SwipeHint.vue";
+import GlobalSearch from "./GlobalSearch.vue";
 import { loadScriptsInOrder } from "../utils/scriptLoader";
 
 const props = defineProps<{

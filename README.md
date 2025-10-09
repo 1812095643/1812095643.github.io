@@ -12,7 +12,8 @@
 
 - 🚀 **现代化技术栈** - Vue 3 Composition API + TypeScript + Vite 构建
 - 📱 **响应式设计** - 移动优先，完美适配所有设备尺寸
-- � ***高级动画系统** - Anime.js + CSS3 + Intersection Observer 驱动的流畅动画
+- 🎨 **高级动画系统** - Anime.js + CSS3 + Intersection Observer 驱动的流畅动画
+- 🔍 **智能搜索系统** - 支持普通/模糊/拼音/AI 四种搜索模式，实时高亮结果
 - 🌐 **国际化架构** - 完整的中英文双语支持，动态语言切换
 - ⚡ **性能优化** - 代码分割、懒加载、资源预加载、缓存策略
 - 🎬 **智能视频播放** - 自动线路选择，支持 Vimeo 和 Bilibili 双平台
