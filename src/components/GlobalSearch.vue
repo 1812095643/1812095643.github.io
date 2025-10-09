@@ -558,53 +558,118 @@ function scrollToTarget(result: SearchItem) {
   
   // 项目页面 - 查找对应的项目卡片
   if (result.type === '项目') {
-    const projectCards = document.querySelectorAll('.card-list .item, .work-card, .project-item')
+    // 1. 查找所有项目卡片
+    const projectCards = document.querySelectorAll('.card-list .item')
     projectCards.forEach((card) => {
-      const titleElement = card.querySelector('.title .name, .name, h3')
-      const descElement = card.querySelector('.desc, .description')
-      const titleText = titleElement?.textContent?.trim() || ''
+      const nameElement = card.querySelector('.title .name')
+      const descElement = card.querySelector('.desc')
+      const nameText = nameElement?.textContent?.trim() || ''
       const descText = descElement?.textContent?.trim() || ''
       
-      if ((titleText && result.title.includes(titleText)) || 
-          (titleText && titleText.includes(result.title)) ||
-          (descText && result.description.includes(descText.substring(0, 15)))) {
-        targetElement = card as HTMLElement
-      }
-    })
-  }
-  
-  // 书籍页面 - 查找对应的书籍卡片
-  if (result.type === '书籍') {
-    const bookCards = document.querySelectorAll('.book-item, .book-card, .magical.item')
-    bookCards.forEach((card) => {
-      const titleElement = card.querySelector('.b-one-title, .title, .name')
-      const titleText = titleElement?.textContent?.trim() || ''
-      
-      if ((titleText && result.title.includes(titleText)) || 
-          (titleText && titleText.includes(result.title))) {
-        targetElement = card as HTMLElement
-      }
-    })
-  }
-  
-  // 首页内容 - 查找技能卡片、技术栈等
-  if (result.type === '首页') {
-    // 查找技能卡片
-    const skillCards = document.querySelectorAll('.power-card, .tech-item')
-    skillCards.forEach((card) => {
-      const titleElement = card.querySelector('.title, .tech-name, .card-text')
-      const descElement = card.querySelector('.tech-desc, .desc')
-      const titleText = titleElement?.textContent?.trim() || ''
-      const descText = descElement?.textContent?.trim() || ''
-      
-      if ((titleText && result.title.includes(titleText)) || 
-          (titleText && titleText.includes(result.title)) ||
+      if ((nameText && result.title.includes(nameText)) || 
+          (nameText && nameText.includes(result.title)) ||
           (descText && result.description.includes(descText.substring(0, 15)))) {
         targetElement = card as HTMLElement
       }
     })
     
-    // 查找社交链接卡片
+    // 2. 根据关键词匹配特定项目
+    if (!targetElement) {
+      const keywords = result.title + ' ' + result.description
+      
+      if (keywords.includes('全栈') || keywords.includes('fullstack')) {
+        targetElement = document.querySelector('.card-list-history .item:nth-child(1)') as HTMLElement
+      } else if (keywords.includes('AI') || keywords.includes('智能') || keywords.includes('应用')) {
+        targetElement = document.querySelector('.card-list-history .item:nth-child(2)') as HTMLElement
+      } else if (keywords.includes('更多') || keywords.includes('其他')) {
+        targetElement = document.querySelector('.card-list-history .item:nth-child(3)') as HTMLElement
+      } else if (keywords.includes('Gitee') || keywords.includes('自动')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(1)') as HTMLElement
+      } else if (keywords.includes('自习室') || keywords.includes('预约') || keywords.includes('座位')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(2)') as HTMLElement
+      } else if (keywords.includes('贵港') || keywords.includes('文旅') || keywords.includes('旅游')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(3)') as HTMLElement
+      } else if (keywords.includes('考试') || keywords.includes('系统')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(4)') as HTMLElement
+      } else if (keywords.includes('人脸') || keywords.includes('识别') || keywords.includes('卷积')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(5)') as HTMLElement
+      } else if (keywords.includes('乡村') || keywords.includes('推荐')) {
+        targetElement = document.querySelector('.card-list-category:not(.card-list-history) .item:nth-child(6)') as HTMLElement
+      }
+    }
+    
+    // 3. 如果还没找到，至少滚动到项目列表区域
+    if (!targetElement) {
+      targetElement = document.querySelector('.card-list') as HTMLElement
+    }
+  }
+  
+  // 书籍页面 - 查找对应的书籍卡片
+  if (result.type === '书籍') {
+    // 查找书籍列表中的所有书籍项
+    const bookItems = document.querySelectorAll('.book-list-category .magical.item')
+    bookItems.forEach((item) => {
+      const bookElement = item.querySelector('.book-item')
+      const titleElement = bookElement?.querySelector('.b-one-title')
+      const titleText = titleElement?.textContent?.trim() || ''
+      
+      // 匹配书名
+      if (titleText && (
+        result.title.includes(titleText) || 
+        titleText.includes(result.title) ||
+        result.description.includes(titleText)
+      )) {
+        targetElement = item as HTMLElement
+      }
+    })
+    
+    // 如果没找到，尝试通过描述匹配
+    if (!targetElement) {
+      bookItems.forEach((item) => {
+        const linkElement = item.querySelector('a')
+        const href = linkElement?.getAttribute('href') || ''
+        
+        // 通过豆瓣链接中的书名匹配
+        if (href && result.title.split('').some(char => href.includes(char))) {
+          targetElement = item as HTMLElement
+        }
+      })
+    }
+  }
+  
+  // 首页内容 - 查找技能卡片、技术栈等
+  if (result.type === '首页') {
+    // 1. 查找技能卡片（power-card）
+    const powerCards = document.querySelectorAll('.power-card')
+    powerCards.forEach((card) => {
+      const titleElement = card.querySelector('.title')
+      const titleText = titleElement?.textContent?.trim() || ''
+      
+      if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
+          (result.description.includes(titleText))) {
+        targetElement = card as HTMLElement
+      }
+    })
+    
+    // 2. 查找技术栈卡片（tech-item）
+    if (!targetElement) {
+      const techItems = document.querySelectorAll('.tech-item')
+      techItems.forEach((item) => {
+        const nameElement = item.querySelector('.tech-name')
+        const descElement = item.querySelector('.tech-desc')
+        const nameText = nameElement?.textContent?.trim() || ''
+        const descText = descElement?.textContent?.trim() || ''
+        
+        if ((nameText && result.title.includes(nameText)) || 
+            (nameText && nameText.includes(result.title)) ||
+            (descText && result.description.includes(descText.substring(0, 15)))) {
+          targetElement = item as HTMLElement
+        }
+      })
+    }
+    
+    // 3. 查找社交链接卡片（link-card）
     if (!targetElement) {
       const linkCards = document.querySelectorAll('.link-card')
       linkCards.forEach((card) => {
@@ -614,16 +679,42 @@ function scrollToTarget(result: SearchItem) {
         const descText = descElement?.textContent?.trim() || ''
         
         if ((titleText && result.title.includes(titleText)) || 
+            (titleText && titleText.includes(result.title)) ||
             (descText && result.description.includes(descText.substring(0, 15)))) {
           targetElement = card as HTMLElement
         }
       })
     }
+    
+    // 4. 根据关键词匹配特定区域
+    if (!targetElement) {
+      const keywords = result.title + ' ' + result.description
+      
+      if (keywords.includes('前端') || keywords.includes('Vue') || keywords.includes('React')) {
+        targetElement = document.querySelector('.power-card:nth-child(1)') as HTMLElement
+      } else if (keywords.includes('移动') || keywords.includes('App') || keywords.includes('小程序')) {
+        targetElement = document.querySelector('.power-card:nth-child(2)') as HTMLElement
+      } else if (keywords.includes('后端') || keywords.includes('Java') || keywords.includes('Spring')) {
+        targetElement = document.querySelector('.power-card:nth-child(3)') as HTMLElement
+      } else if (keywords.includes('UI') || keywords.includes('UX') || keywords.includes('设计')) {
+        targetElement = document.querySelector('.power-card:nth-child(4)') as HTMLElement
+      } else if (keywords.includes('架构') || keywords.includes('系统') || keywords.includes('分布式')) {
+        targetElement = document.querySelector('.power-card:nth-child(5)') as HTMLElement
+      } else if (keywords.includes('AI') || keywords.includes('智能') || keywords.includes('大模型')) {
+        targetElement = document.querySelector('.power-card:nth-child(6)') as HTMLElement
+      } else if (keywords.includes('工程') || keywords.includes('CI') || keywords.includes('DevOps')) {
+        targetElement = document.querySelector('.power-card:nth-child(7)') as HTMLElement
+      } else if (keywords.includes('TypeScript') || keywords.includes('Pinia') || keywords.includes('Vite') || keywords.includes('国际化')) {
+        targetElement = document.querySelector('.tech-stack-section') as HTMLElement
+      } else if (keywords.includes('GitHub') || keywords.includes('Gitee') || keywords.includes('CSDN') || keywords.includes('社交')) {
+        targetElement = document.querySelector('.link-list') as HTMLElement
+      }
+    }
   }
   
   // 关于页面 - 查找对应的内容区域
   if (result.type === '关于') {
-    // 查找证书卡片
+    // 1. 查找证书卡片
     const certCards = document.querySelectorAll('.certificate-card')
     certCards.forEach((card) => {
       const titleElement = card.querySelector('.certificate-title')
@@ -632,44 +723,90 @@ function scrollToTarget(result: SearchItem) {
       const descText = descElement?.textContent?.trim() || ''
       
       if ((titleText && result.title.includes(titleText)) || 
+          (titleText && titleText.includes(result.title)) ||
           (descText && result.description.includes(descText.substring(0, 15)))) {
         targetElement = card as HTMLElement
       }
     })
     
-    // 查找经历项目
+    // 2. 查找技能卡片（power-card-number 和 power-card）
+    if (!targetElement) {
+      const powerCards = document.querySelectorAll('.power-card-number, .power-card')
+      powerCards.forEach((card) => {
+        const titleElement = card.querySelector('.card-title, .card-text')
+        const textElement = card.querySelector('.card-text')
+        const titleText = titleElement?.textContent?.trim() || ''
+        const textContent = textElement?.textContent?.trim() || ''
+        
+        if ((titleText && result.title.includes(titleText)) ||
+            (textContent && result.title.includes(textContent)) ||
+            (textContent && result.description.includes(textContent))) {
+          targetElement = card as HTMLElement
+        }
+      })
+    }
+    
+    // 3. 查找经历项目（教育、实习、项目、社团）
     if (!targetElement) {
       const experienceItems = document.querySelectorAll('.experience .item')
       experienceItems.forEach((item) => {
-        const companyElement = item.querySelector('.company')
+        const companyElement = item.querySelector('.company, .company a')
         const jobElement = item.querySelector('.job')
         const titleElements = item.querySelectorAll('.title')
+        const descElements = item.querySelectorAll('.desc')
+        
         const companyText = companyElement?.textContent?.trim() || ''
         const jobText = jobElement?.textContent?.trim() || ''
         
+        // 匹配公司名或职位
         if ((companyText && result.title.includes(companyText)) || 
-            (jobText && result.title.includes(jobText))) {
+            (companyText && result.description.includes(companyText)) ||
+            (jobText && result.title.includes(jobText)) ||
+            (jobText && result.description.includes(jobText))) {
           targetElement = item as HTMLElement
         }
         
         // 检查项目标题
-        titleElements.forEach((titleEl) => {
-          const titleText = titleEl.textContent?.trim() || ''
-          if (titleText && result.title.includes(titleText)) {
-            targetElement = item as HTMLElement
-          }
-        })
+        if (!targetElement) {
+          titleElements.forEach((titleEl) => {
+            const titleText = titleEl.textContent?.trim() || ''
+            if (titleText && (
+              result.title.includes(titleText) || 
+              result.description.includes(titleText)
+            )) {
+              targetElement = item as HTMLElement
+            }
+          })
+        }
+        
+        // 检查描述内容
+        if (!targetElement) {
+          descElements.forEach((descEl) => {
+            const descText = descEl.textContent?.trim() || ''
+            if (descText && result.description.includes(descText.substring(0, 20))) {
+              targetElement = item as HTMLElement
+            }
+          })
+        }
       })
     }
     
-    // 查找联系方式、简历等
+    // 4. 查找特定区域（联系方式、简历、技能等）
     if (!targetElement) {
-      if (result.title.includes('联系') || result.title.includes('邮箱') || result.title.includes('电话')) {
+      const keywords = result.title + ' ' + result.description
+      
+      if (keywords.includes('联系') || keywords.includes('邮箱') || keywords.includes('电话') || keywords.includes('微信')) {
         targetElement = document.querySelector('.contact') as HTMLElement
-      } else if (result.title.includes('简历')) {
+      } else if (keywords.includes('简历') || keywords.includes('下载') || keywords.includes('查看')) {
         targetElement = document.querySelector('.resume') as HTMLElement
-      } else if (result.title.includes('技能')) {
+      } else if (keywords.includes('技能') || keywords.includes('GPA') || keywords.includes('项目') || keywords.includes('年')) {
         targetElement = document.querySelector('.power') as HTMLElement
+      } else if (keywords.includes('证书') || keywords.includes('获奖') || keywords.includes('荣誉')) {
+        targetElement = document.querySelector('.about-certificates') as HTMLElement
+      } else if (keywords.includes('教育') || keywords.includes('大学') || keywords.includes('学院')) {
+        targetElement = document.querySelector('.experience .item:first-child') as HTMLElement
+      } else if (keywords.includes('实习')) {
+        targetElement = document.querySelector('.experience .item:nth-child(2)') as HTMLElement
       }
     }
   }
