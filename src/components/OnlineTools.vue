@@ -57,7 +57,9 @@
                       <h3 class="tool-name">{{ tool.name }}</h3>
                       <p class="tool-desc">{{ tool.desc }}</p>
                     </div>
-                    <div class="tool-badge">{{ tool.badge }}</div>
+                    <div class="tool-badge" :class="`badge-${tool.category}`">
+                      {{ tool.badge }}
+                    </div>
                   </div>
                 </div>
               </a-scrollbar>
@@ -621,8 +623,7 @@ defineExpose({
 
 /* 确保内容位于聚光灯之上 */
 .tool-card .tool-icon,
-.tool-card .tool-info,
-.tool-card .tool-badge {
+.tool-card .tool-info {
   position: relative;
   z-index: 1;
 }
@@ -735,7 +736,7 @@ defineExpose({
   border: 1px solid rgba(100, 97, 241, 0.25);
   transition: all 0.4s ease;
   backdrop-filter: blur(4px);
-  z-index: 1;
+  z-index: 2;
   opacity: 0.7;
 }
 
@@ -743,6 +744,40 @@ defineExpose({
   opacity: 1;
   background: rgba(100, 97, 241, 0.2);
   border-color: rgba(100, 97, 241, 0.35);
+}
+
+/* 分类标签文字颜色 */
+.tool-badge.badge-encode {
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.35);
+}
+.tool-badge.badge-format {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+.tool-badge.badge-crypto {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.tool-badge.badge-time {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.tool-badge.badge-image {
+  color: #8b5cf6;
+  border-color: rgba(139, 92, 246, 0.35);
+}
+.tool-badge.badge-text {
+  color: #06b6d4;
+  border-color: rgba(6, 182, 212, 0.35);
+}
+.tool-badge.badge-dev {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+.tool-badge.badge-design {
+  color: #e879f9;
+  border-color: rgba(232, 121, 249, 0.35);
 }
 
 /* 弹窗动画 */
