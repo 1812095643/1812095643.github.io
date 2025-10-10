@@ -310,6 +310,10 @@ const translations = {
 
         // Tool Section
         tool: {
+            onlineExperience: '在线工具体验',
+            onlineToolsTitle: '在线工具箱',
+            externalTools: '外部工具推荐',
+            goOnlineExperience: '去在线体验',
             hoppscotch: {
                 name: 'Hoppscotch',
                 desc: '开源的API测试客户端，Postman的完美替代品。支持REST、GraphQL、WebSocket等多种协议，界面简洁，功能强大。',
@@ -772,6 +776,10 @@ const translations = {
 
         // Tool Section
         tool: {
+            onlineExperience: 'Online Tools Experience',
+            onlineToolsTitle: 'Online Toolbox',
+            externalTools: 'External Tools Recommendation',
+            goOnlineExperience: 'Try Online Tools',
             hoppscotch: {
                 name: 'Hoppscotch',
                 desc: 'Open-source API testing client, perfect alternative to Postman. Supports REST, GraphQL, WebSocket and other protocols with clean interface and powerful features.',

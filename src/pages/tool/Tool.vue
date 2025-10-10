@@ -4,15 +4,24 @@
       <div class="scroll-thumb" :style="{ height: scrollProgress + '%' }"></div>
     </div>
     
-    <!-- 在线工具体验板块 -->
-    <OnlineTools />
-    
-    <!-- 分隔线 -->
-    <div class="section-divider">
-      <div class="divider-line"></div>
-      <div class="divider-text">{{ t.tool.externalTools }}</div>
-      <div class="divider-line"></div>
+    <!-- 页面标题区域 -->
+    <div class="page-header">
+      <div class="header-title">
+        <svg class="title-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="title-text">{{ t.tool.externalTools || '外部工具推荐' }}</h1>
+      </div>
+      <button class="online-link" @click="openModal">
+        <span>{{ t.tool.goOnlineExperience || '去在线体验' }}</span>
+        <svg class="link-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
+    
+    <!-- 工具弹窗 -->
+    <OnlineTools ref="onlineToolsRef" />
     
     <div class="tool-list">
       <div class="tool-list-item">
@@ -372,15 +381,24 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { usePageAnimations } from "../../composables/usePageAnimations";
 import { useScrollProgress } from "../../composables/useScrollProgress";
 import { useI18n } from "../../composables/useI18n";
+import OnlineTools from "../../components/OnlineTools.vue";
 
 // 使用页面动画、滚动进度和国际化
 usePageAnimations();
 const { scrollProgress } = useScrollProgress();
 const { t } = useI18n();
+
+// OnlineTools 组件引用
+const onlineToolsRef = ref<InstanceType<typeof OnlineTools> | null>(null);
+
+// 打开在线工具弹窗
+const openModal = () => {
+  onlineToolsRef.value?.openModal();
+};
 
 let scrollHandler: (() => void) | null = null;
 
@@ -552,10 +570,235 @@ onBeforeUnmount(() => {
   transition-delay: 1.8s;
 }
 
+/* 覆盖.tool容器的顶部padding */
+.tool {
+  padding-top: 80px !important; /* 从128px减少到80px，可调整这个值 */
+}
+
+/* 页面标题区域 - 宽屏不对称，窄屏居中 */
+.tool .page-header {
+  padding: 0 60px 30px 60px !important; /* 左右各60px，确保不覆盖进度条 */
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 16px !important;
+  max-width: 1400px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+  align-self: center !important;
+  position: relative !important;
+}
+
+.tool .header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.title-icon {
+  width: 28px;
+  height: 28px;
+  color: #6461F1;
+  flex-shrink: 0;
+}
+
+.title-text {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #E8E8F6 0%, #A8A8B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* 在线体验链接 */
+.online-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #6461F1;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  width: fit-content;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.online-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6461F1 0%, #8B5CF6 100%);
+  transition: width 0.3s ease;
+}
+
+.online-link:hover {
+  color: #8B5CF6;
+}
+
+.online-link:hover::after {
+  width: calc(100% - 26px);
+}
+
+.link-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.online-link:hover .link-arrow {
+  transform: translateX(4px);
+}
+
+/* 响应式样式 - 宽屏不对称，窄屏居中 */
+/* 大屏幕 (1024px+) - 不对称布局：只有标题居中，按钮跟随在右侧 */
+@media (min-width: 1024px) {
+  .tool {
+    padding-top: 80px !important; /* 调整这个值来控制标题高度 */
+  }
+  
+  .tool .page-header {
+    padding: 0 60px 30px 60px !important;
+    justify-content: center !important;
+  }
+  
+  .tool .header-title {
+    /* 标题居中，但按钮不参与居中计算 */
+    position: relative;
+    left: 0;
+  }
+  
+  .tool .online-link {
+    /* 按钮紧跟在标题右侧 */
+    margin-left: 0;
+  }
+}
+
+/* 中等屏幕 (768px - 1024px) - 不对称布局 */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .tool {
+    padding-top: 90px !important;
+  }
+  
+  .tool .page-header {
+    padding: 0 50px 25px 50px !important;
+    gap: 12px !important;
+    justify-content: center !important;
+  }
+}
+
+/* 小平板 (600px - 768px) - 整体居中 */
+@media (max-width: 767px) and (min-width: 600px) {
+  .tool {
+    padding-top: 100px !important;
+  }
+  
+  .tool .page-header {
+    padding: 0 40px 20px 40px !important;
+    gap: 12px !important;
+    justify-content: center !important;
+  }
+
+  .title-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .title-text {
+    font-size: 24px;
+  }
+
+  .online-link {
+    font-size: 13px;
+  }
+
+  .link-arrow {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* 手机横屏 (480px - 600px) - 整体居中 */
+@media (max-width: 599px) and (min-width: 480px) {
+  .tool {
+    padding-top: 110px !important;
+  }
+  
+  .tool .page-header {
+    padding: 0 30px 20px 30px !important;
+    gap: 10px !important;
+    justify-content: center !important;
+  }
+
+  .title-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .title-text {
+    font-size: 22px;
+  }
+
+  .online-link {
+    font-size: 12px;
+  }
+
+  .link-arrow {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* 手机竖屏 (< 480px) - 整体居中 */
+@media (max-width: 479px) {
+  .tool {
+    padding-top: 120px !important;
+  }
+  
+  .tool .page-header {
+    padding: 0 20px 16px 20px !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: center !important;
+  }
+
+  .title-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .title-text {
+    font-size: 20px;
+  }
+
+  .online-link {
+    font-size: 11px;
+  }
+
+  .link-arrow {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 /* 响应式动画控制 */
 @media (prefers-reduced-motion: reduce) {
   .tool-list-item,
-  .item a .card {
+  .item a .card,
+  .online-link,
+  .link-arrow {
     transition: none !important;
     transform: none !important;
     animation: none !important;

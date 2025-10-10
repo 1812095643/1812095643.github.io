@@ -2,11 +2,14 @@ import { createApp } from 'vue'
 import Page from './Page.vue'
 import router from './router'
 import { registerServiceWorker } from './utils/registerSW'
+import ArcoVue from '@arco-design/web-vue'
+import '@arco-design/web-vue/dist/arco.css'
 
 // The global CSS remains from public/css/style.min.css via link in HTML
 
 const app = createApp(Page)
 app.use(router)
+app.use(ArcoVue)
 app.mount('#app')
 
 // 注册 Service Worker（生产环境）
