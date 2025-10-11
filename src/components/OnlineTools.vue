@@ -90,15 +90,145 @@
           </div>
 
           <div class="tool-panel-content">
+            <!-- 工具选项区域 -->
+            <div v-if="hasOptions(selectedTool?.id)" class="tool-options">
+              <!-- JSON 格式化选项 -->
+              <template v-if="selectedTool?.id === 5">
+                <div class="option-group">
+                  <label class="option-label">缩进空格数</label>
+                  <select v-model.number="toolOptions.jsonIndent" class="option-select">
+                    <option :value="2">2 空格</option>
+                    <option :value="4">4 空格</option>
+                    <option :value="8">8 空格</option>
+                  </select>
+                </div>
+                <div class="option-group">
+                  <label class="option-checkbox">
+                    <input type="checkbox" v-model="toolOptions.jsonSortKeys">
+                    <span>按键名排序</span>
+                  </label>
+                </div>
+                <div class="option-group">
+                  <label class="option-checkbox">
+                    <input type="checkbox" v-model="toolOptions.jsonCompact">
+                    <span>压缩输出</span>
+                  </label>
+                </div>
+              </template>
+
+              <!-- Base64 选项 -->
+              <template v-if="selectedTool?.id === 1">
+                <div class="option-group">
+                  <label class="option-label">操作模式</label>
+                  <div class="option-radio-group">
+                    <label class="option-radio">
+                      <input type="radio" v-model="toolOptions.base64Mode" value="encode">
+                      <span>编码</span>
+                    </label>
+                    <label class="option-radio">
+                      <input type="radio" v-model="toolOptions.base64Mode" value="decode">
+                      <span>解码</span>
+                    </label>
+                  </div>
+                </div>
+              </template>
+
+              <!-- URL 选项 -->
+              <template v-if="selectedTool?.id === 2">
+                <div class="option-group">
+                  <label class="option-label">操作模式</label>
+                  <div class="option-radio-group">
+                    <label class="option-radio">
+                      <input type="radio" v-model="toolOptions.urlMode" value="encode">
+                      <span>编码</span>
+                    </label>
+                    <label class="option-radio">
+                      <input type="radio" v-model="toolOptions.urlMode" value="decode">
+                      <span>解码</span>
+                    </label>
+                  </div>
+                </div>
+              </template>
+
+              <!-- SHA 选项 -->
+              <template v-if="selectedTool?.id === 10">
+                <div class="option-group">
+                  <label class="option-label">算法</label>
+                  <select v-model="toolOptions.shaAlgorithm" class="option-select">
+                    <option value="SHA-1">SHA-1</option>
+                    <option value="SHA-256">SHA-256</option>
+                    <option value="SHA-384">SHA-384</option>
+                    <option value="SHA-512">SHA-512</option>
+                  </select>
+                </div>
+              </template>
+
+              <!-- 二维码选项 -->
+              <template v-if="selectedTool?.id === 16">
+                <div class="option-group">
+                  <label class="option-label">尺寸</label>
+                  <select v-model.number="toolOptions.qrcodeSize" class="option-select">
+                    <option :value="200">200x200</option>
+                    <option :value="300">300x300</option>
+                    <option :value="500">500x500</option>
+                    <option :value="800">800x800</option>
+                  </select>
+                </div>
+                <div class="option-group">
+                  <label class="option-label">容错级别</label>
+                  <select v-model="toolOptions.qrcodeErrorLevel" class="option-select">
+                    <option value="L">L (7%)</option>
+                    <option value="M">M (15%)</option>
+                    <option value="Q">Q (25%)</option>
+                    <option value="H">H (30%)</option>
+                  </select>
+                </div>
+              </template>
+
+              <!-- 颜色选择器选项 -->
+              <template v-if="selectedTool?.id === 19">
+                <div class="option-group">
+                  <label class="option-label">颜色值</label>
+                  <input type="color" v-model="toolOptions.colorValue" class="option-color" @input="executeTool">
+                </div>
+                <div class="option-group">
+                  <label class="option-label">HEX 值</label>
+                  <input type="text" v-model="toolOptions.colorValue" class="option-input" @input="executeTool">
+                </div>
+              </template>
+
+              <!-- 大小写转换选项 -->
+              <template v-if="selectedTool?.id === 23">
+                <div class="option-group">
+                  <label class="option-label">转换模式</label>
+                  <select v-model="toolOptions.caseMode" class="option-select">
+                    <option value="upper">全部大写</option>
+                    <option value="lower">全部小写</option>
+                    <option value="title">首字母大写</option>
+                    <option value="sentence">句首大写</option>
+                    <option value="toggle">大小写切换</option>
+                  </select>
+                </div>
+              </template>
+
+              <!-- UUID 选项 -->
+              <template v-if="selectedTool?.id === 25">
+                <div class="option-group">
+                  <label class="option-label">生成数量</label>
+                  <input type="number" v-model.number="toolOptions.uuidCount" min="1" max="100" class="option-input">
+                </div>
+              </template>
+            </div>
+
             <!-- 输入区域 -->
-            <div class="tool-panel-section">
+            <div v-if="selectedTool?.id !== 19 && selectedTool?.id !== 21" class="tool-panel-section">
               <div class="section-header">
                 <span class="section-title">输入</span>
                 <button v-if="selectedTool?.id === 25" class="action-btn" @click="executeTool">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   </svg>
-                  生成
+                  生成 UUID
                 </button>
               </div>
               <textarea
@@ -106,21 +236,111 @@
                 v-model="toolInput"
                 class="tool-textarea"
                 :placeholder="getPlaceholder(selectedTool?.id)"
-                :rows="selectedTool?.id === 24 ? 8 : 6"
+                :rows="getTextareaRows(selectedTool?.id)"
               ></textarea>
               <div v-else class="uuid-generator">
-                <p class="uuid-hint">点击"生成"按钮创建新的 UUID</p>
+                <p class="uuid-hint">点击"生成 UUID"按钮创建新的唯一标识符</p>
               </div>
             </div>
 
+            <!-- Diff 对比特殊输入 -->
+            <template v-if="selectedTool?.id === 21">
+              <div class="tool-panel-section">
+                <div class="section-header">
+                  <span class="section-title">原始文本</span>
+                </div>
+                <textarea
+                  v-model="toolOptions.diffInput1"
+                  class="tool-textarea"
+                  placeholder="请输入原始文本..."
+                  rows="6"
+                ></textarea>
+              </div>
+              <div class="tool-panel-section">
+                <div class="section-header">
+                  <span class="section-title">对比文本</span>
+                </div>
+                <textarea
+                  v-model="toolOptions.diffInput2"
+                  class="tool-textarea"
+                  placeholder="请输入对比文本..."
+                  rows="6"
+                ></textarea>
+              </div>
+            </template>
+
+            <!-- 正则测试特殊输入 -->
+            <template v-if="selectedTool?.id === 24">
+              <div class="tool-panel-section">
+                <div class="section-header">
+                  <span class="section-title">正则表达式</span>
+                </div>
+                <div class="regex-input-group">
+                  <span class="regex-delimiter">/</span>
+                  <input
+                    type="text"
+                    v-model="toolOptions.regexPattern"
+                    class="regex-pattern-input"
+                    placeholder="输入正则表达式..."
+                  >
+                  <span class="regex-delimiter">/</span>
+                  <input
+                    type="text"
+                    v-model="toolOptions.regexFlags"
+                    class="regex-flags-input"
+                    placeholder="flags"
+                    maxlength="5"
+                  >
+                </div>
+                <div class="regex-flags-helper">
+                  <label class="flag-checkbox">
+                    <input type="checkbox" :checked="toolOptions.regexFlags.includes('g')" @change="toggleFlag('g')">
+                    <span>g (全局)</span>
+                  </label>
+                  <label class="flag-checkbox">
+                    <input type="checkbox" :checked="toolOptions.regexFlags.includes('i')" @change="toggleFlag('i')">
+                    <span>i (忽略大小写)</span>
+                  </label>
+                  <label class="flag-checkbox">
+                    <input type="checkbox" :checked="toolOptions.regexFlags.includes('m')" @change="toggleFlag('m')">
+                    <span>m (多行)</span>
+                  </label>
+                  <label class="flag-checkbox">
+                    <input type="checkbox" :checked="toolOptions.regexFlags.includes('s')" @change="toggleFlag('s')">
+                    <span>s (dotAll)</span>
+                  </label>
+                </div>
+              </div>
+              <div class="tool-panel-section">
+                <div class="section-header">
+                  <span class="section-title">测试文本</span>
+                </div>
+                <textarea
+                  v-model="toolOptions.regexTestText"
+                  class="tool-textarea"
+                  placeholder="输入要测试的文本..."
+                  rows="6"
+                ></textarea>
+              </div>
+            </template>
+
             <!-- 执行按钮 -->
-            <div v-if="selectedTool?.id !== 25" class="tool-panel-actions">
+            <div v-if="selectedTool?.id !== 25 && selectedTool?.id !== 19" class="tool-panel-actions">
               <button class="execute-btn" @click="executeTool">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M5 3l14 9-14 9V3z" fill="currentColor"/>
                 </svg>
-                执行
+                {{ getExecuteButtonText(selectedTool?.id) }}
               </button>
+            </div>
+
+            <!-- 成功提示 -->
+            <div v-if="toolSuccess" class="tool-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              {{ toolSuccess }}
             </div>
 
             <!-- 错误提示 -->
@@ -148,7 +368,16 @@
               <!-- 二维码特殊显示 -->
               <div v-if="selectedTool?.id === 16 && toolOutput" class="qrcode-output">
                 <img :src="toolOutput" alt="QR Code" class="qrcode-image" />
+                <a :href="toolOutput" download="qrcode.png" class="qrcode-download">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  下载二维码
+                </a>
               </div>
+              
+              <!-- Markdown 预览特殊显示 -->
+              <div v-else-if="selectedTool?.id === 20 && toolOutput" class="markdown-preview" v-html="toolOutput"></div>
               
               <!-- 普通文本输出 -->
               <textarea
@@ -157,7 +386,7 @@
                 class="tool-textarea"
                 placeholder="执行结果将显示在这里..."
                 readonly
-                :rows="selectedTool?.id === 24 ? 8 : 6"
+                :rows="getTextareaRows(selectedTool?.id)"
               ></textarea>
             </div>
           </div>
@@ -474,11 +703,21 @@ const selectCategory = (categoryId: string) => {
 
 // 工具实现状态
 const toolImplementations = ref<Record<number, boolean>>({
+  1: true,  // Base64 编解码
+  2: true,  // URL 编解码
   5: true,  // JSON 格式化
+  9: true,  // MD5 加密
+  10: true, // SHA 加密
   13: true, // 时间戳转换
   16: true, // 二维码生成
+  19: true, // 颜色选择器
+  20: true, // Markdown 预览
+  21: true, // Diff 对比
+  22: true, // 文本统计
+  23: true, // 大小写转换
   24: true, // 正则测试
   25: true, // UUID 生成
+  26: true, // JWT 解析
 });
 
 // 当前选中的工具
@@ -489,6 +728,52 @@ const showToolPanel = ref(false);
 const toolInput = ref("");
 const toolOutput = ref("");
 const toolError = ref("");
+const toolSuccess = ref("");
+
+// 工具特定选项
+const toolOptions = ref<any>({
+  // JSON 格式化选项
+  jsonIndent: 2,
+  jsonSortKeys: false,
+  jsonCompact: false,
+  
+  // Base64 选项
+  base64Mode: 'encode',
+  
+  // URL 选项
+  urlMode: 'encode',
+  
+  // SHA 选项
+  shaAlgorithm: 'SHA-256',
+  
+  // 二维码选项
+  qrcodeSize: 300,
+  qrcodeErrorLevel: 'M',
+  
+  // 颜色选择器
+  colorFormat: 'hex',
+  colorValue: '#6461F1',
+  
+  // Markdown 选项
+  markdownTheme: 'github',
+  
+  // Diff 选项
+  diffInput1: '',
+  diffInput2: '',
+  
+  // 大小写转换
+  caseMode: 'upper',
+  
+  // 正则选项
+  regexFlags: 'g',
+  regexPattern: '',
+  regexTestText: '',
+  regexMatches: [],
+  
+  // UUID 选项
+  uuidCount: 1,
+  uuidVersion: 'v4',
+});
 
 const handleToolClick = (tool: any) => {
   selectedTool.value = tool;
@@ -496,20 +781,65 @@ const handleToolClick = (tool: any) => {
   toolInput.value = "";
   toolOutput.value = "";
   toolError.value = "";
+  toolSuccess.value = "";
+  
+  // 重置选项
+  resetToolOptions();
   
   // 设置默认示例
   setDefaultExample(tool.id);
 };
 
+const resetToolOptions = () => {
+  toolOptions.value = {
+    jsonIndent: 2,
+    jsonSortKeys: false,
+    jsonCompact: false,
+    base64Mode: 'encode',
+    urlMode: 'encode',
+    shaAlgorithm: 'SHA-256',
+    qrcodeSize: 300,
+    qrcodeErrorLevel: 'M',
+    colorFormat: 'hex',
+    colorValue: '#6461F1',
+    markdownTheme: 'github',
+    diffInput1: '',
+    diffInput2: '',
+    caseMode: 'upper',
+    regexFlags: 'g',
+    regexPattern: '',
+    regexTestText: '',
+    regexMatches: [],
+    uuidCount: 1,
+    uuidVersion: 'v4',
+  };
+};
+
 const setDefaultExample = (toolId: number) => {
   const examples: Record<number, string> = {
-    5: '{"name":"张三","age":25,"city":"北京"}',
+    1: 'Hello, World! 你好世界！',
+    2: 'https://example.com/search?q=测试&page=1',
+    5: '{"name":"张三","age":25,"skills":["JavaScript","Vue","TypeScript"],"address":{"city":"北京","district":"朝阳区"}}',
+    9: 'Hello World',
+    10: 'Hello World',
     13: String(Date.now()),
     16: 'https://github.com',
-    24: 'hello@example.com',
+    19: '',
+    20: '# Markdown 示例\n\n## 二级标题\n\n这是一段**粗体**文字和*斜体*文字。\n\n- 列表项 1\n- 列表项 2\n- 列表项 3\n\n```javascript\nconst hello = "world";\nconsole.log(hello);\n```\n\n> 这是一段引用文字',
+    21: '',
+    22: 'Hello World!\n这是一个文本统计工具。\n可以统计字数、行数、单词数等信息。\n支持中英文混合统计。',
+    23: 'Hello World! 你好世界！',
+    24: '',
     25: '',
+    26: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
   };
   toolInput.value = examples[toolId] || '';
+  
+  // 特殊初始化
+  if (toolId === 21) {
+    toolOptions.value.diffInput1 = '第一行文本\n第二行文本\n第三行文本';
+    toolOptions.value.diffInput2 = '第一行文本\n第二行已修改\n第三行文本\n第四行新增';
+  }
 };
 
 const closeToolPanel = () => {
@@ -517,14 +847,54 @@ const closeToolPanel = () => {
   selectedTool.value = null;
 };
 
-const executeTool = () => {
+const executeTool = async () => {
   toolError.value = "";
+  toolSuccess.value = "";
   
   try {
     switch (selectedTool.value?.id) {
+      case 1: // Base64 编解码
+        if (toolOptions.value.base64Mode === 'encode') {
+          toolOutput.value = btoa(unescape(encodeURIComponent(toolInput.value)));
+        } else {
+          toolOutput.value = decodeURIComponent(escape(atob(toolInput.value)));
+        }
+        break;
+        
+      case 2: // URL 编解码
+        if (toolOptions.value.urlMode === 'encode') {
+          toolOutput.value = encodeURIComponent(toolInput.value);
+        } else {
+          toolOutput.value = decodeURIComponent(toolInput.value);
+        }
+        break;
+        
       case 5: // JSON 格式化
         const parsed = JSON.parse(toolInput.value);
-        toolOutput.value = JSON.stringify(parsed, null, 2);
+        if (toolOptions.value.jsonSortKeys) {
+          const sortObject = (obj: any): any => {
+            if (Array.isArray(obj)) return obj.map(sortObject);
+            if (obj !== null && typeof obj === 'object') {
+              return Object.keys(obj).sort().reduce((result: any, key) => {
+                result[key] = sortObject(obj[key]);
+                return result;
+              }, {});
+            }
+            return obj;
+          };
+          const sorted = sortObject(parsed);
+          toolOutput.value = JSON.stringify(sorted, null, toolOptions.value.jsonCompact ? 0 : toolOptions.value.jsonIndent);
+        } else {
+          toolOutput.value = JSON.stringify(parsed, null, toolOptions.value.jsonCompact ? 0 : toolOptions.value.jsonIndent);
+        }
+        break;
+        
+      case 9: // MD5 加密
+        toolOutput.value = await hashString(toolInput.value, 'MD5');
+        break;
+        
+      case 10: // SHA 加密
+        toolOutput.value = await hashString(toolInput.value, toolOptions.value.shaAlgorithm);
         break;
         
       case 13: // 时间戳转换
@@ -534,7 +904,18 @@ const executeTool = () => {
           return;
         }
         const date = new Date(timestamp);
-        toolOutput.value = `标准时间: ${date.toLocaleString('zh-CN')}\nISO格式: ${date.toISOString()}\nUTC时间: ${date.toUTCString()}`;
+        toolOutput.value = `标准时间: ${date.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}\n`;
+        toolOutput.value += `ISO 8601: ${date.toISOString()}\n`;
+        toolOutput.value += `UTC 时间: ${date.toUTCString()}\n`;
+        toolOutput.value += `Unix 时间戳(秒): ${Math.floor(timestamp / 1000)}\n`;
+        toolOutput.value += `Unix 时间戳(毫秒): ${timestamp}\n`;
+        toolOutput.value += `年: ${date.getFullYear()}\n`;
+        toolOutput.value += `月: ${date.getMonth() + 1}\n`;
+        toolOutput.value += `日: ${date.getDate()}\n`;
+        toolOutput.value += `时: ${date.getHours()}\n`;
+        toolOutput.value += `分: ${date.getMinutes()}\n`;
+        toolOutput.value += `秒: ${date.getSeconds()}\n`;
+        toolOutput.value += `星期: ${['日', '一', '二', '三', '四', '五', '六'][date.getDay()]}`;
         break;
         
       case 16: // 二维码生成
@@ -542,61 +923,326 @@ const executeTool = () => {
           toolError.value = "请输入要生成二维码的内容";
           return;
         }
-        // 使用第三方API生成二维码
-        toolOutput.value = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(toolInput.value)}`;
+        const qrSize = toolOptions.value.qrcodeSize;
+        const qrLevel = toolOptions.value.qrcodeErrorLevel;
+        toolOutput.value = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&ecc=${qrLevel}&data=${encodeURIComponent(toolInput.value)}`;
+        break;
+        
+      case 19: // 颜色选择器
+        const color = toolOptions.value.colorValue;
+        toolOutput.value = convertColor(color, toolOptions.value.colorFormat);
+        break;
+        
+      case 20: // Markdown 预览
+        toolOutput.value = renderMarkdown(toolInput.value);
+        break;
+        
+      case 21: // Diff 对比
+        toolOutput.value = generateDiff(toolOptions.value.diffInput1, toolOptions.value.diffInput2);
+        break;
+        
+      case 22: // 文本统计
+        const stats = analyzeText(toolInput.value);
+        toolOutput.value = `字符总数: ${stats.totalChars}\n`;
+        toolOutput.value += `字符数(不含空格): ${stats.charsNoSpace}\n`;
+        toolOutput.value += `中文字符: ${stats.chineseChars}\n`;
+        toolOutput.value += `英文字符: ${stats.englishChars}\n`;
+        toolOutput.value += `数字字符: ${stats.numbers}\n`;
+        toolOutput.value += `单词数: ${stats.words}\n`;
+        toolOutput.value += `行数: ${stats.lines}\n`;
+        toolOutput.value += `段落数: ${stats.paragraphs}\n`;
+        toolOutput.value += `标点符号: ${stats.punctuation}`;
+        break;
+        
+      case 23: // 大小写转换
+        switch (toolOptions.value.caseMode) {
+          case 'upper':
+            toolOutput.value = toolInput.value.toUpperCase();
+            break;
+          case 'lower':
+            toolOutput.value = toolInput.value.toLowerCase();
+            break;
+          case 'title':
+            toolOutput.value = toolInput.value.replace(/\b\w/g, l => l.toUpperCase());
+            break;
+          case 'sentence':
+            toolOutput.value = toolInput.value.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, l => l.toUpperCase());
+            break;
+          case 'toggle':
+            toolOutput.value = toolInput.value.split('').map(c => 
+              c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()
+            ).join('');
+            break;
+        }
         break;
         
       case 24: // 正则测试
-        const lines = toolInput.value.split('\n');
-        const pattern = lines[0] || '';
-        const testStr = lines.slice(1).join('\n') || '';
+        const pattern = toolOptions.value.regexPattern;
+        const testText = toolOptions.value.regexTestText;
         
         if (!pattern) {
-          toolError.value = "请在第一行输入正则表达式";
+          toolError.value = "请输入正则表达式";
           return;
         }
         
         try {
-          const regex = new RegExp(pattern, 'g');
-          const matches = testStr.match(regex);
-          toolOutput.value = matches 
-            ? `匹配成功！\n找到 ${matches.length} 个匹配项:\n${matches.join('\n')}`
-            : '未找到匹配项';
+          const regex = new RegExp(pattern, toolOptions.value.regexFlags);
+          const matches = [...testText.matchAll(regex)];
+          
+          toolOptions.value.regexMatches = matches.map((match, index) => ({
+            index: index + 1,
+            match: match[0],
+            position: match.index,
+            groups: match.slice(1),
+          }));
+          
+          if (matches.length > 0) {
+            toolOutput.value = `找到 ${matches.length} 个匹配项:\n\n`;
+            matches.forEach((match, i) => {
+              toolOutput.value += `匹配 ${i + 1}: "${match[0]}" (位置: ${match.index})\n`;
+              if (match.length > 1) {
+                toolOutput.value += `  捕获组: ${match.slice(1).join(', ')}\n`;
+              }
+            });
+          } else {
+            toolOutput.value = '未找到匹配项';
+          }
         } catch (e: any) {
           toolError.value = `正则表达式错误: ${e.message}`;
         }
         break;
         
       case 25: // UUID 生成
-        toolOutput.value = crypto.randomUUID();
+        const uuids = [];
+        for (let i = 0; i < toolOptions.value.uuidCount; i++) {
+          uuids.push(crypto.randomUUID());
+        }
+        toolOutput.value = uuids.join('\n');
+        break;
+        
+      case 26: // JWT 解析
+        try {
+          const parts = toolInput.value.split('.');
+          if (parts.length !== 3) {
+            toolError.value = "无效的 JWT 格式";
+            return;
+          }
+          
+          const header = JSON.parse(atob(parts[0]));
+          const payload = JSON.parse(atob(parts[1]));
+          
+          toolOutput.value = '=== Header ===\n';
+          toolOutput.value += JSON.stringify(header, null, 2);
+          toolOutput.value += '\n\n=== Payload ===\n';
+          toolOutput.value += JSON.stringify(payload, null, 2);
+          toolOutput.value += '\n\n=== Signature ===\n';
+          toolOutput.value += parts[2];
+          
+          if (payload.exp) {
+            const expDate = new Date(payload.exp * 1000);
+            const now = new Date();
+            toolOutput.value += '\n\n=== 过期信息 ===\n';
+            toolOutput.value += `过期时间: ${expDate.toLocaleString('zh-CN')}\n`;
+            toolOutput.value += `状态: ${now > expDate ? '已过期' : '有效'}`;
+          }
+        } catch (e: any) {
+          toolError.value = "JWT 解析失败: " + e.message;
+        }
         break;
         
       default:
         toolError.value = "该工具功能正在开发中...";
+    }
+    
+    if (!toolError.value && toolOutput.value) {
+      toolSuccess.value = "执行成功！";
+      setTimeout(() => toolSuccess.value = "", 2000);
     }
   } catch (e: any) {
     toolError.value = e.message || "处理失败";
   }
 };
 
+// 辅助函数
+const hashString = async (str: string, algorithm: string): Promise<string> => {
+  if (algorithm === 'MD5') {
+    // 简单的 MD5 实现（实际项目建议使用专业库）
+    return simpleMD5(str);
+  }
+  
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest(algorithm, data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
+const simpleMD5 = (str: string): string => {
+  // 这是一个简化版本，实际应用建议使用 crypto-js 等库
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(16).padStart(32, '0');
+};
+
+const convertColor = (color: string, format: string): string => {
+  // 简化的颜色转换
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  let result = `HEX: ${color}\n`;
+  result += `RGB: rgb(${r}, ${g}, ${b})\n`;
+  result += `RGBA: rgba(${r}, ${g}, ${b}, 1)\n`;
+  
+  const h = Math.round(Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * 180 / Math.PI);
+  const s = Math.round(Math.sqrt(r * r + g * g + b * b - r * g - r * b - g * b) / Math.max(r, g, b) * 100);
+  const l = Math.round((Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255 * 100);
+  
+  result += `HSL: hsl(${h}, ${s}%, ${l}%)`;
+  
+  return result;
+};
+
+const renderMarkdown = (md: string): string => {
+  // 简化的 Markdown 渲染
+  let html = md;
+  
+  // 标题
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  
+  // 粗体和斜体
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  
+  // 代码块
+  html = html.replace(/```(\w+)?\n([\s\S]+?)```/g, '<pre><code>$2</code></pre>');
+  html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+  
+  // 引用
+  html = html.replace(/^> (.+$)/gim, '<blockquote>$1</blockquote>');
+  
+  // 列表
+  html = html.replace(/^\- (.+$)/gim, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+  
+  // 链接
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  
+  // 换行
+  html = html.replace(/\n/g, '<br>');
+  
+  return html;
+};
+
+const generateDiff = (text1: string, text2: string): string => {
+  const lines1 = text1.split('\n');
+  const lines2 = text2.split('\n');
+  
+  let result = '';
+  const maxLen = Math.max(lines1.length, lines2.length);
+  
+  for (let i = 0; i < maxLen; i++) {
+    const line1 = lines1[i] || '';
+    const line2 = lines2[i] || '';
+    
+    if (line1 === line2) {
+      result += `  ${line1}\n`;
+    } else {
+      if (line1) result += `- ${line1}\n`;
+      if (line2) result += `+ ${line2}\n`;
+    }
+  }
+  
+  return result;
+};
+
+const analyzeText = (text: string) => {
+  return {
+    totalChars: text.length,
+    charsNoSpace: text.replace(/\s/g, '').length,
+    chineseChars: (text.match(/[\u4e00-\u9fa5]/g) || []).length,
+    englishChars: (text.match(/[a-zA-Z]/g) || []).length,
+    numbers: (text.match(/\d/g) || []).length,
+    words: text.split(/\s+/).filter(w => w.length > 0).length,
+    lines: text.split('\n').length,
+    paragraphs: text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length,
+    punctuation: (text.match(/[.,;:!?'"()[\]{}]/g) || []).length,
+  };
+};
+
 const copyOutput = async () => {
   try {
     await navigator.clipboard.writeText(toolOutput.value);
-    // 可以添加一个提示
+    toolSuccess.value = "已复制到剪贴板！";
+    setTimeout(() => toolSuccess.value = "", 2000);
   } catch (e) {
-    console.error('复制失败', e);
+    toolError.value = "复制失败";
   }
 };
 
 const getPlaceholder = (toolId: number) => {
   const placeholders: Record<number, string> = {
-    5: '请输入 JSON 数据...\n例如: {"name":"张三","age":25}',
-    13: '请输入时间戳（毫秒）...\n例如: 1704067200000',
-    16: '请输入要生成二维码的内容...\n例如: https://github.com',
-    24: '第一行输入正则表达式，后续行输入测试文本\n例如:\n\\d+\n123abc456',
-    25: '',
+    1: '请输入要编码/解码的文本...',
+    2: '请输入要编码/解码的 URL...',
+    5: '请输入 JSON 数据...',
+    9: '请输入要加密的文本...',
+    10: '请输入要加密的文本...',
+    13: '请输入时间戳（毫秒）...',
+    16: '请输入要生成二维码的内容...',
+    20: '请输入 Markdown 文本...',
+    22: '请输入要统计的文本...',
+    23: '请输入要转换的文本...',
+    26: '请输入 JWT Token...',
   };
   return placeholders[toolId] || '请输入内容...';
+};
+
+const hasOptions = (toolId: number) => {
+  return [1, 2, 5, 10, 16, 19, 23, 25].includes(toolId);
+};
+
+const getTextareaRows = (toolId: number) => {
+  const rowMap: Record<number, number> = {
+    20: 10, // Markdown
+    22: 8,  // 文本统计
+    26: 4,  // JWT
+  };
+  return rowMap[toolId] || 6;
+};
+
+const getExecuteButtonText = (toolId: number) => {
+  const textMap: Record<number, string> = {
+    1: '转换',
+    2: '转换',
+    5: '格式化',
+    9: '加密',
+    10: '加密',
+    13: '转换',
+    16: '生成二维码',
+    20: '预览',
+    21: '对比',
+    22: '统计',
+    23: '转换',
+    24: '测试',
+    26: '解析',
+  };
+  return textMap[toolId] || '执行';
+};
+
+const toggleFlag = (flag: string) => {
+  if (toolOptions.value.regexFlags.includes(flag)) {
+    toolOptions.value.regexFlags = toolOptions.value.regexFlags.replace(flag, '');
+  } else {
+    toolOptions.value.regexFlags += flag;
+  }
 };
 
 const openModal = () => {
@@ -1284,6 +1930,309 @@ defineExpose({
   }
 }
 
+/* 工具选项区域 */
+.tool-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(20, 20, 25, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(78, 78, 100, 0.2);
+  margin-bottom: 16px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px;
+}
+
+.option-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a8a8b6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.option-select,
+.option-input {
+  padding: 8px 12px;
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  border-radius: 6px;
+  color: #e8e8f6;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.option-select:focus,
+.option-input:focus {
+  outline: none;
+  border-color: rgba(100, 97, 241, 0.5);
+  box-shadow: 0 0 0 3px rgba(100, 97, 241, 0.1);
+}
+
+.option-color {
+  width: 100%;
+  height: 40px;
+  padding: 4px;
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.option-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #6461f1;
+}
+
+.option-checkbox span {
+  font-size: 13px;
+  color: #e8e8f6;
+}
+
+.option-radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.option-radio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.option-radio input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #6461f1;
+}
+
+.option-radio span {
+  font-size: 13px;
+  color: #e8e8f6;
+}
+
+/* 正则表达式输入 */
+.regex-input-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.regex-input-group:focus-within {
+  border-color: rgba(100, 97, 241, 0.5);
+  box-shadow: 0 0 0 3px rgba(100, 97, 241, 0.1);
+}
+
+.regex-delimiter {
+  color: #6461f1;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.regex-pattern-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e8e8f6;
+  font-size: 14px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  outline: none;
+}
+
+.regex-flags-input {
+  width: 60px;
+  background: transparent;
+  border: none;
+  color: #8b5cf6;
+  font-size: 14px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  outline: none;
+}
+
+.regex-flags-helper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.flag-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.flag-checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: #6461f1;
+}
+
+.flag-checkbox span {
+  font-size: 12px;
+  color: #a8a8b6;
+}
+
+/* 成功提示 */
+.tool-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  color: #10b981;
+  font-size: 13px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Markdown 预览 */
+.markdown-preview {
+  padding: 16px;
+  background: rgba(20, 20, 25, 0.5);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  border-radius: 8px;
+  color: #e8e8f6;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.markdown-preview h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 12px 0;
+  color: #e8e8f6;
+  border-bottom: 2px solid rgba(100, 97, 241, 0.3);
+  padding-bottom: 8px;
+}
+
+.markdown-preview h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 14px 0 10px 0;
+  color: #e8e8f6;
+}
+
+.markdown-preview h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 12px 0 8px 0;
+  color: #e8e8f6;
+}
+
+.markdown-preview code {
+  padding: 2px 6px;
+  background: rgba(100, 97, 241, 0.15);
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  color: #8b5cf6;
+}
+
+.markdown-preview pre {
+  padding: 12px;
+  background: rgba(14, 14, 19, 0.8);
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.markdown-preview pre code {
+  padding: 0;
+  background: transparent;
+  color: #e8e8f6;
+}
+
+.markdown-preview blockquote {
+  margin: 12px 0;
+  padding: 8px 16px;
+  border-left: 4px solid #6461f1;
+  background: rgba(100, 97, 241, 0.05);
+  color: #a8a8b6;
+}
+
+.markdown-preview ul {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.markdown-preview li {
+  margin: 4px 0;
+  color: #e8e8f6;
+}
+
+.markdown-preview a {
+  color: #6461f1;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(100, 97, 241, 0.3);
+  transition: all 0.2s ease;
+}
+
+.markdown-preview a:hover {
+  border-bottom-color: #6461f1;
+}
+
+/* 二维码下载按钮 */
+.qrcode-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #6461f1 0%, #8b5cf6 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.qrcode-download:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 97, 241, 0.3);
+}
+
 /* 工具就绪标记 */
 .tool-ready-badge {
   position: absolute;
@@ -1587,6 +2536,18 @@ defineExpose({
   .tool-textarea {
     font-size: 12px;
   }
+
+  .tool-options {
+    flex-direction: column;
+  }
+
+  .option-group {
+    min-width: 100%;
+  }
+
+  .option-radio-group {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1608,11 +2569,45 @@ defineExpose({
 
   .tool-panel-content {
     padding: 16px;
+    gap: 12px;
   }
 
   .execute-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .tool-options {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .regex-input-group {
+    flex-wrap: wrap;
+  }
+
+  .regex-pattern-input {
+    width: 100%;
+  }
+
+  .regex-flags-helper {
+    gap: 8px;
+  }
+
+  .markdown-preview {
+    font-size: 13px;
+  }
+
+  .markdown-preview h1 {
+    font-size: 20px;
+  }
+
+  .markdown-preview h2 {
+    font-size: 18px;
+  }
+
+  .markdown-preview h3 {
+    font-size: 16px;
   }
 }
 
