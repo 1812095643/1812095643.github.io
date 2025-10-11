@@ -29,11 +29,11 @@ const active = computed(() => {
     : "home";
 });
 
-// 启用滑动手势切换页面（仅移动端）
-useSwipeGesture({
-  enableRouteSwipe: true,
-  threshold: 80
-});
+// 禁用滑动手势切换页面
+// useSwipeGesture({
+//   enableRouteSwipe: true,
+//   threshold: 80
+// });
 
 // 下拉刷新处理
 const handleRefresh = async () => {

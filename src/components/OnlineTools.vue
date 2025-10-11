@@ -50,6 +50,7 @@
                     v-for="tool in filteredTools"
                     :key="tool.id"
                     class="tool-card"
+                    :class="{ 'tool-implemented': toolImplementations[tool.id] }"
                     @click="handleToolClick(tool)"
                   >
                     <div class="tool-icon">{{ tool.icon }}</div>
@@ -60,9 +61,104 @@
                     <div class="tool-badge" :class="`badge-${tool.category}`">
                       {{ tool.badge }}
                     </div>
+                    <div v-if="toolImplementations[tool.id]" class="tool-ready-badge">
+                      ✓
+                    </div>
                   </div>
                 </div>
               </a-scrollbar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- 工具执行面板 -->
+    <Transition name="tool-panel">
+      <div v-if="showToolPanel" class="tool-panel-overlay" @click="closeToolPanel">
+        <div class="tool-panel-container" @click.stop>
+          <div class="tool-panel-header">
+            <div class="tool-panel-title">
+              <span class="tool-panel-icon">{{ selectedTool?.icon }}</span>
+              <span>{{ selectedTool?.name }}</span>
+            </div>
+            <button class="tool-panel-close" @click="closeToolPanel">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="tool-panel-content">
+            <!-- 输入区域 -->
+            <div class="tool-panel-section">
+              <div class="section-header">
+                <span class="section-title">输入</span>
+                <button v-if="selectedTool?.id === 25" class="action-btn" @click="executeTool">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  生成
+                </button>
+              </div>
+              <textarea
+                v-if="selectedTool?.id !== 25"
+                v-model="toolInput"
+                class="tool-textarea"
+                :placeholder="getPlaceholder(selectedTool?.id)"
+                :rows="selectedTool?.id === 24 ? 8 : 6"
+              ></textarea>
+              <div v-else class="uuid-generator">
+                <p class="uuid-hint">点击"生成"按钮创建新的 UUID</p>
+              </div>
+            </div>
+
+            <!-- 执行按钮 -->
+            <div v-if="selectedTool?.id !== 25" class="tool-panel-actions">
+              <button class="execute-btn" @click="executeTool">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 3l14 9-14 9V3z" fill="currentColor"/>
+                </svg>
+                执行
+              </button>
+            </div>
+
+            <!-- 错误提示 -->
+            <div v-if="toolError" class="tool-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              {{ toolError }}
+            </div>
+
+            <!-- 输出区域 -->
+            <div class="tool-panel-section">
+              <div class="section-header">
+                <span class="section-title">输出</span>
+                <button v-if="toolOutput" class="action-btn" @click="copyOutput">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  复制
+                </button>
+              </div>
+              
+              <!-- 二维码特殊显示 -->
+              <div v-if="selectedTool?.id === 16 && toolOutput" class="qrcode-output">
+                <img :src="toolOutput" alt="QR Code" class="qrcode-image" />
+              </div>
+              
+              <!-- 普通文本输出 -->
+              <textarea
+                v-else
+                v-model="toolOutput"
+                class="tool-textarea"
+                placeholder="执行结果将显示在这里..."
+                readonly
+                :rows="selectedTool?.id === 24 ? 8 : 6"
+              ></textarea>
             </div>
           </div>
         </div>
@@ -376,9 +472,131 @@ const selectCategory = (categoryId: string) => {
   selectedCategory.value = categoryId;
 };
 
+// 工具实现状态
+const toolImplementations = ref<Record<number, boolean>>({
+  5: true,  // JSON 格式化
+  13: true, // 时间戳转换
+  16: true, // 二维码生成
+  24: true, // 正则测试
+  25: true, // UUID 生成
+});
+
+// 当前选中的工具
+const selectedTool = ref<any>(null);
+const showToolPanel = ref(false);
+
+// 工具面板输入输出
+const toolInput = ref("");
+const toolOutput = ref("");
+const toolError = ref("");
+
 const handleToolClick = (tool: any) => {
-  console.log("工具点击:", tool.name);
-  // 这里后续可以添加具体工具的实现逻辑
+  selectedTool.value = tool;
+  showToolPanel.value = true;
+  toolInput.value = "";
+  toolOutput.value = "";
+  toolError.value = "";
+  
+  // 设置默认示例
+  setDefaultExample(tool.id);
+};
+
+const setDefaultExample = (toolId: number) => {
+  const examples: Record<number, string> = {
+    5: '{"name":"张三","age":25,"city":"北京"}',
+    13: String(Date.now()),
+    16: 'https://github.com',
+    24: 'hello@example.com',
+    25: '',
+  };
+  toolInput.value = examples[toolId] || '';
+};
+
+const closeToolPanel = () => {
+  showToolPanel.value = false;
+  selectedTool.value = null;
+};
+
+const executeTool = () => {
+  toolError.value = "";
+  
+  try {
+    switch (selectedTool.value?.id) {
+      case 5: // JSON 格式化
+        const parsed = JSON.parse(toolInput.value);
+        toolOutput.value = JSON.stringify(parsed, null, 2);
+        break;
+        
+      case 13: // 时间戳转换
+        const timestamp = parseInt(toolInput.value);
+        if (isNaN(timestamp)) {
+          toolError.value = "请输入有效的时间戳";
+          return;
+        }
+        const date = new Date(timestamp);
+        toolOutput.value = `标准时间: ${date.toLocaleString('zh-CN')}\nISO格式: ${date.toISOString()}\nUTC时间: ${date.toUTCString()}`;
+        break;
+        
+      case 16: // 二维码生成
+        if (!toolInput.value.trim()) {
+          toolError.value = "请输入要生成二维码的内容";
+          return;
+        }
+        // 使用第三方API生成二维码
+        toolOutput.value = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(toolInput.value)}`;
+        break;
+        
+      case 24: // 正则测试
+        const lines = toolInput.value.split('\n');
+        const pattern = lines[0] || '';
+        const testStr = lines.slice(1).join('\n') || '';
+        
+        if (!pattern) {
+          toolError.value = "请在第一行输入正则表达式";
+          return;
+        }
+        
+        try {
+          const regex = new RegExp(pattern, 'g');
+          const matches = testStr.match(regex);
+          toolOutput.value = matches 
+            ? `匹配成功！\n找到 ${matches.length} 个匹配项:\n${matches.join('\n')}`
+            : '未找到匹配项';
+        } catch (e: any) {
+          toolError.value = `正则表达式错误: ${e.message}`;
+        }
+        break;
+        
+      case 25: // UUID 生成
+        toolOutput.value = crypto.randomUUID();
+        break;
+        
+      default:
+        toolError.value = "该工具功能正在开发中...";
+    }
+  } catch (e: any) {
+    toolError.value = e.message || "处理失败";
+  }
+};
+
+const copyOutput = async () => {
+  try {
+    await navigator.clipboard.writeText(toolOutput.value);
+    // 可以添加一个提示
+  } catch (e) {
+    console.error('复制失败', e);
+  }
+};
+
+const getPlaceholder = (toolId: number) => {
+  const placeholders: Record<number, string> = {
+    5: '请输入 JSON 数据...\n例如: {"name":"张三","age":25}',
+    13: '请输入时间戳（毫秒）...\n例如: 1704067200000',
+    16: '请输入要生成二维码的内容...\n例如: https://github.com',
+    24: '第一行输入正则表达式，后续行输入测试文本\n例如:\n\\d+\n123abc456',
+    25: '',
+  };
+  return placeholders[toolId] || '请输入内容...';
 };
 
 const openModal = () => {
@@ -1063,6 +1281,338 @@ defineExpose({
 
   .tool-desc {
     font-size: 11px;
+  }
+}
+
+/* 工具就绪标记 */
+.tool-ready-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  z-index: 3;
+}
+
+.tool-card.tool-implemented {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.tool-card.tool-implemented:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+}
+
+/* 工具执行面板 */
+.tool-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(14, 14, 19, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  padding: 20px;
+}
+
+.tool-panel-container {
+  background: #141419;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(78, 78, 100, 0.2);
+  background: #141419;
+  flex-shrink: 0;
+}
+
+.tool-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e8e8f6;
+}
+
+.tool-panel-icon {
+  font-size: 24px;
+}
+
+.tool-panel-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(78, 78, 100, 0.2);
+  border: none;
+  border-radius: 8px;
+  color: #a8a8b6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tool-panel-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+.tool-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tool-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8e8f6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(100, 97, 241, 0.15);
+  border: 1px solid rgba(100, 97, 241, 0.3);
+  border-radius: 6px;
+  color: #6461f1;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: rgba(100, 97, 241, 0.25);
+  border-color: rgba(100, 97, 241, 0.5);
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.tool-textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(78, 78, 100, 0.3);
+  border-radius: 8px;
+  color: #e8e8f6;
+  font-size: 13px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.tool-textarea:focus {
+  outline: none;
+  border-color: rgba(100, 97, 241, 0.5);
+  box-shadow: 0 0 0 3px rgba(100, 97, 241, 0.1);
+}
+
+.tool-textarea::placeholder {
+  color: #6b6b7b;
+}
+
+.tool-textarea[readonly] {
+  cursor: default;
+  background: rgba(20, 20, 25, 0.5);
+}
+
+.tool-panel-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.execute-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #6461f1 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(100, 97, 241, 0.3);
+}
+
+.execute-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 97, 241, 0.4);
+}
+
+.execute-btn:active {
+  transform: translateY(0);
+}
+
+.tool-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.uuid-generator {
+  padding: 40px 20px;
+  text-align: center;
+  background: rgba(20, 20, 25, 0.5);
+  border: 1px dashed rgba(78, 78, 100, 0.3);
+  border-radius: 8px;
+}
+
+.uuid-hint {
+  color: #a8a8b6;
+  font-size: 14px;
+  margin: 0;
+}
+
+.qrcode-output {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+}
+
+.qrcode-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* 工具面板动画 */
+.tool-panel-enter-active,
+.tool-panel-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.tool-panel-enter-active .tool-panel-container,
+.tool-panel-leave-active .tool-panel-container {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.tool-panel-enter-from,
+.tool-panel-leave-to {
+  opacity: 0;
+}
+
+.tool-panel-enter-from .tool-panel-container,
+.tool-panel-leave-to .tool-panel-container {
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+}
+
+/* 工具面板响应式 */
+@media (max-width: 768px) {
+  .tool-panel-container {
+    max-width: 95vw;
+    max-height: 85vh;
+  }
+
+  .tool-panel-header {
+    padding: 16px 20px;
+  }
+
+  .tool-panel-title {
+    font-size: 16px;
+  }
+
+  .tool-panel-icon {
+    font-size: 20px;
+  }
+
+  .tool-panel-content {
+    padding: 20px;
+  }
+
+  .tool-textarea {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tool-panel-overlay {
+    padding: 10px;
+  }
+
+  .tool-panel-container {
+    border-radius: 12px;
+  }
+
+  .tool-panel-header {
+    padding: 14px 16px;
+  }
+
+  .tool-panel-title {
+    font-size: 15px;
+  }
+
+  .tool-panel-content {
+    padding: 16px;
+  }
+
+  .execute-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
